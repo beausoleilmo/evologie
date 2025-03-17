@@ -6,3 +6,23 @@ freeze: true
 
 # Enable banner style title blocks
 title-block-banner: true
+
+
+# Enable CC licence appendix
+# license: "CC BY"
+
+# Author name of all blog posts
+# author: 'Marc-Olivier Beausoleil'
+
+# Table of content settings
+toc: true
+toc-depth: 3
+
+page-layout: article
+
+# Default fields for citation
+citation: false
+author:
+  - name: Marc-Olivier Beausoleil
+    url: https://evologie.netlify.app
+    orcid: 0000-0003-3717-3223

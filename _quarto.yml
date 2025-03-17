@@ -2,14 +2,15 @@ project:
   type: website
 
 website:
-  title: "evologie"
+  title: "évologie"
   navbar:
     right:
       - about.qmd
       - icon: github
-        href: https://github.com/
-      - icon: twitter
-        href: https://twitter.com
+        href: https://github.com/beausoleilmo
+      # - icon: linkedin
+        # href: https://www.linkedin.com/in/marcolivierbeausoleil/
+
 format:
   html:
     theme:
@@ -19,3 +20,6 @@ format:
 
 editor: visual
 
+comments:
+  giscus:
+    repo: beausoleilmo/evologie

@@ -1,6 +1,6 @@
 ---
-title: "About"
-image: profile.jpg
+title: "À propos"
+image: MOBeausoleil_par_Alex_Tran.jpg
 about:
   template: jolla
   links:
@@ -13,7 +13,6 @@ about:
     - icon: github
       text: Github
       href: https://github.com
-
 ---
 
-About this blog
+La biodiversité est un sujet passionnant. Il est l'un des plus grands défis du 21e siècle. Ici, je mets mes pensées sur la biodiversité et la vie.
