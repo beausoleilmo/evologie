@@ -5,7 +5,7 @@ bibliography: ../ref_blg.bib
 csl: ../evolution.csl
 date: "2025-03-11"
 categories: ["histoire", "évologie", "biodiversité"]
-image: "fou_pieds_bleus_MB_2019.JPG"
+image: "fou_pieds_bleus_MB_2019_ban.JPG"
 execute: 
   message: false
 warning: false
@@ -15,11 +15,11 @@ editor_options:
 
 ## Le mot en 'E'
 
-Ce mot me hante depuis longtemps, suscitant des éons de tourment et de fascination. Ce redoutable mot est l'évolution. Comment pourrait-il autant nous casser la tête? Discutant de ce sujet, Stephen J. Gould [-@Gould:2000uo] explique que le mot « évolution » a une étymologie difficilement réconciliable avec la signification moderne de ce terme. 'Chuck' Darwin avait même dédaigné le mot « évolution » dans son livre l'origine des espèces et se contente d'utiliser le mot « évolué ». D'ailleurs, le livre se termine avec cette fameuse phrase :
+Ce mot me hante depuis longtemps. Ce mot a suscité des éons de tourment et de fascination. Ce redoutable mot est l'évolution. Comment pourrait-il autant nous casser la tête? Discutant de ce sujet, Stephen J. Gould [-@Gould:2000uo] explique que l’étymologie du mot « évolution » se réconcilie difficilement avec la signification moderne de ce terme. 'Chuck' Darwin avait même dédaigné le mot « évolution » dans son livre l'origine des espèces et se contente d'utiliser le mot « évolué ». D'ailleurs, le livre se termine avec cette fameuse phrase :
 
-> *"\[...\] whilst this planet has gone cycling on according to the fixed law of gravity, from so simple a beginning endless forms most beautiful and most wonderful have been, and are being, evolved."* [@Darwin:1859uh]
+<!-- > *"\[...\] whilst this planet has gone cycling on according to the fixed law of gravity, from so simple a beginning endless forms most beautiful and most wonderful have been, and are being, evolved."* [@Darwin:1859uh] -->
 
-<!-- > *"\[...\] tandis que cette planète tournait en rond selon les lois établies de la gravité, une infinité de formes regorgeant de beauté et de merveilles, à partir d'un commencement si simple, ont évolué et évoluent encore"* [@Darwin:1859uh] -->
+> *"\[...\] tandis que cette planète tournait en rond selon les lois établies de la gravité, une infinité de formes regorgeant de beauté et de merveilles, à partir d'un commencement si simple, ont évolué et évoluent encore"* [@Darwin:1859uh]
 
 Darwin faisait déjà allusion à une distinction importante entre l'évolution cosmique et l'évolution biologique. Diantre! Quelle distinction !
 
@@ -29,11 +29,11 @@ On entend, par l'expression *évolution biologique*, un changement d'un ensemble
 
 <!-- Évidemment, j'exclus tous les individus qui ne laisseront pas de descendance -->
 
-Par contre, le mot « évolution » vient du latin *evolvere* qui veut dire « dérouler » [@evolutionAntidote2024] comme un tapis qui se déroule. Or, en se basant sur cette étymologie, une personne pourrait penser faussement que l'évolution est une suite d'événements prédictibles (le tapis a déjà été cousu) où il existe un ordre prédéterminé (le tapis a un début et une fin) et que chacun de ces événements apparaît progressivement (le tapis se déroule vraiment lentement!). Cette conception de l'évolution est juste lorsque l'on parle de l'évolution du système solaire avec les 'lois fixes de la gravité' comme le disait Darwin. Mais tout ça n'apporte pas de lumière à notre compréhension de l'évolution au 21e siècle.
+Par contre, le mot « évolution » vient du latin *evolvere* qui veut dire « dérouler » [@evolutionAntidote2024] comme un tapis qui se déroule. Or, en se basant sur cette étymologie, une personne pourrait penser faussement que l'évolution est une suite d'événements prédictibles (le tapis est tissé selon un patron) où il existe un ordre prédéterminé (le tapis a un début et une fin) et que chacun de ces événements apparaît progressivement (le tapis est long et se déroule vraiment lentement!). Cette conception de l'évolution est juste lorsque l'on parle de l'évolution du système solaire avec les 'lois fixes de la gravité' comme le disait Darwin. Mais tout ça n'apporte pas de lumière à notre compréhension de l'évolution au 21e siècle.
 
-Une vision contemporaine de l'évolution est articulée autour de changements populationnels (finalement il y a plein de tapis différents en couleurs, formes...) en réponse à des conditions environnementales locales et actuelles ou de manière aléatoire. Par exemple, certains de ces environnements favorisent de manière différente (non aléatoire) les organismes par sélection naturelle (les tapis sont choisis en fonction de leurs attraits) ou par les mutations (aléatoirement positives ou négatives) qui agissent chez un organisme (chaque tapis est une modification d'un modèle de tapis précédent) ou par « dérive génique » un autre phénomène aléatoire. Dans tous les cas, ces mécanismes sont sans regard à des besoins futurs de ces organismes.
+Une vision contemporaine de l'évolution s'articule autour de changements populationnels (finalement il y a plein de tapis différents en couleurs, formes...) en réponse à des conditions environnementales locales et actuelles ou de manière aléatoire. Par exemple, certains de ces environnements favorisent de manière différente (non aléatoire) les organismes par sélection naturelle (les tapis sont choisis en fonction de leurs attraits) ou par les mutations (aléatoirement positives ou négatives) qui agissent chez un organisme (chaque tapis est une modification d'un modèle de tapis précédent) ou par « dérive génique » un autre phénomène aléatoire. Dans tous les cas, ces mécanismes sont sans regard à des besoins futurs de ces organismes.
 
-Darwin comprenait l'importance de sa théorie. Dans ses pensées, l'évolution cosmique était donc peu surprenante : elle se déroulait de manière prédictible et directionnelle selon des lois physiques inchangées. En contraste, l'évolution biologique est dynamique, apporte un potentiel de diversification grandissant et a une prévisibilité limitée, tout en étant complètement aveugle. En d'autres mots, l'évolution biologique est donc myope : sans direction et ne peut pas être prédite sur le long terme. Ça n'empêche pas que la partie « *créative* » de l'évolution, donc la sélection naturelle, a produit des chefs-d'œuvre à couper le souffle malgré cette anomalie aux yeux!
+Darwin comprenait l'importance de sa théorie. Dans ses pensées, l'évolution cosmique était donc peu surprenante : elle se déroulait de manière prédictible et directionnelle selon des lois physiques inchangées. En contraste, l'évolution biologique est dynamique, apporte un potentiel de diversification grandissant et a une prévisibilité limitée, tout en étant complètement aveugle. En d'autres mots, l'évolution biologique est donc myope : sans direction et ne peut pas être prédite sur le long terme. Ça n'empêche pas que la partie « *créative* » de l'évolution, donc la sélection naturelle, a produit des chefs-d'œuvre à couper le souffle malgré cette anomalie aux yeux!
 
 ## La spéciation du mot « évolution »
 
@@ -41,25 +41,31 @@ Nous sommes confrontés à deux dimensions distinctes entourant le terme évolut
 
 La formation ou l'émergence de nouvelle espèce est ce que l'on entend par le mot « spéciation ». Parmi les types de spéciation, la spéciation écologique retient particulièrement l'attention de la recherche en biodiversité puisqu'elle fait écho à un ensemble de règles qui permet de déterminer ce qu'est une espèce biologique. L'une de ces règles est l'émergence de barrière à la reproduction. Cela veut dire que pour distinguer des espèces les unes des autres, il suffit d'observer si, dans un même environnement, des organismes peuvent se reproduire entre elles ou d'observer l'état de la progéniture. Prenons les fous comme exemple.
 
-::: {style="float: right;"}
-![Fou à pieds bleus sur l'île Mosquera](fou_pieds_bleus_MB_2019.JPG){#fig-foupb fig-alt="Un fou (ou deux) sur l'île Mosquera" width="250px"}
+::: {layout="[ [70,30]]"}
+Les fous à pieds bleus (*Sula nebouxii*, @fig-foupb) ne s'accouplent qu'après un rituel dansant : le [mâle exécute une parade nuptiale](https://www.youtube.com/watch?v=lcPHFQP9GN0) où le mâle présente délicatement et en alternance ses pieds bleu poudre. Il exhibe ses pantoufles en les levant de manière exagérée, mais doucement, vers la femelle [@hernandezdiazBluefootedBoobySula2020]. Et la femelle juge la qualité du mâle en fonction de la couleur de ses pieds. En effet, il a été démontré que la condition des jeunes est liée avec la couleur des pattes palmées du père [@velandoPigmentbasedSkinColour2006]. La couleur des pieds est déterminée par la structure de la matrice de collagène, mais aussi par des pigments qui sont plus ou moins présents selon l'alimentation. Par cette barrière comportementale, les fous à pieds bleus ne se reproduisent pas avec d'autres espèces de fous [@mccarthyHandbookAvianHybrids2006]. C'est ce qui est nommé l'isolement éthologique ou 'par leur comportement': une fou à pieds bleus qui voit un mâle fou de Bassan (*Morus bassanus*) qui ne connaît pas sa danse préférée ou voit qu'il a oublié de mettre ses beaux souliers bleus, elle n'est pas intéressée par ce mâle. En plus, le mâle aux pratiques étrangères [donne des coups de becs](https://www.youtube.com/watch?v=1YYZtu_mVmk) pensant séduire la femelle. Règle générale, les femelles aux pattes bleues réagissent globalement toutes de cette manière et donc refusent de se reproduire avec un mâle fou de Bassan.
+
+![Fou à pieds bleus sur l'île Mosquera. MOB CC BY 4.0](fou_pieds_bleus_MB_2019.JPG){#fig-foupb fig-alt="Un fou (ou deux) sur l'île Mosquera" width="250px"}
 :::
 
-Les fous à pieds bleus (*Sula nebouxii*) ne s'accouplent qu'après un rituel dansant : le [mâle exécute une parade nuptiale](https://www.youtube.com/watch?v=lcPHFQP9GN0) où le mâle présente délicatement et en alternance ses pieds bleu poudre. Il exhibe ses pantoufles en les levant de manière exagérée, mais doucement, vers la femelle [@hernandezdiazBluefootedBoobySula2020]. Et la femelle juge la qualité du mâle en fonction de la couleur de ses pieds. En effet, il a été démontré que la condition des jeunes est liée avec la couleur des pieds du père [@velandoPigmentbasedSkinColour2006]. La couleur des pieds est déterminée par la structure de la matrice de collagène, mais aussi par des pigments qui sont plus ou moins présents selon l'alimentation. Par cette barrière comportementale (isolement éthologique), les fous à pieds bleus ne se reproduisent pas avec d'autres espèces de fous [@mccarthyHandbookAvianHybrids2006].
 
-Essentiellement, il semblerait que le mot « évolution » a connu un événement de spéciation et demande une épithète pour distinguer ces espèces. Pour décrire cette nouvelle espèce en utilisant la nomenclature binomiale Linéenne, les termes *évolution cosmique* ou *biologique* semblent appropriés pour établir une distinction claire entre l'héritage étymologique et leur compréhension contemporaine. Ainsi, pour décrire l'étude de l'évolution portant l'épithète « biologique », je propose « évologie ». 
+Essentiellement, il semblerait que le mot « évolution » a connu un événement de spéciation et demande une épithète pour distinguer ces espèces. Pour décrire cette nouvelle espèce en utilisant la nomenclature binomiale Linéenne, les termes *évolution cosmique* ou *biologique* semblent appropriés pour établir une distinction claire entre l'héritage étymologique et leur compréhension contemporaine. Ainsi, pour décrire l'étude de l'évolution portant l'épithète « biologique », je propose « évologie ».
 
 ## L'évologie
 
-Le mot *évologie* a parasité mon esprit et changé ma vision de l'évolution. Essentiellement, l'évologie, ou l'étude de l'évolution biologique, est le domaine d'étude qui cherche à comprendre comment l'information (génétique ou moléculaire) change à travers le temps. Autrement dit, l'évologie s'intéresse aux phénomènes de transformation de l'information qui produit de nouvelles significations distincte ou de nouvelles espèces. Et comme l'a dit Martin Nowak : 
+Le mot *évologie* a parasité mon esprit et changé ma vision de l'évolution. Essentiellement, l'évologie, ou l'étude de l'évolution biologique, est le domaine d'étude qui cherche à comprendre comment l'information (génétique ou moléculaire) change à travers le temps. Autrement dit, l'évologie s'intéresse aux phénomènes de transformation de l'information qui produit de nouvelles significations distincte ou de nouvelles espèces. Et comme l'a dit Martin Nowak :
 
-> Wherever information reproduces, there is evolution [@nowakEvolutionaryDynamicsExploring2006]
+> Partout où l'information se reproduit, il y a évolution [@nowakEvolutionaryDynamicsExploring2006]
 
-Si l'écologiste appartient à l'écologie, et bien l'évologiste appartient à l'évologie. Peut-être un jour, nous aurons place à un programme d'évoécologie. Peut-être pourrons-nous connaître le succès reproducteur des organismes et de comprendre notre impact dans l'environnement sur ce genre de données? C'est bon de rêver?
+<!-- > Wherever information reproduces, there is evolution [@nowakEvolutionaryDynamicsExploring2006] -->
+
+Si l'écologiste appartient à l'écologie, et bien l'« évologiste » appartient à l'« évologie ». Une mutation d'une seule lettre (éco --\> évo) qui donne lieu à ce nouveau terme. Peut-être un jour, nous aurons place à un programme hybride d'« évoécologie ». Peut-être pourrons-nous connaître le succès reproducteur des organismes et de comprendre notre impact dans l'environnement sur ce genre de données? C'est bon de rêver?
+
+<!-- Une mutation dans le mot écologie pour devenir évologie -->
 
 Dans ce cas, je fais fi de pédantisme étymologique et je me proclame un évologiste en étudiant l'évologie.
 
-### References
+
+### Références
 
 ::: {#refs}
 :::

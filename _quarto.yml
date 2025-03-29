@@ -1,6 +1,11 @@
 project:
   type: website
 
+lang: fr
+language:
+  fr:
+    title-block-author-single: "Auteur"
+
 website:
   title: "évologie"
   navbar:
