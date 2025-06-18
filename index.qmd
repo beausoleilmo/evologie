@@ -1,5 +1,5 @@
 ---
-title: "Evologie"
+title: "Évologie"
 listing:
   contents: posts
   sort: "date desc"
