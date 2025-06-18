@@ -3,7 +3,7 @@ title: "Qu’est-ce qui se cache sous le tapis de l’évolution"
 description: "Hanté par les fondements de la biologie..."
 bibliography: ../ref_blg.bib
 csl: ../evolution.csl
-date: "2025-03-11"
+date: "2025-06-17"
 categories: ["histoire", "évologie", "biodiversité"]
 image: "fou_pieds_bleus_MB_2019_ban.JPG"
 execute: 
