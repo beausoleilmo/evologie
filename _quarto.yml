@@ -7,7 +7,7 @@ language:
     title-block-author-single: "Auteur"
 
 website:
-  title: "racine"
+  title: "évologie"
   navbar:
     right:
       - about.qmd
