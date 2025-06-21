@@ -13,7 +13,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-## Qu’est-ce qui se cache sous le tapis de l’évolution?
+## Levons le tapis de l’évolution
 
 Ce mot me hante depuis longtemps. Ce mot a suscité des éons de tourment et de fascination. Ce redoutable mot est l'évolution. Comment pourrait-il autant me casser la tête ainsi qu'à de nombreuses personnes curieuses? Discutant de ce sujet, Stephen J. Gould [-@Gould:2000uo] explique que l’étymologie du mot « évolution » se réconcilie difficilement avec la signification moderne de ce terme. Darwin avait même dédaigné le mot « évolution » dans son livre l'origine des espèces et se contente d'utiliser le mot « évolué » qu'à la toute fin de l'ouvrage à l'intérieur de cette fameuse phrase :
 
