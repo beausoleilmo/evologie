@@ -1,0 +1,99 @@
+---
+title: "Pic moi la curiosité"
+description: "En s'enlevant quelques bibittes de nos têtes..."
+bibliography: ../ref_blg.bib
+csl: ../evolution.csl
+date: "2025-07-31"
+categories: ["biodiversité", 'évolution', 'histoire']
+image: "Grand_pic_2013_ban.jpg"
+execute: 
+  message: false
+  warning: false
+editor_options: 
+  chunk_output_type: console
+---
+
+## Une vague de bitume
+
+Là où vit Paul, une forêt se réveillait tous les matins avec un vent calme dans les branches, les encouragements des oiseaux et le doux son de l'eau qui coulait dans les veines de la terre gardant les poumons sylvicoles bien hydratés. Une foule de créatures habitait cet endroit d'une beauté à en faire pleurer les écureuils.
+
+Hélas, on a jeté un sort pétrifiant à cette forêt. Une catastrophe changea cet habitat plein de mystères : de grandes vagues de roches liquides se sont emparées du paysage tapissant ainsi le sol, écrasant au passage toutes les maisons des créatures qui s'y trouvaient. Aucun volcan dans les parages ne fut à accuser Ces vagues ne laissèrent pas la biodiversité indifférente : des raz de marée de bétons par-ci et de bitume par-là ont morcelé d'anciens villages qui se sont forgés pendant des millénaires.
+
+Encore aujourd'hui, le déluge bitumineux laisse une cicatrice dans ce tableau. Et de cette blessure sont nés de nouvelles maisons, puis des quartiers. Tout un système routier où des créatures métalliques roulent à l'or noir, brûlant l'âme d'une vie ancienne qui dormait paisiblement depuis des millénaires. Un réseau surchauffé par des pilotes pressés d'arriver à divers arrêts.
+
+Jadis, une bonne partie de la diversité de vivants de cette forêt se composait d'insectes. Ne sachant plus où aller, certaines de ces bestioles à six pattes ont élu domicile dans les maisons des nouveaux occupants de cette mare de béton : dans la cave, dans les charpentes, dans les murs, etc. D'autres ont dû choisir un nouvel habitat. Comme des parasites, certaines ont même trouvé logis dans la tête des citadins. Quel beau dommage!
+
+## Le chant du pic bois
+
+::: {style="float: right; margin: 5px; width: 250px;"}
+![Grand pic mâle ([*Dryocopus pileatus*](https://inaturalist.ca/taxa/17855-Dryocopus-pileatus)). MOB CC BY 4.0](Grand_pic_2013.jpg){#fig-grandpic fig-alt="Grand pic"}
+:::
+
+La chanson [« Le **Picbois** »](https://www.youtube.com/watch?v=a0tgrlcgINw) du groupe Beau Dommage [-@BeauDommage:LPB1974] raconte l'histoire d'un citadin que je me plais à nommer Paul. N'ayant baigné que dans une mare de béton et d'asphalte depuis sa naissance, Paul part parfumer ses vêtements d'effluves provenant des essences de la forêt. Et cette fois-ci, ce ne sera pas le Mont-Royal qui sera ladite forêt choisie. Paul rêve d'aller plus loin. Il doit couper le cordon avec la ville et découvrir l'au-delà de l'île. À l'aventure !
+
+Arrivé à destination, le protagoniste s'apaise devant ce vert-chlorophylle çà et là qui discrètement saute aux yeux. [Koi-—kan—kan-kan-kan-kan-kan-kan-kan-kan-kan-kan-kan-kan-kan-kan-kan-kan-kan-kan--kan--kan!](https://macaulaylibrary.org/asset/88977181). Une voix étrange résonne dans cette cathédrale feuillue. Un peu comme si quelqu'un se moquait ostensiblement de lui. Une ombre foncée imposante se déplace. Pas de doute, c'est un oiseau. Puis, un roulement de tambour sylvicole retentit. Paul se fait enchanter par les rythmes envoutants du pic (@fig-grandpic).
+
+Des pensées folles l'animent. Peut-être que les insectes réfugiés de la ville, pris dans sa tête, veulent sortir? Inviter ce marteau piqueur aviaire à venir taper sur sa tête permettrait sûrement de se débarrasser de ces bibittes qui parasitent son esprit.
+
+Paul repart poursuivre sa positive péripétie et se voit ravi de vivre ce privilège en présence de Dame Nature. Aidé par l'oiseau, le voilà donc émerveillé, la curiosité piquée, débutant ainsi une avalanche de questions.
+
+## Les avantages du pic bois
+
+Par une heureuse coïncidence, Paul me croise, alors que j'observe les oiseaux aux jumelles lors de cette splendide journée. Voulant en connaître davantage sur sa découverte, il s'interroge sur le nom du pic en question. Je m'exclame : « Ah! Son nom, c'est une chose, ce qui m'intéresse, ce sont ses super pouvoirs! » Perplexe, Paul exige des explications. Voyez-vous, les pics sont les champions du tapage de tête sur le mur. Mais cela a dû prendre du temps à développer. On ne se met pas à taper son nez à pleine vitesse dans le bois du jour au lendemain [@bockFunctionalEvolutionaryMorphology1999].
+
+Leur bec, plus solide que d'autres espèces d'oiseaux, permet d'excaver des cavités (@fig-troupic) pour extraire de la nourriture tout l'an, mais en même temps de construire un abri. Pour creuser des trous, ça prend un bon casque. En fait, la tête des pics s'équipe d'une protection utile pour un chantier de construction : le cou est musclé et le crâne plus robuste.
+
+<!-- ::: {layout="[ [40,60]]"} -->
+
+::: {style="float: left; margin: 5px;"}
+![Trous de pic. MOB CC BY 4.0](trous_arbre_2025_02_22.jpg){#fig-troupic fig-alt="Trous de pic" width="250px"}
+:::
+
+Paul en profite pour approfondir le sujet. « Est-ce que les pics ont un dispositif qui permet d'absorber les chocs pour ne pas s'éclater la cervelle? » Aussi étrange que ça puisse paraître, il n'absorberait pas les chocs. Cela est pour maximiser l'impact du bec sur le bois [@vanwassenberghWoodpeckersMinimizeCranial2022]! Par contre, le cerveau se protège probablement avec d'autres mécanismes, dont la forme et la position de leur cerveau dans le crâne. Et avec une accélération trois fois au niveau du seuil de commotion chez l'humain, clairement nous aurions besoin d'une protection pour ne pas finir avec une soupe cérébrale [@savitskyContraryPopularBelief2022]. Bien que les recherches ont surtout été faites sur les impacts du bec sur du bois, d'autres recherches doivent déterminer si l'impact du bec sur du métal demande une protection supplémentaire, comme lorsque certains pics utilisent des poteaux pour marquer leur territoire.
+
+Les [vidéos avec ralenti montrent](https://www.youtube.com/watch?v=KX16_FfS6yo) que les pics ferment leurs yeux à chaque impact. Des équipes de recherche s'intéressent aux adaptations des yeux du pic pour comprendre comment ils sont protégés des impacts [@wygnanski-jaffeProtectiveOcularMechanisms2007]. Parmi ceux-ci, certains mouvements de l'œil sont limités et le blanc de l'œil (la sclère) se déforme moins que celle de l'humain.
+
+Paul n'a pas de mots : ils se sont fait piquer. Et ce n'est pas tout!
+
+La plupart des oiseaux percheurs portent au pied trois doigts en avant et un en arrière. Mais chez les pics, leurs pieds sont différents : la plupart de ces espèces ont deux doigts en avant et deux en arrière (zygodactyle, ce qui veut dire « jonction de doigts ») facilitant le déplacement sur un tronc (escaladeur de tronc).
+
+Les plumes de la queue sont aussi plus rigides et effilées permettant de les utiliser comme un appui pour escalader les troncs et pour faire une sorte de trépied avec son corps pour se stabiliser en martelant [@Associationquebecoisedesgroupesdornithologues:1995vx].
+
+Sans compter les différentes formes de langues des pics selon leur mode d'alimentation (avec salive collante pour manger des fourmis comme le grand pic \[[*Dryocopus pileatus*](https://inaturalist.ca/taxa/17855-Dryocopus-pileatus)\] ou [pinceau](https://www.hiltonpond.org/ThisWeek070215.html "Voir les photos, dont une montrant la langue!") pour obtenir de la sève, comme le pic maculé \[[*Sphyrapicus varius*](https://inaturalist.ca/taxa/18463-Sphyrapicus-varius)\] fait).
+
+Qui plus est, le pic fascinait Darwin qui introduisait cet oiseau au [début de l'Origine des espèces](https://en.wikisource.org/wiki/Page%3AOrigin_of_Species_1859_facsimile.djvu/13) comme exemple de la sélection naturelle :
+
+> \[...\] il est absurde d'attribuer à de simples conditions extérieures la structure, par exemple, du pic, avec ses pieds, sa queue, son bec et sa langue, si admirablement adaptés pour attraper des insectes sous l'écorce des arbres. [@darwin1859]
+
+## Le pic : un allié à la crise du logement
+
+De par son alimentation, le grand pic perce des trous dans les arbres pour se nourrir de fourmis charpentières ([*Camponotus pennsylvanicus*](https://inaturalist.ca/taxa/129902-Camponotus-pennsylvanicus) ou fourmi noire gâte-bois). Comme beaucoup d'autres pics insectivores, une grande quantité d'insectes foreurs finissent dans son bec.
+
+<!-- ::: {layout="[ [70,30]]"} -->
+
+::: {style="float: right; margin: 5px;"}
+![Pic chevelu [(*P. villosus*)](https://inaturalist.ca/taxa/792988-Dryobates-pubescens) MOB CC BY 4.0](pic_chevelu_2020_05_27_Sutton.JPG){#fig-picche fig-alt="Pic chevelu" width="270px"}
+
+<!-- ![Pic mineur (*Picoides pubescens*) MOB CC BY 4.0](pic_mineur_2021_04_26.JPG){#fig-picmin fig-alt="Pic mineur" width="250px"} -->
+:::
+
+Une forêt avec un grand pic a de la chance. Cet oiseau maître charpentier est considéré comme une espèce clé de voute. C'est-à-dire que ces pics jouent un rôle d'influence qui est disproportionnellement large comparé à son abondance ou sa biomasse. Et pour compte, plus de 25 autres espèces bénéficient de ses cavités lorsque le grand pic décide de déménager [@Aubry2002ThePW; @bonar2000; @Bull_1997]. De ces espèces, on ne compte pas seulement des espèces d'oiseaux cavicoles, dont le canard branchu ([*Aix sponsa*](https://inaturalist.ca/taxa/7107-Aix-sponsa)), mais aussi des mammifères comme la martre d'Amérique ([*Martes americana*](https://inaturalist.ca/taxa/41798-Martes-americana)) et le grand polatouche ([*Glaucomys sabrinus*](https://inaturalist.ca/taxa/46266-Glaucomys-sabrinus)).
+
+En ce qui concerne les services que les pics rendent, il y a non seulement les trous laissés dans les arbres pour d'autres animaux, mais aussi la dispersion des semences de végétaux. Voici un petit fait intéressant : bien que le pic chevelu ([*Picoides villosus*](https://inaturalist.ca/taxa/792990-Dryobates-villosus), @fig-picche) adore les brochettes de bibittes, il peut manger les fruits de l'[herbe à la puce](https://www.quebec.ca/habitation-territoire/milieu-de-vie-sain/reconnaitre-et-eliminer-l-herbe-a-la-puce) [(Toxicodendron radicans (L.))](https://inaturalist.ca/taxa/58732-Toxicodendron-radicans) sans brûlement d'estomac [@beal1911]! Il contribue à disperser les semences de cette plante que personne n'ose s'y frotter. Heureusement, des méthodes existent pour [lutter contre cette plante](https://www.plantesenvahissantes.ulaval.ca/wp-content/uploads/sites/3/2021/02//HERBE_A_PUCE2.pdf).
+
+## La forêt enchantée
+
+Paul ne sait plus où donner de la tête. « Wow ! Ce sont des superhéros, ces pics. Et moi j'arrive comme ça, dans leurs grandes maisons, sans connaître leur nom... ». Paul est curieux de savoir qui compose cette communauté d'êtres exceptionnels. « Voilà la vraie richesse de notre planète ». Je sens alors que Paul ne pense qu'à planter les piquets d'une tente au pied du temple de Dame Nature. Prêt à inventer des prétextes pour ne pas revenir en ville. Un peu pour s'imprégner de cette vénusté terrienne naturelle.
+
+Les pics réservent encore bien des surprises à qui veut bien les étudier. Ils ont une histoire évolutive à s'en fendre le crâne, étant un modèle d'évolution par sélection naturelle et sont des acteurs importants du fonctionnement des écosystèmes.
+
+Comme les pics, nous sommes le résultat d'une suite d'ancêtres ininterrompue depuis l'origine de la vie. Une chaine fragile qui parfois se brise. [Les effectifs de plusieurs populations déclinent](https://www.iucnredlist.org/search?query=woodpecker&searchType=species) et certaines espèces de pics sont portées disparues depuis plusieurs décennies comme le [pic à bec ivoire (*Campephilus principalis*)](https://inaturalist.ca/taxa/18288-Campephilus-principalis) et le [pic impérial (*Campephilus imperialis*)](https://inaturalist.ca/taxa/18284-Campephilus-imperialis).
+
+Paul me remercie et affiche un grand sourire. À mieux connaître les êtres vivants, avec qui nous partageons nos quartiers, nous comprenons que nos besoins sont similaires. Nos voisins aviaires, nos confrères mammifères, nos amis les champignons; nous voulons simplement un petit bout de terre où il ferait bon vivre.
+
+> Laisse-moi pas revenir en ville Tape-moi sur ma tête de bois Picbois, laisse-moi pas tranquille Picbois, j'veux pus m'en aller [@BeauDommage:LPB1974]
+
+### Références
+
+::: {#refs}
+:::
