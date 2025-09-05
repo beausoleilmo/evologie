@@ -1,0 +1,230 @@
+---
+title: "Guide d'identification de biodiversité du Québec - Partie 3"
+description: "Est-ce que iNaturalist ou les données GBIF sont pertinentes pour informer le développement d'un guide d'identification des espèces courantes?"
+bibliography: ../ref_blg.bib
+csl: ../evolution.csl
+date: "2025-05-24"
+categories: ["guide-biodiversité", "analysis"]
+image: "https://marcolivierbeausoleil.wordpress.com/wp-content/uploads/2015/07/cropped-imgp81461.jpg"
+execute: 
+  message: false
+  warning: false
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r prep_path, echo=FALSE}
+# Charge selon la position du chemin d'accès 
+if (!grepl(pattern = '2025_05_24_Guide_biodiv_qc', x = getwd())) {
+  source(file = '.InCubateur/2025_05_24_Guide_biodiv_qc/scripts/00_initialize.R')
+} else {
+  source(file = 'scripts/00_initialize.R')
+  }
+```
+
+## 4. Liste des traits des amniotes
+
+```{r traits_avonet}
+# Voir les données AVONET au lien https://figshare.com/s/b990722d72a26b5bfead (voir aussi l'article qui explique le jeu de données)
+amniotes_traits = read.csv("data/amniote/Amniote_Database_Aug_2015.csv", na.strings = -999)
+amniotes_traits_dimor = amniotes_traits |> 
+  mutate(dimorphisme_g = (male_body_mass_g-female_body_mass_g), 
+         sp_names = sprintf('%s %s', genus, species)) |> 
+  group_by(sp_names) |> 
+  mutate( dimo_prop = dimorphisme_g/max(male_body_mass_g, female_body_mass_g, na.rm=TRUE),
+          sign_mass = sign(dimo_prop), 
+         percent_diff = ifelse(test = sign_mass == -1, 
+                               yes = (1-abs(dimo_prop)), 
+                               no =  (1-abs(dimo_prop))) * 100,
+         dimo_sex_g = ifelse(test = sign(dimorphisme_g) == -1 & percent_diff < 85, 
+                             yes = 'femelle > male', no = 'femelle < male'),
+         dimo_sex_g = ifelse(test = percent_diff >= 85, 
+                             yes = 'femelle = male', no = dimo_sex_g)) |> 
+  dplyr::select(sp_names, common_name,
+                # dimo_prop, 
+                sign_mass, male_body_mass_g, 
+                female_body_mass_g, 
+                dimorphisme_g, percent_diff,  
+                dimo_sex_g)
+                
+```
+
+## 5. Photos ou images
+
+```{r classes_pour_dépliant}
+# Pour notre exercice, il y a des classes que nous ne voulons pas inclure (e.g., Ascidiacea)
+unique(top_nb_sp_per_class$class)
+
+# Utilise le top 5 des espèces pour certaines classes
+sub_sel_class = top_nb_sp_per_class |> 
+  ungroup() |> 
+  filter(class %in% c('Amphibia',     # Amphibiens
+                      'Arachnida',    # Araignées 
+                      'Insecta',      # Hexapode
+                      'Malacostraca', # Pour les crustacés comme cloportes
+                      'Mammalia',     # Mammifères
+                      'Reptilia'))    # Reptiles 
+
+(sp_list = unique(sub_sel_class$valid_scientific_name))
+```
+
+```{r eval=FALSE}
+sp = "Dryophytes versicolor" # c("Anaxyrus americanus")
+
+# Nous pouvons obtenir des observations iNaturalist pour une certaine année 
+sp_obs_tab_cc0 <- get_inat_obs(taxon_name = sp, 
+                               year = 2024, 
+                               photo_license = 'CC0',  # Prendre les observations sous licence libre
+                               maxresults = 5) |>
+  filter(image_url != "")
+
+# Passer chaque photo et afficher dans R 
+for (url_image_i in 1:nrow(sp_obs_tab_cc0)) {
+  df_tmp_row = sp_obs_tab_cc0[url_image_i, ]
+  title = sprintf('%s - %s\nLicence: %s, ID: %s', 
+                  df_tmp_row$common_name,
+                  df_tmp_row$scientific_name,
+                  df_tmp_row$license, 
+                  df_tmp_row$id)
+  # Fonction maison
+  get_jpeg(df_tmp_row$image_url, plot = TRUE, main = title)
+  invisible(readline(prompt="Press [enter] to continue"))
+}
+```
+
+```{r}
+sp_list = bind_rows(sub_sel_class, 
+                    AVES_prop_nb_sp_per_class) |> 
+  filter(!is.na(family))
+
+sp_list_no_res = NULL
+nb_obs_data = top_nb_sp_per_class
+nb_obs_data = AVES_prop_nb_sp_per_class
+year_select = 2024
+max_res = 50
+sp_check_i = 1
+# which(sp_list == 'Amblyomma tuberculatum')
+for (sp_check_i in 1:nrow(sp_list)) {
+  
+  species_i = sp_list[sp_check_i,] |> pull(valid_scientific_name)
+  print(species_i)
+  
+  # Données iNaturalist avec photo
+  sp.out = iNatTry(sp_check = species_i, 
+                   year = year_select, 
+                   photo_license = 'CC0',
+                   maxresults = max_res) 
+  
+  
+  sp_list_no_res = c(sp_list_no_res,
+                     if(class(sp.out)=="character"){sp.out})
+  
+  # Si sp.out n'est qu'une suite de caractère, passe au prochain 
+  if(class(sp.out)=="character"){
+    next
+  }
+  
+  sp.out = sp.out |> 
+    filter(license == 'CC0')
+  
+  # Si nombre de rangés = 0, passe au prochain 
+  if(nrow(sp.out) == 0){
+    next
+  }
+  
+  # Trouver les fichiers déjà téléchargés
+  fichiers_local = list.files(path = "output/images/iNat/",
+                              pattern = ".jpg", 
+                              recursive = TRUE, full.names = TRUE)
+  
+  # Extraire l'ID iNaturalist de la photo 
+  inat_ID <- gsub(".*ID\\.(.*?)\\.jpg", "\\1", basename(fichiers_local))
+  
+  # Enlever les fichiers déjà télécharger 
+  sp.out_a_faire = sp.out |> 
+    filter(!(id %in% inat_ID))
+  
+  # Si nombre de rangés = 0, passe au prochain 
+  if(nrow(sp.out_a_faire) == 0){
+    next
+  }
+  # nrow(sp.out)
+  # nrow(sp.out_a_faire)
+  
+  # Ajoute le nombre d'observations
+  # sp.out$n = nb_obs_data |> 
+  #   filter(valid_scientific_name %in% sp_check_i) |> 
+  #   pull(n)
+  
+  # url_image_i = 1 # Pour test
+  message(sprintf('Nb rows: %s', nrow(sp.out_a_faire)))
+  for (url_image_i in 1:nrow(sp.out_a_faire)) {
+    df_tmp_row = sp.out_a_faire[url_image_i, ]
+    
+    dir_sp = sprintf('output/images/iNat/%s/%s_%s/%s_%s',
+                     make.names(unique(df_tmp_row$iconic_taxon_name)),
+                     
+                     make.names(unique(sp_list[sp_check_i,] |> pull(order))),
+                     make.names(unique(sp_list[sp_check_i,] |> pull(family))),
+                     
+                     make.names(unique(df_tmp_row$common_name)),
+                     make.names(unique(df_tmp_row$scientific_name)))
+    
+    dir.create(path = dir_sp, 
+               recursive = TRUE, 
+               showWarnings = FALSE)
+    
+    title = sprintf('%s_%s_%s_licence.%s_ID.%s', 
+                    df_tmp_row$iconic_taxon_name,
+                    df_tmp_row$common_name,
+                    df_tmp_row$scientific_name,
+                    df_tmp_row$license, 
+                    df_tmp_row$id)
+    
+    # Nom du fichier
+    name_file = sprintf('iNat_%s', make.names(title))
+    tmp_f = file.path(dir_sp,  
+                      sprintf('%s.jpg', name_file)) 
+    # Téléchargement 
+    utils::download.file(url = df_tmp_row$image_url, 
+                         destfile = tmp_f) 
+    
+    # Imprime message de suivi d'exportation
+    mess = sprintf('fichier au %s', tmp_f)
+    message(mess)
+    # plot_jpeg(path = df_tmp_row$image_url)
+    # mtext(text = title)
+    # invisible(readline(prompt="Press [enter] to continue"))
+  }
+}
+
+dput(sp_list_no_res)
+# c("Amblyomma tuberculatum", "Ixodes banksi", "Ixodes uriae", 
+# "Asca bicornis", "Uroobovella dryocoetes", "Asca garmani", "Neoseiulus cucumeris", 
+# "Stratiolaelaps scimitus", "Trichouropoda moseri", "Uroobovella americana", 
+# "Microbisium parvulum", "Ephippiochthonius tetrachelatus", "Illinichernes distinctus", 
+# "Microbisium brunneum", "Pseudogarypus banksi", "Syarinus enhuycki", 
+# "Liebstadia similis", "Histiostoma feroniarum", "Chamobates cuspidatus", 
+# "Trhypochthonius tectorum", "Heminothrus longisetosus", "Scheloribates pallidulus", 
+# "Aceria fraxinicola", "Isochnus sequensi", "Paramyia nitens", 
+# "Scatella stagnalis", "Gymnometriocnemus brumalis", "Tabanus quinquevittatus", 
+# "Aedes stimulans", "Ephemerella invaria", "Epeorus pleuralis", 
+# "Maccaffertium vicarium", "Cinara mariana", "Dirophanes maculicornis", 
+# "Merope tuber", "Panorpa acuta", "Sialis iola", "Sialis vagans", 
+# "Hemerobius simulans", "Allocapnia pygmaea", "Leuctra duplicata", 
+# "Leuctra ferruginea", "Oemopteryx glacialis", "Allocapnia minima", 
+# "Lachesilla contraforcepeta", "Catallagia borealis", "Amalaraeus dissimilis athabascae", 
+# "Atyphloceras bishopi", "Megabothris quirini", "Stenoponia americana", 
+# "Taeniothrips inconsequens", "Ctenothrips bridwelli", "Odontothrips biuncus", 
+# "Thrips tabaci", "Oecetis inconspicua", "Dolophilodes distinctus", 
+# "Pycnopsyche limbata", "Gammarus oceanicus", "Haploops tubicola", 
+# "Gammarus lawrencianus", "Leucon nasica", "Diastylis rathkei", 
+# "Eudorella emarginata", "Leptostylis ampullacea", "Leucon nasicoides", 
+# "Hyas araneus", "Meganyctiphanes norvegica", "Thysanoessa raschii", 
+# "Thysanoessa inermis", "Thysanoessa longicaudata", "Nebalia bipes", 
+# "Mysis relicta", "Neomysis americana", "Pseudomma truncatum", 
+# "Boreomysis tridens", "Mysis litoralis", "Pseudosphyrapus anomalus", 
+# "Akanthophoreus gracilis", "Alces americanus americanus", "Myotis lucifugus lucifugus", 
+# "Sorex cinereus cinereus", "Blarina brevicaudus talpoides", "Lepus americanus americanus", 
+# "Lepus arcticus labradorius")
+```

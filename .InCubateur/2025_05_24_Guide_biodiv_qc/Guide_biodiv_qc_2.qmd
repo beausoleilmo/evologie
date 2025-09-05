@@ -1,0 +1,389 @@
+---
+title: "Guide d'identification de biodiversité du Québec - Partie 2"
+description: "Est-ce que iNaturalist ou les données GBIF sont pertinentes pour informer le développement d'un guide d'identification des espèces courantes?"
+bibliography: ../ref_blg.bib
+csl: ../evolution.csl
+date: "2025-05-24"
+categories: ["guide-biodiversité", "analysis"]
+image: "https://marcolivierbeausoleil.wordpress.com/wp-content/uploads/2015/07/cropped-imgp81461.jpg"
+execute: 
+  message: false
+  warning: false
+editor_options: 
+  chunk_output_type: console
+---
+
+## 3. Données de biodiversité
+
+### Exploration de l'Atlas Biodiversité Québec
+
+J'assume ici une familiarité avec l'utilisation de R. Si vous cherchez comment débuter en R, je recommande les ateliers R du Centre de la science de la biodiversité du Québec.
+
+Quelques progiciels utilisées pour manipuler les données
+
+Importer des fonctions nécessaire.
+```{r prep_path, echo=FALSE}
+# Charge selon la position du chemin d'accès 
+if (!grepl(pattern = '2025_05_24_Guide_biodiv_qc', x = getwd())) {
+  source(file = '.InCubateur/2025_05_24_Guide_biodiv_qc/scripts/00_initialize.R')
+} else {
+  source(file = 'scripts/00_initialize.R')
+  }
+```
+
+```{r importe_fonctions_biodiv_qc, eval=FALSE}
+# Charge des fonctions et chargement de l'object 'atlas_dates'
+source("http://atlas.biodiversite-quebec.ca/bq-atlas-parquet.R")
+```
+
+```{r connection_atlas_biodiv, eval=FALSE}
+# Obtenir la date de données la plus récente avec l'objet préchargé 'atlas_dates' (voir bq-atlas-parquet.R)
+bd_recent = tail(x = atlas_dates$dates, n = 1) # AAAA-MM-JJ la plus récente 
+# Téléchargement local des données (avec le nom "atlas_public_AAAA-MM-JJ.parquet", parquet_date = date la plus récente disponible)
+atlas_local(parquet_date = bd_recent,
+            # destination_folder = '/Volumes/Brainmemory/data/atlas_biodiv_qc/')
+            destination_folder = 'data/atlas_biodiv_qc/')
+```
+
+La structure du jeu de données (en classe) fait à chaque fois qu'on exécute une commande sur la base de données, on doit dire au serveur (l'ordinateur qui a accès à faire des calculs sur les données) d'exécuter la tâche avec la fonction collect().
+
+### Traitement local des données
+
+```{r charge_donnees_prefiltre}
+# Please delete the data there: 
+# load(file = '/Volumes/Brainmemory/data/atlas_biodiv_qc/atlas_public_2025-03-17.RData', verbose = TRUE)
+
+# Ouvrir une connection aux données 
+atlas_sp = duckdbfs::open_dataset("data/atlas_biodiv_qc/atlas_public_2025-03-17.parquet", 
+                       tblname = 'atlas') 
+```
+
+```{r}
+library(duckdb)
+drv <- duckdb(dbdir ="data/biodiv_db_atlas_public_2025-03-17.duckdb")
+con <- DBI::dbConnect(drv)
+duckdb::dbWriteTable(
+  conn = con, 
+  name = "atlas_biodiv.dbi",
+  value = atlas_sp, 
+  append = TRUE)
+dbDisconnect(con)
+```
+
+
+Nous voudrions avoir les observations avec un niveau taxonomique d'espèce. Nous pouvons assumer que les noms d'espèces avec 2 mots et plus correspond en général au nom binomial (Genre espèce).
+
+```{r preparation_noms_binomial, eval=FALSE}
+# Compte le nombre d'entrées (pas nécessairement des espèces avec nom binomiale)
+# Prend quelques secondes 
+nb_unique_nom_sp = atlas_sp |> 
+  # Garde les noms unique seulement
+  distinct(valid_scientific_name) |> 
+  collect()
+
+# Voir les noms d'espèces binomial seulement (en trouvant les noms avec 2 mots et +)
+nb_binom_unique = nb_unique_nom_sp |> 
+  # Ajout d'une colonne avec le nombre de mots ('\\w+')
+  mutate(compte_nb_mots = stringr::str_count(valid_scientific_name, '\\w+'))  |> 
+  # Garde ceux qui ont plus de deux mots 
+  filter(compte_nb_mots >= 2) |> 
+  # retrait du compte (c'était juste pour le filtre)
+  dplyr::select(-compte_nb_mots) |> 
+  pull(valid_scientific_name)
+
+# Nombre espèces avec nom binominal (binôme linnéen)
+mess_nb_sp = sprintf("--> Retrait de %s 'valid_scientific_name' pour les binômes linnéens seulement.", 
+                     nrow(nb_unique_nom_sp)-length(nb_binom_unique))
+message(mess_nb_sp)
+```
+
+```{r noms_sp_retires, eval=FALSE}
+# Voir les noms que nous avons enlevés.
+nb_unique_nom_sp |> 
+  # Retirer de nb_unique_nom_sp tous les noms d'espèces qui sont dans nb_binom_unique
+  filter(!(valid_scientific_name %in% nb_binom_unique))
+```
+
+L'étape d'exploration et de filtration des données est pour ne pas faire ce travail plus tard. Parce qu'à un moment donnée, il va falloir vérifier l'information. En procédant de cette manière, on assure que les données seront 'propres' le plus possible tout le long de l'analyse.
+
+```{r telecharger_donnees_et_object, eval=FALSE}
+# Obtenir les noms unique des jeux de données
+# dt_nm = atlas_sp |> 
+#   distinct(dataset_name) |> 
+#   collect()
+
+# db_exclure = grep(pattern = 'paleon|fossil|Trace', 
+#                   x = unique(dt_nm$dataset_name), 
+#                   ignore.case = TRUE, 
+#                   value = TRUE)
+
+# Préparation des données pour faire l'analyse sur le fichier parquet directement
+# tictoc::tic() # prend ~ 130 sec
+# atlas_sp = atlas_sp |> 
+#   # garder certaines espèces : Extraire les données d'espèces avec 2 mots et +
+#   filter(valid_scientific_name %in% nb_binom_unique,
+#          # Filtre pour garder seulement les règnes d'intérêt (ajouté suite à exploration de la BD)
+#          kingdom %in% c("Animalia"),
+#          !(dataset_name %in% db_exclure),
+#          # Vérification avec iNaturalist : très rare ou peu d'intérêt pour faire un guide qui focus sur les plus grandes occurence 
+#          # !(phylum %in% c("Acanthocephala", "Brachiopoda", 
+#          #                 "Chaetognatha", "Nemertea", "Priapulida", 
+#          #                 "Sipuncula", "Blastocladiomycota", "Chytridiomycota", 
+#          #                 "Entomophthoromycota", "Glomeromycota", "Mucoromycota")),
+#          phylum %in% c(#"Acanthocephala", "Annelida",
+#            "Arthropoda",
+#            #"Brachiopoda", "Bryozoa", "Chaetognatha",
+#            "Chordata")
+#          # "Cnidaria", "Ctenophora", "Echinodermata", "Mollusca", "Nematoda",
+#          # "Nemertea", "Platyhelminthes", "Porifera", "Priapulida", "Rotifera", "Sipuncula")         
+#   ) |>
+#   # kingdom %in% c("Plantae", "Animalia", "Fungi")) |>
+#   collect()
+# tictoc::toc() # Arrêter le chrono (le temps total est copié en haut pour référence dans le futur)
+
+# * Note : Chercher seulement ceux qui contiennent '*paleon*' * voulant dire tout ce qui peut avoir les lettres paleon peut importe ou, puis la même chose pour fossil. Par contre, nous voulons chercher ces deux choses en même temps pour éviter une autre ligne de code. Le caractère '|' ou barre verticale nous permet de dire 'ou'. Donc nous cherchons tout ce qui contient paleon OU fossils dans les noms de bases de données. Extraire le nom des bases de données avec `bd_noms = unique(atlas_sp$dataset_name)` puis `(noms_fossils = grep(pattern = 'paleon|fossil|Trace', x = bd_noms, value = TRUE, ignore.case = TRUE))`. On compte le nombre d'occurence de ces fossils `atlas_sp |> filter(dataset_name %in% noms_fossils) |> count()`.
+
+# On a encore plus d'information sur les noms. Quand on a regardé les Trilobites, on a vu que 4 noms différents. Ici nous en avons 7. 
+
+# * Note : C'est long à rouler. Mais sur macbook air avec puce M3, ça prend environ (j'estime avec `tictoc::tic()` et `tictoc::toc()`. Un petit outil pour mesurer le temps de calcul. J'ajoute une note pour me dire environ combien de temps (arondi à la hausse) roule une analyse. Comme cela, ça me donne une idée plus claire de comment organiser mon travail et attendre pour une commande et faire autre chose pendant que ça roule. Surtout savoir quand y revenir).
+# * Note : Filtre nom d'espèce --- Nous voulons nous assurer que les noms d'espèces respectent la nomenclature binomiale. Mais aussi, nous voulons garder les identification à l'espèce et plus bas. Plusieurs analyses assume d'avoir de l'information sur les espèces. Cette supposition pourrait être discutable : si on a deux espèces plus difficile à différencier (chez les oiseaux pour certains goélands, chez certaines espèces de mésanges), on voudrait peut-être les inclures... faudrait voir l'impact. Mais nous nous allons arrêter de nous en faire puis continuer. 
+# * Note : Filtre de kingdom --- En vérifiant avec le nom des règnes `count(x = atlas_sp, kingdom)` incertae sedis Haha! De position incertaines... ouin on pourrait les enlever pour rendr enotre jeux de données. 
+# On devrait probablement enlevé les bactéries (pas massif la contribution au données et de toute manière on est pas encore à cnoosidéré les bactéries ou même les Chromista, Protozoa, et encore moins les incertae sedis!)
+# * Note : Nom des kingdom --- Pour extraire `dput(unique(atlas_sp$kingdom))`
+
+# Exporter les données pour utilisation plus tard 
+# tictoc::tic() # prend ~  230 sec
+# save(atlas_sp, 
+#      # file = '/Volumes/Brainmemory/data/atlas_biodiv_qc/atlas_public_2025-03-17.RData')
+#      file = 'data/atlas_biodiv_qc/atlas_public_2025-03-17.RData')
+# tictoc::toc()
+```
+
+```{r exploration_donnes_biodiv}
+# Compte le nombre d'occurence après filtration (pas mal!)
+count(atlas_sp)
+
+# Nombre d'espèces unique pour chaque ordre. 
+atlas_sp |> 
+  distinct(phylum, class, order, family, genus, valid_scientific_name) |> 
+  count(phylum, class, order) |> 
+  arrange(-n) |> 
+  collect()
+```
+
+```{r extraction_classe_plus_nombreuse}
+# Regarder le nombre d'observations dans chaque règne-classe dans la base de données
+nb_class = atlas_sp |> 
+  count(phylum, class) |> 
+  arrange(-n) |> 
+  collect()
+
+# Extraction des classes avec plus de n observations 
+class_select = nb_class |> 
+  filter(n >= 3000) |> 
+  pull(class)
+```
+
+```{r top_5_especes_en_n_observations_par_classe_et_ordre}
+top_nb_sp_per_class = atlas_sp |> 
+  filter(!(class %in% c("Aves")))  |> 
+  dplyr::count(class, 
+               order, 
+               family, 
+               valid_scientific_name) |> 
+  group_by(class, 
+           order) |> 
+  filter(class %in% class_select) |> 
+  slice_max(n = 5,
+            order_by = n) |> 
+  collect()
+```
+
+Pour les oiseaux, nous allons utiliser la base de données sous format .parquet directement pour filtrer les données, faire un calcul du compte d'observation de chaque espèce.
+
+```{r AVES_top_5_especes_en_n_observations_par_classe_et_ordre}
+tictoc::tic() # ~0.45 sec!!!!! 
+AVES_top_nb_sp_per_class = atlas_sp |> 
+    filter(class %in% c("Aves")) |>  
+  count(class, 
+        order, family,
+        valid_scientific_name) |> 
+  collect()
+tictoc::toc()
+```
+
+Lire des fichiers .parquet est d'une rapidité incroyable.
+
+```{r}
+
+AVES_top_nb_sp_per_class |> 
+  count(order) |> 
+  arrange(-n)
+
+AVES_prop_nb_sp_per_class = AVES_top_nb_sp_per_class |> 
+  filter(!is.na(order)) |> 
+  arrange(-n) |> 
+  group_by(class, order) |> 
+  group_modify(~ slice_max(.data = .x, prop = .18, order_by = n))
+
+AVES_prop_nb_sp_per_class |> 
+  ungroup() |> 
+  count(order, family) |> 
+  arrange(order, -n)
+
+```
+
+<!-- ``````{r} -->
+
+<!-- # Mmmmm... y'a des noms louche là dedans... je vois 'Trilobita', pas des fossils ça?  -->
+
+<!-- # vérifier si les titres de certain jeux de données pourrait aider à filtrer les fossils --> <!-- atlas_sp |>  --> <!--   filter(class == 'Trilobita') |>  --> <!--   pull(dataset_name) |>  --> <!--   unique() -->
+
+<!-- # Inspection d'un nom random qui me dit rien pour savoir c'est quoi.  --> <!-- atlas_sp |>  --> <!--   filter(class == 'Filosia') |>  --> <!--   pull(dataset_name) |>  --> <!--   unique() --> <!-- atlas_sp |> # Cette espèce est un fossil --> <!--   filter(valid_scientific_name == 'Cornulites serpularius') |>  --> <!--   pull(dataset_name) |>  --> <!--   unique() -->
+
+<!-- atlas_sp |>  --> <!--   filter(dataset_name %in% 'Trace element-contaminated soil Metagenome') |>  --> <!--   count() -->
+
+<!-- atlas_sp |>  --> <!--   filter(dataset_name %in% 'Trace element-contaminated soil Metagenome') |>  --> <!--   distinct(valid_scientific_name) -->
+
+<!-- unique(atlas_sp$dataset_creator) --> <!-- unique(atlas_sp$dataset_name) -->
+
+<!-- nb_phyla = atlas_rem |>  --> <!--   # Compte le nombre de lignes avec trilobites. --> <!--   count(phylum, class, order, family, valid_scientific_name) |>  --> <!--   # Obtenir les données en format 'tibble' localement --> <!--   collect() -->
+
+<!-- # Oups! Des trilobites?  --> <!-- tbt = atlas_rem |>  --> <!--   # Filtrer pour iobtenir les trilobites seulement  --> <!--   filter(class == "Trilobita") |>  --> <!--   # Compte le nombre de lignes avec trilobites. --> <!--   count() |>  --> <!--   # Obtenir les données en format 'tibble' localement --> <!--   collect() -->
+
+<!-- tbt -->
+
+<!-- licences = atlas_rem |> distinct(license)|> collect() --> <!-- # ob_val =  atlas_rem |> distinct(observation_value)|> collect() # ???  --> <!-- atlas_rem |> distinct(observation_type)|> collect() --> <!-- atlas_rem |> distinct(dataset_name)|> collect() --> <!-- atlas_rem |> distinct(dataset_creator)|> collect() --> <!-- atlas_rem |> distinct(dataset_publisher)|> collect() --> <!-- atlas_rem |> distinct(effort_sampling_method)|> collect() --> <!-- ``` -->
+
+### Compte nombre d'observations iNaturalist selon des taxons
+
+```{r fonction_pour_compte_nb_obs_group_ord}
+#' Title
+#'
+#' @param n 
+#' @param var 
+#'
+#' @returns
+#' @export
+#'
+#' @examples
+plot_data <- function(data, n, order_sel = 'Lepidoptera') {
+  data_order = data |> 
+    filter(order %in% order_sel) 
+  if (nrow(data_order)==0) {
+    stop("Pas de données pour l'ordre sélectionné")
+  }
+  data_order |>  
+    group_by(phylum, class, 
+             valid_scientific_name,
+             order) |> 
+    summarize(total=sum(cnt)) |> 
+    arrange(phylum, class, order, desc(total)) |> 
+    ungroup() |> 
+    group_by(order) |> 
+    group_modify(.f = ~slice_head(.x, n = n)) |> 
+    mutate(total_obs = sum(total)) |> 
+    ungroup() |> 
+    mutate(order_total = forcats::fct_reorder(.f = order, 
+                                              .x = total_obs, 
+                                              .fun = sum, 
+                                              .desc = TRUE), 
+           sci_lab = gsub(pattern = ' ', replacement = '\n', x = valid_scientific_name),
+           sci_nom = forcats::fct_reorder(sci_lab, 
+                                          total, .desc = TRUE)) |> 
+    # Prendre seuelemnt les n premiers
+    ggplot(aes(x=forcats::fct_reorder(valid_scientific_name, 
+                                      total, .desc = TRUE),
+               y = total)) + 
+    scale_y_log10()+ 
+    scale_x_discrete(guide = guide_axis(angle = 45)) +
+    geom_bar(aes(fill=total), stat='identity')+
+    facet_wrap(order_total~.,   scales = "free_x")+
+    geom_text(aes(label = total), vjust = .5, 
+              hjust = 1.2,
+              angle = 90, colour = "white") 
+  # labs(title = order_sel)
+}
+```
+
+```{r}
+sp_count <- atlas_sp |> 
+  filter(dataset_name == 'iNaturalist Research-grade Observations') |> 
+  group_by(phylum, class, order, dataset_name, 
+           valid_scientific_name, vernacular_fr, 
+           group_fr) |> 
+  summarize(cnt=count()) |> 
+  ungroup() |> 
+  collect()
+
+# Compte le nombre d'observation par grand groupe d'organimse
+# On peut voir qu'il y a des biais dans les informations rapporté (il y a nettement plus de coléoptère : 'Indeed, to a good approximation, all species are insects!' R. May 1986, https://www.annualreviews.org/docserver/fulltext/ento/63/1/annurev-ento-020117-043348.pdf?expires=1755916267&id=id&accname=guest&checksum=1939D9B95199827819F220903CE2448B)
+order_count = atlas_sp |> 
+  filter(dataset_name == 'iNaturalist Research-grade Observations') |>
+  count(phylum, class,  order, name = 'total_par_groupe') |> 
+  arrange(-total_par_groupe) |> 
+  collect()
+
+order_check = order_count |> 
+  slice_head(n = 10) |> 
+  pull(order)
+
+plot_data(data = sp_count, n = 20, order_sel = order_check)
+plot_data(data = sp_count, n = 10,  order_sel = 'Coleoptera')
+plot_data(data = sp_count, n = 60,  order_sel = 'Passeriformes')
+```
+
+```{r}
+
+atlas_sp |> 
+  filter(phylum %in% c('Chordata','Arthropoda'), 
+         !(class %in% 'Teleostei'),
+         dataset_name == 'iNaturalist Research-grade Observations') |> 
+  group_by(phylum, class, order, dataset_name, 
+           valid_scientific_name, vernacular_fr, 
+           group_fr) |> 
+  summarize(cnt=count()) |> 
+  ungroup() |> 
+  collect() |> 
+  # Filtre seulement les ordres avec un nombre d'observation précis 
+  group_by(order) |> 
+  mutate(total_order = sum(cnt)) |> 
+  filter(total_order>50) |> 
+  # Sommaire taxonomique d'observation
+  group_by(phylum, class, 
+           valid_scientific_name,
+           order) |> 
+  summarize(total=sum(cnt)) |> 
+  arrange(phylum, class, order, desc(total)) |> 
+  ungroup() |> 
+  # Prendre que les n premiers 
+  group_by(order) |> 
+  group_modify(.f = ~ slice_head(.x, n = 20)) |> 
+  mutate(total_obs = sum(total)) |> 
+  ungroup() |> 
+  mutate(order_total = forcats::fct_reorder(.f = order, 
+                                            .x = total_obs, 
+                                            .fun = sum, 
+                                            .desc = TRUE), 
+         class_total = forcats::fct_reorder(.f = class, 
+                                            .x = total_obs, 
+                                            .fun = sum, 
+                                            .desc = TRUE), 
+         sci_lab = gsub(pattern = ' ', replacement = '\n', x = valid_scientific_name),
+         sci_nom = forcats::fct_reorder(sci_lab, 
+                                        total, .desc = TRUE)) |> 
+  # Prendre seuelemnt les n premiers
+  ggplot(aes(x = sci_nom,
+             y = total)) + 
+  facet_wrap(class_total + order_total~.,   scales = "free_x")+
+  scale_y_log10()+ 
+  scale_x_discrete(guide = guide_axis(angle = 45)) +
+  geom_bar(aes(fill =total), stat = 'identity')+
+  theme(axis.text.x = element_text(size = 2))+
+  geom_text(aes(label = total), 
+            vjust = .5, 
+            size = 3,
+            hjust = 1.2,
+            angle = 90, colour = "white") 
+```
+

@@ -1,0 +1,796 @@
+---
+title: "Guide d'identification de biodiversité du Québec - Partie 1 : les cartes"
+description: "Est-ce que <a href='https://inaturalist.ca' target='_blank'>iNaturalist</a>  ou les données <a href='https://www.gbif.org' target='_blank'>GBIF</a> sont pertinentes pour informer le développement d'un guide d'identification des espèces courantes?"
+bibliography: ../../posts/ref_blg.bib
+csl: ../../posts/evolution.csl
+# date: "2025-05-24"
+date: "2025-09-24"
+categories: ["guide-biodiversité", "analysis"]
+image: "https://marcolivierbeausoleil.wordpress.com/wp-content/uploads/2015/07/cropped-imgp81461.jpg"
+execute: 
+  message: false
+  warning: false
+editor_options: 
+  chunk_output_type: console
+---
+
+<!-- IMPORTANT -->
+
+<!-- NOTE ../../posts/ref_blg.bib should be ../ref_blg.bib in final product-->
+
+<!-- NOTE ../../postsevolution.csl should be ../evolution.csl in final product-->
+
+## Un guide d'identification motivé par les données citoyennes
+
+Les chiffres en lien avec la biodiversité sont simplement incroyables. Voici quelques statistiques. Sur la terre il y aurait X organismes vivants (excluant bactéries, archés et autres petites bestioles plus difficiles à classer en espèce). De ce nombre, X sont des insectes. Comme le disait le scientifique Robert M. May [-@mayBiologicalDiversityHow1986] :
+
+> Le nombre total d'espèces effectivement nommées et cataloguées est d'un peu plus d'un million. La plupart d'entre elles sont des insectes. En effet, à une bonne approximation, toutes les espèces sont des insectes ![^1]
+
+[^1]: Citation originale *The total number of species actually named and catalogued is just over one million. Most of these are insects. Indeed, to a good approximation, all species are insects!*
+
+La perte de biodiversité est un enjeu majeur de notre époque.
+
+## On ne protège que ce qu'on connaît
+
+<https://www.broquet.ca/collection/guide-eclair/>
+
+Au Canada, le manque d'information en lien avec la biodiversité et les habitats est un enjeu de haute importance. À l'heure actuelle, il n'existe pas de coordination nationale qui permettrait d'obtenir un portrait éclairé sur l'état de la biodiversité et des tendances spatiales et temporelles @gonzalezBiodiversityObservationNetwork2025.
+
+Les plateformes de collecte de données de biodiversité (science citoyenne)
+
+Une des missions de [Biodiversité Québec](https://biodiversite-quebec.ca/fr/a_propos) est l'agrégation de données de biodiversités de plusieurs sources dont le Système mondial d’information sur la biodiversité [GBIF (Global Biodiversity Information Facility)](https://www.gbif.org), le Ministère des Forêts, de la Faune et des Parcs, le Regroupement QuébecOiseaux, le Service canadien de la faune et bien d'autres. Cela facilite l'accès aux données de différentes sources et accélère l'analyse de données de biodiversité (bio-informatique). En plus, l'utilisation de GBIF permet d'avoir accès aux portails de science citoyenne comme [iNaturalist](https://www.inaturalist.org), [eBird](https://ebird.org/home), [Observation.org](https://observation.org), [Pl\@ntnet](https://plantnet.org) et beaucoup d'autres! En plus, Biodiversité Québec donne [accès aux données publiques de l'Atlas](https://biodiversite-quebec.ca/fr/documentation/acces-atlas) en langage de programmation R.
+
+## Guide du naturaliste inspiré de la science citoyenne : format dépliant de poche
+
+Une manière de diminuer l'effort que cela prend pour en apprendre sur la biodiversité est de commencer tranquillement avec quelques espèces qui sont faciles à apprendre. Les guides d'identification sont une source importante d'information sur la biodiversité. Par contre, pour un débutant, on peut rapidement être submergé par toutes les espèces et les nuances entre différentes formes d'une même espèce sans accompagnement. Aussi, même pour ceux qui en font régulièrement, cela peut être encombrant à apporter dans son sac. Les petits dépliants avec les espèces les plus fréquentes semblent un bon milieu entre apporter un guide complet et ne pas avoir de référence. De mon expérience sur le terrain, c'est toujours pertinent d'avoir une référence pour montrer à des visiteurs curieux ce que nous observons.
+
+### Recherche sur des guides existants
+
+Certains de ces guides montrent aussi les domaines biologiques ou les écorégions et les endroits pour aller faire des observations (une vingtaine). Pour les oiseaux, des guides montrent les espèces les plus fréquemment observées dans différents groupes taxonomiques : 1. la sauvagine et les oiseaux de rivage (environ entre 45 et 60 espèces; pour ceux-ci, les femelles canards sont souvent montrées), 2. le gibier (2-4 espèces), 3. les colombes, pics, martin-pêcheurs, colibris, martinets, etc. (11-12 espèces), 4. les oiseaux de proie (12-13 espèces), 5. Les oiseaux percheurs (45-54).
+
+### Objectifs du projet
+
+Donc pour résumer les objectifs de notre projet :
+
+1.  Cartographie : faire une carte avec les MRC du Québec et les domaines biologiques du Québec;
+2.  Points chauds : obtenir des sites ornithologiques intéressants (beaucoup d'observations) à utiliser comme proxy d'endroit intéressant pour la biodiversité;
+3.  Liste d'espèces : faire une liste d'espèces (nom français et latin) souvent vues par la science citoyenne pour une région d'intérêt;
+4.  (optionnel) Faire une liste de tailles (longueur, envergure, poids) pour ajouter cette information en description. Ensuite nous pourrions ajouter des informations comme des trucs mnémotechniques pour les oiseaux chanteurs.
+5.  (optionnel) Extraire des photos d'organismes à mettre dans un dépliant.
+
+iNaturalist a un [portail d'observation d'espèces](https://inaturalist.ca/observations?place_id=13336&taxon_id=47125&view=species) qui permet d'obtenir de l'information sur les organismes les plus vus dans une région donnée et même de filtrer en fonction d'un niveau taxonomique d'intérêt. Ici, mon objectif est aussi de montrer comment faire de la cartographie dans R, de manipuler des jeux de données de biodiversité et de voir comment interagir avec les portails de science citoyenne. En même temps, ce projet permettrait d'avoir une sorte de dépliant que l'on peut imprimer serait pratique lors d'activité de vulgarisation sur la biodiversité (pas besoin d'appareil électronique, de connexion à internet ou de compte iNaturalist). Aussi, cela peut être remis à des intéressés qui veulent débuter leur aventure d'identification.
+
+## Recherche de données
+
+Pour réaliser le projet, nous devons trouver des jeux de données pertinents pour faire une carte et mettre des observations de biodiversité. Beaucoup de jeux de données, surtout pour de l'information cartographique administrative ou décrivant le territoire, sont disponibles sur [Données Québec (DQC)](https://www.donneesquebec.ca), mais le [Global Biodiversity Information Facility (GBIF) ou Système mondial d'information sur la biodiversité (SMIB)](https://www.gbif.org) et l'[Atlas de Biodiversité Québec (ABQC)](https://biodiversite-quebec.ca/fr/documentation/acces-atlas) sont des sources de données de biodiversité. Les acronymes seront utilisés à côté d'un jeu de données pour connaître sa source rapidement.
+
+### Administratif et fond de carte
+
+-   Découpage administratif [Découpages administratifs (DQC)](https://www.donneesquebec.ca/recherche/dataset/decoupages-administratifs/resource/b368d470-71d6-40a2-8457-e4419de2f9c0)
+-   Référence écologique du Québec avec information sur les biomes : [Classification écologique du territoire québécois (DQC)](https://www.donneesquebec.ca/recherche/dataset/systeme-hierarchique-de-classification-ecologique-du-territoire/resource/b336d842-9f1d-4d0e-88c1-d771d8ade785)
+
+### Données de biodiversité
+
+Pour les données de biodiversité, il existe aussi plusieurs sources. D'abord, il y a le [Global Biodiversity Information Facility (GBIF)](https://www.gbif.org) qui contient en date du 1er septembre 2025, plus de 37 millions de données pour le Québec ([filtration directement sur le site web](https://www.gbif.org/occurrence/search?occurrence_status=present&gadm_gid=CAN.11_1)). Pour ce projet, je veux explorer les données de l'[Atlas de Biodiversité Québec (ABQC)](https://biodiversite-quebec.ca/fr/documentation/acces-atlas).
+
+Aussi, il pourrait être intéressant d'avoir des informations sur la taille des organismes et autres traits morphologiques. Au lieu d'aller chercher ces valeurs individuellement, des bases de données sont déjà disponibles dont pour les amniotes @myhrvoldAmnioteLifehistoryDatabase2015 et pour les oiseaux @tobiasAVONETMorphologicalEcological2022. Finalement, la science citoyenne permet d'enregistrer des observations de la nature sur iNaturalist. Un des fondements de cette plateforme est d'avoir des preuves d'observation que la communauté peut identifier. Une bonne partie de ces preuves sont des photos. Nous pourrions donc extraire les photos qui sont libres de droits et finaliser notre projet de dépliant pour en faire une preuve de concept.
+
+-   Données d'occurrences : [Biodiversité Québec (ABQC)](https://biodiversite-quebec.ca/fr/documentation/acces-atlas)
+-   Traits : [AVONET pour les oiseaux](https://figshare.com/s/b990722d72a26b5bfead) @tobiasAVONETMorphologicalEcological2022 ou une [base de données des amniotes](https://www.esapubs.org/archive/ecol/E096/269/) @myhrvoldAmnioteLifehistoryDatabase2015 pour les oiseaux, mammifères, reptiles et amphibiens.
+-   Photos : [iNaturalist avec le progiciel rinat](https://github.com/ropensci/rinat)
+
+## Un dépliant version moderne (tableau de bord)
+
+Toute cette réflexion sur le 'dépliant format papier' fait réfléchir sur le développement d'un 'dépliant format numérique'. Celui-ci pourrait être sous format d'un tableau de bord (Shiny App?). Par contre, cela sera pour une autre fois. Nous allons commencer par montrer que l'idée du dépliant est possible. Par contre, tout au long de la recherche, nous pouvons garder une vision de l'ensemble du Québec. C'est-à-dire, nous voulons à chaque fois tenter de voir comment généraliser le plus possible notre dépliant. Ainsi, nous pourrions imaginer un portail où il est possible de choisir une région et d'avoir toutes les informations du dépliant généré automatiquement par cette procédure.
+
+## Partie 1
+
+Pour cette première partie, nous allons cartographier le Québec et imprimer une carte que nous allons pouvoir mettre dans notre produit final. J'imagine deux choses 1. une carte de l'ensemble du territoire du Québec pour avoir un contexte général, 2. puis une plus petite carte montrant les détails de points importants de biodiversité pour une MRC par exemple.
+
+Notre plan de match est de préparer notre session R pour avoir les progiciels et fonctions nécessaires pour faire tourner nos scripts. À noter ici que les scripts que vous voyez sont le résultat de la recherche et non une explication de tout le développement des scripts et toutes les réflexions : je tente plus de raconter l'histoire qui mène à réussir les étapes du projet. Ainsi, il y a beaucoup de tests et de décisions qui ne sont pas expliquées ou discutées dans ce billet.
+
+## Préparation de l'environnement R
+
+Tout d'abord, nous devons préparer l'environnement de travail R. J'ai placé les progiciels R et autres scripts à appeler dans `scripts/00_initialize.R`. Celui-ci chargera (vous devez installer les librairies avant!) les progiciels et les fonctions nécessaires pour faire nos analyses.
+
+```{r prep_path, echo=FALSE}
+# Charge selon la position du chemin d'accès 
+if (!grepl(pattern = '2025_05_24_Guide_biodiv_qc', x = getwd())) {
+  source(file = '.InCubateur/2025_05_24_Guide_biodiv_qc/scripts/00_initialize.R')
+} else {
+  source(file = 'scripts/00_initialize.R')
+}
+```
+
+## 1. Cartographie
+
+Lorsqu'on fait des cartes, un fond est intéressant à avoir. Aussi, nous allons faire des manipulations spatiales et donc pouvoir recouper le territoire par des noms connus simplifie notre analyse (surtout pour faire des filtres qui s'applique à l'échelle de MRC). Et cela se fait en deux lignes de code :
+
+### Carte : régions administratives du Québec
+
+Le découpage administratif [Découpages administratifs (DQC)](https://www.donneesquebec.ca/recherche/dataset/decoupages-administratifs/resource/b368d470-71d6-40a2-8457-e4419de2f9c0) est disponible sur Données Québec. Le fichier qui nous intéresse est `mrc_s.shp` : ce sont les polygones des MRC du Québec. L'original est un Shapefile. Mais je trouve cela plus élégant de mettre cela en gegopackage (`.gpkg`). Le script `scripts/Preparation_admin_region.R` montre comment.
+
+```{r region_admin_qc, echo=TRUE, eval=TRUE}
+# Charger le geopackage 
+regqc = sf::st_read(
+  dsn = "data/adim_reg_qc/mrc_s.gpkg", 
+  quiet = TRUE
+) 
+```
+
+Regardons les premières lignes du jeu de données :
+
+```{r head_reg_qc}
+regqc |> 
+  dplyr::select(MRS_NM_MRC, MRS_NM_REG) |> 
+  head(n=3)
+```
+
+Le progiciel [`mapview`](https://r-spatial.github.io/mapview/) est utile pour faire une carte interactive et de colorier les MRC.
+
+```{r carte_interactive_qc_mrc, eval=TRUE}
+# Faire une carte interactive.
+mapview::mapview(
+  st_simplify(regqc, dTolerance = 8000), 
+  zcol = 'MRS_NM_MRC', # Les couleurs représentent les MRCs
+  legend = FALSE
+) 
+```
+
+### Carte : régions écologiques
+
+Les données de la [Classification écologique du territoire québécois (DQC)](https://www.donneesquebec.ca/recherche/dataset/systeme-hierarchique-de-classification-ecologique-du-territoire/resource/b336d842-9f1d-4d0e-88c1-d771d8ade785) vont nous donner un fond à mettre sur notre carte.
+
+```{r donnees_Classification_eco, echo=TRUE, eval=FALSE}
+# Note : je n'ai pas gardé le fichier complet puisqu'assez large en données
+
+# Chemin accès vers le fichier (ici GDB ou geoDataBase)
+CLASSI_ECO_QC_GDB = "data/CLASSI_ECO_QC_GDB/CLASSI_ECO_QC.gdb"
+
+# Extraire les couches pour voir ce qui est spatial (voir la colonne 'geometry_type')
+cls_eco_couches = st_layers(dsn = CLASSI_ECO_QC_GDB)
+```
+
+```{r lire_donnees_classiEco, echo=FALSE, eval=FALSE}
+# Préparation du jeu de données pour interne : utiliser le jeu de données en GPKG 
+
+# Extraction du domaine biologique du Québec (N3 ou niveau 3)
+cls_eco = st_read(
+  dsn = CLASSI_ECO_QC_GDB, 
+  layer = 'N3_DOM_BIO', 
+  quiet = TRUE
+)
+st_write(obj = cls_eco, 
+  dsn = "data/CLASSI_ECO_QC_GDB/classification_eco.gpkg", 
+  layer = 'N3_DOM_BIO'
+)
+```
+
+```{r donnees_class_Eco_gpkg}
+cls_eco = st_read(dsn = "data/CLASSI_ECO_QC_GDB/classification_eco.gpkg", 
+  layer = 'N3_DOM_BIO', 
+  quiet = TRUE
+)
+# Obtenir notre CRS chouchou et l'utiliser comme base pour faire la carte 
+masterCRS = st_crs(cls_eco)
+# On transforme le CRS de la région du Québec 
+regqc_t = st_transform(regqc, crs = masterCRS)
+```
+
+Nous pouvons supperposer les cartes de région administrative avec la classification des domaines écologiques avec `mapview`. Vous pouvez activer ou désactiver les couches avec l'icône des couches spatiales sous le signe `-` sur la carte interactive.
+
+```{r carte_Classification_eco_superposition, eval=FALSE}
+# Carte interractive avec 2 couches spatiales 
+mapview( # Régions admin du QC
+    st_simplify(regqc_t, dTolerance = 8000), 
+  zcol = 'MRS_NM_MRC', 
+  layer.name = 'MRC du Québec',
+  legend = FALSE
+) +
+  mapview( # Classification Écologique
+    st_simplify(cls_eco, dTolerance = 10000), 
+    zcol = 'NOM_DB', 
+    layer.name = 'Domaines biologiques'
+  )
+```
+
+Si vous faites cette carte, vous allez voir que ce n'est pas super... mais nous pourrions faire une carte qui superpose les *bordures* des régions administratives sur les domaines écologiques.
+
+Le progiciel `ggplot2` a plusieurs fonctions pour ajouter des couches spatiales (par exemple `geom_sf`). Aussi, `ggplot()` ajoute les couches une par-dessus les autres : donc l'ordre dans lequel les couches sont placées pour faire la carte est important.
+
+Nous devons aussi regarder le CRS (*coordinate reference system*) de nos couches spatiales pour les mettre dans le même système de coordonnées. Nous pouvons vérifier que nos couches spatiales sont dans le même CRS si `st_crs(cls_eco_simp) == st_crs(regqc)` est `TRUE` (ce qui n'est pas le cas dans cet exemple). La fonction `sf::st_transform()` nous permet de reprojeter une de nos couches spatiales avec le CRS d'une autre. Nous allons aussi utiliser `st_crs()` pour extraire le CRS d'une couche spatiale. Finalement, l'impression de carte avec beaucoup de détail peut être très lent avec `ggplot2`. Donc, nous pouvons utiliser la fonction `sf::st_simplify()` pour simplifier nos données spatiales et accélérer l'impression de la carte.
+
+```{r simplification_couches}
+# Simplifier une forme pour faire le graphique 
+cls_eco_simp = st_simplify(cls_eco, dTolerance = 1e3)
+
+# Vérification du CRS 
+st_crs(cls_eco_simp) == st_crs(regqc)    # Différent 
+st_crs(cls_eco_simp) == st_crs(regqc_t)  # Ici on avait transformé la couche regqc_t.
+```
+
+Mais, juste pour vous montrer, voici comment rendre identique le CRS entre 2 couches :
+
+```{r simplify_region_qc}
+# Même chose mais reprojection pour avoir le même CRS 
+regqc_simp = st_simplify(regqc, dTolerance = 1e3) |> 
+  st_transform(crs = masterCRS)
+```
+
+```{r carte_statique_qc}
+# Faire le graphique 
+gg_qc_db = ggplot() + 
+  # Ajout de la classification écologique
+  geom_sf(data = cls_eco_simp, 
+          mapping = aes(fill = NOM_DB), # couleur en fonction des domaines biologiques
+          alpha = 0.9,                  # Transparence à 90% 
+          linewidth = 0) +              # Pas de ligne, plus beau! 
+  # Ajout des régions admin, par dessus pour voir les bordures
+  geom_sf(data = regqc_simp,  
+          fill = NA,                    # Pas de remplissage
+          colour = 'grey100',           # Couleur des lignes
+          linewidth = 0.05) +           # Fine ligne
+  # Change le remplissage pour la palette viridis 
+  scale_fill_viridis_d(guide = guide_legend(title = 'Domaine biologique')) +
+  # Thème au minium 
+  theme_void()
+
+# Afficher la carte 
+gg_qc_db
+```
+
+Super! Un fond de carte pas pire pour l'ensemble du Québec! Par contre, il manque quelque chose pour s'y retrouver : l'eau et des villes.
+
+### Carte : hydrologie et villes
+
+Notre carte de base manque de contexte. Plusieurs endroits aux Québec sont facilement reconnaissables par leur structure hydrologique, ce qui permettrait de mieux se situer sur la carte. La Géobase du réseau hydrographique du Québec (GRHQ) est un large ensemble de données disponibles sur le site de [Données Québec (DQC)](https://www.donneesquebec.ca/recherche/fr/dataset/grhq). Nous allons seulement télécharger les données pour le sud du Québec (incluant les zones 00, 01, 02, 03, 04, 05, 06, 07_1, 07_2, 08, 14 de [l'index de téléchargement (DQC)](https://www.donneesquebec.ca/recherche/dataset/grhq/resource/4ef6703f-0ecb-46a0-bdb4-7074f00ff514)). Ces données sont ensuite téléchargées manuellement. Un script (`scripts/Preparation_hydrologique.R`) permet de préparer les données en Geopackage (`data/grhq_sud_qc.gpkg`) pour ce projet (DISPONIBLE SUR BOREALIS_ICI). Lors de la préparation pour réduire la taille du fichier, j'ai appliqué un filtre pour garder les polygones de $1e6 m^2$ d'aire et plus. 
+
+```{r prep_donnees_grhq_prep, eval=FALSE}
+source('scripts/Preparation_hydrologique.R')
+```
+
+```{r charger_donnees_grhq_prep}
+# Lire les données retravaillées du GRHQ
+hq_filt_complete = st_read(
+  dsn = 'data/grhq_sud_qc.gpkg', 
+  quiet = TRUE
+) |> 
+  st_transform(crs = masterCRS)
+```
+
+Aussi, nous pourrions inclure le nom de villes avec une grande population sur la carte ce qui serait super pour visualiser les données. Le site de [portraits climatiques d'Ouranos](https://portraits.ouranos.ca/fr/) a un fichier qui nous facilitera la tâche. Nous pouvons télécharger les données directement avec le lien. Nous allons ensuite extraire certaines villes pour afficher sur la carte. Le scirpt `scripts/Preparation_villes.R` prépare un fichier Geopackage (`output/villes_qc_ouranos.gpkg`) que nous pouvons charger directement. Le script importe un fichier GeoJSON disponible sur le site d'Ouranos directement à partir du lien html. La création d'un geopackage permet de stocker ces données et d'y faire référence même si le serveur Ouranos change ou n'est plus accessible.  
+
+```{r prep_donnees_villes_prep, eval=FALSE}
+source('scripts/Preparation_villes.R')
+```
+
+Nous pouvons charger notre geopackage et sélectionner des villes qui nous intéresse pour mettre sur notre carte. 
+
+```{r villes_spatiales, echo=TRUE, eval=TRUE}
+# Va chercher les villes et populations importantes sur le site d'Ouranos
+villes_qc = st_read(
+  dsn = 'output/villes_qc_ouranos.gpkg',
+  quiet = TRUE)
+
+# Extraction du nom de villes à ajouter sur la carte
+villes_qc_lst_flt = villes_qc |> 
+  filter(name %in% c('Montréal', 'Québec', 'Gatineau', 'Sherbrooke', 
+                     'Saguenay', 'Trois-Rivière', "Rouyn-Noranda", 
+                     'Gaspé', 'Témiscaming', 'Sept-Îles', 'Rimouski'))
+```
+
+Maintenant, nous avons les informations nécessaires pour faire une carte avec 1. les régions administratives, 2. les domaines biologiques, 3. le réseau hydrique d'importance au Québec et 4. le nom de villes sélectionnées. La légende peut aussi être en bas pour laisser plus de place à notre carte.
+
+```{r carte_complete, echo=TRUE, eval=TRUE}
+# Nous allons utiliser des nombres aléatoires, 
+# donc nous souhaitons une reproductibilité en 
+# choisissant un point de départ pour obtenir des nombres aléatoires avec set.seed().
+set.seed(12345)
+
+# Faire le graphique 
+gg_qc_db = ggplot() + 
+  # Domaines biologiques rognés
+  geom_sf(data = cls_eco_simp, 
+          mapping = aes(fill = NOM_DB), # couleur en fonction des domaines biologiques
+          alpha = .9,                   # Transparence à 90% 
+          linewidth = 0) +              # Pas de ligne, plus beau
+  # Régions agministratives rognées 
+  geom_sf(data = regqc_simp,  
+          fill = NA,                    # Pas de remplissage
+          colour = 'grey100',           # Couleur des lignes
+          linewidth = 0.05) +           # Fine ligne
+  # Ajouter la GRHQ rognée
+  geom_sf(data = hq_filt_complete, 
+          linewidth = 0,
+          fill = 'lightblue', # Couleur de l'eau 
+          colour = 'lightblue') +
+  # Ajout de nom de villes 
+  ggrepel::geom_text_repel(data = villes_qc_lst_flt, 
+                           mapping = aes(label = name, 
+                                         geometry = geometry),
+                           stat = "sf_coordinates", 
+                           size = 3,
+                           # Ajout de fond blanc pour les noms de villes 
+                           bg.color = "white",
+                           bg.r = 0.15) +
+  geom_sf(data = villes_qc_lst_flt) +
+  # Change le remplissage pour la palette viridis 
+  scale_fill_viridis_d(guide = guide_legend(title = 'Domaine biologique',
+                                            title.position = "top",
+                                            position = 'bottom',
+                                            nrow = 4,
+                                            direction = 'horizontal')) +
+  # # Thème au minium 
+  theme_void() +
+  theme(legend.key.spacing.y = unit(0.015, "cm"));gg_qc_db
+```
+
+### Couper pour le Québec méridional
+
+Le Québec est tellement beau et grand! Et justement, il serait judicieux de lui couper la tête pour se concentrer sur la partie plus peuplée. Après tout, nous nous intéressons aux endroits qui ont le plus d'observations.
+
+Donc, nous allons focaliser sur la partie plus au sud (méridional) du Québec. Cela est (selon l'Atlas des oiseaux nicheurs du Québec [-@robertDeuxiemeAtlasOiseaux2019]), le 50.5 degrés de latitude (c'est l'axe des Y, la longitude est l'axe des X).
+
+Le CRS des domaines biologiques `st_crs(cls_eco_simp)` est en 'NAD83 / Quebec Lambert' ou `epsg:32198`. Il faut convertir 50.5 en NAD83. Mais comment? Il y a des convertisseurs en ligne, mais nous pouvons le programmer!
+
+Prenons les limites géographiques du Québec, ce qu'on appelle la boite limite ou *bounding box* ('bbox') qui s'extrait avec `st_bbox()`. Notre stratégie sera d'aller chercher le bbox en coordonnée *World Geodetic System 1984 (WGS84)* ou *EPSG:4326* qui sont en degré décimal.
+
+```{r limites_geo_qc}
+# Trouver les limites du Québec en WSG84
+bbox_qc_wsg84 = cls_eco_simp |> 
+  st_transform(crs = 4326) |> # Ici on transforme de 32198 vers 4326
+  st_bbox()
+
+# Extraire la boite limite 'bounding box' en epsg:32198 (mètres)
+(bbox_qc = st_bbox(obj = cls_eco_simp))
+```
+
+Ensuite nous trouvons le centre entre la limite de latitude minimum et maximum, puis nous faisons un point au centre et au nord de la limite que nous souhaitons mettre.
+
+```{r trouver_centre_qc}
+# Trouver le centre entre xmin et xmax (ou l'étendue longitude du Québec en WSG84)
+centre = mean(bbox_qc_wsg84[c('xmin','xmax')])
+floor(centre)
+```
+
+L'établissement d'un point fictif avec `st_point()` avec notre centre et la limite nord (50.5).
+
+```{r convertir_pts_gps}
+# Faire un point fictif au Québec mais dont la borne supérieure est 50.5 (69 est à peu près dans le centre)
+pts = st_point(x = c(centre, 50.5)) |> 
+  # Mettre le CRS 
+  st_sfc(crs = 4326) |> 
+  # Transformer en epsg:32198
+  st_transform(crs = masterCRS) |> 
+  # Extraire les coordonnées seulement 
+  st_coordinates()
+```
+
+<!-- # Avec terra (voir https://stackoverflow.com/questions/79737412/transformation-of-extent-in-data-is-not-recovered-when-transforming-back-to-the) -->
+
+<!-- lulc.e <- ext(-830291.4, 783722.4, 117964.2, 2090650.1) -->
+
+<!-- target_4326 <- vect(cbind(-69, 50.5), crs = "epsg:4326") -->
+
+<!-- target_32198 <- project(target_4326, "epsg:32198") -->
+
+<!-- new_ymax <- crds(target_32198)[2] -->
+
+<!-- lulc_mer <- ext(lulc.e[1], lulc.e[2], lulc.e[3], new_ymax) -->
+
+<!-- lulc_mer -->
+
+Puisque nous établissons une borne nord maximale, nous allons remplacer `ymax` par la valeur `Y` de notre point placé au centre du Québec au nord. Puis nous allons rogner (*crop*) la carte pour enlever tout ce qui se retrouve au-dessus du 50.5 latitude (ou  `pts[2]` = `r formatC(pts[2], format = "f", big.mark = "", digits = 2)` mètres selon le `masterCRS`).
+
+```{r decoupe_carte_qc}
+# Remplacer la valeur de la borne supérieure 
+bbox_qc[4] <- pts[2]
+
+# Découper le Québec, en prenant la boite comme gabarit  
+cls_eco_simp_rogner = cls_eco_simp |> 
+  st_crop(y = bbox_qc)
+# Rogner régions administratives
+regqc_simp_rogner = regqc_simp |> 
+  st_crop(y = bbox_qc)
+```
+
+Nous sommes prêts à faire notre carte pour le Québec méridional.
+
+```{r carte_statique_sud_qc}
+set.seed(12345)
+# Faire le graphique 
+gg_qc_db = ggplot() + 
+  # Domaines biologiques rognés
+  geom_sf(data = cls_eco_simp_rogner, 
+          mapping = aes(fill = NOM_DB), # couleur en fonction des domaines biologiques
+          alpha = .9,                   # Transparence à 90% 
+          linewidth = 0) +              # Pas de ligne, plus beau
+  # Régions agministratives rognées 
+  geom_sf(data = regqc_simp_rogner,  
+          fill = NA,                    # Pas de remplissage
+          colour = 'grey100',           # Couleur des lignes
+          linewidth = 0.05) +           # Fine ligne
+    # Ajouter la GRHQ rognée
+  geom_sf(data = hq_filt_complete, 
+          linewidth = 0,
+          fill = 'lightblue', # Couleur de l'eau 
+          colour = 'lightblue') +
+  # Ajout les villes (points)
+  geom_sf(data = villes_qc_lst_flt) +
+  # Ajout de nom de villes 
+  ggrepel::geom_text_repel(data = villes_qc_lst_flt, 
+                           mapping = aes(label = name, 
+                                         geometry = geometry),
+                           stat = "sf_coordinates", 
+                           # Ajout de fond blanc pour les noms de villes 
+                           bg.color = "white",
+                           bg.r = 0.15) +
+  # Change le remplissage pour la palette viridis 
+  scale_fill_viridis_d(guide = guide_legend(title = 'Domaine biologique',  
+                                            title.position = "top",
+                                            position = 'bottom', 
+                                            nrow = 4, 
+                                            direction = 'horizontal')) +
+  # Thème au minium 
+  theme_void() +
+  theme(legend.key.spacing.y = unit(0.015, "cm"));gg_qc_db
+
+```
+
+Enfin! une carte qui a de la gueule.
+
+## 2. Points chauds d'observations
+
+### Carte : points chauds eBird
+
+Notre carte de fond est pas mal, mais nous aimerions y mettre de l'information. On veut faire *parler* notre carte. Un des objectifs est de pouvoir trouver facilement des données qui montrent des points potentiellement intéressantes pour observer la biodiversité. Nous pourrions prendre les [points eBirds](https://ebird.org/hotspots) comme points d'intérêt. S'il y a beaucoup d'oiseaux, c'est qu'il doit y avoir beaucoup de nourriture pour soutenir cette diversité et ainsi, augmenter nos chances de voir d'autres choses intéressantes.
+
+```{r preparation_donnees}
+# Mettre les données des points chauds de eBird en mémoire
+# Il est possible d'aller cherche ces points directement avec l'API de eBird. 
+# Le fichier a été obtenu avec une clé API de eBird (voir 'VOTRECLEAPI' dans la commande plus bas) avec la commande 'terminal' (bash) suivante
+# Voir les explications sous la section 'Is there a list of all eBird Hotspots?' à ce lien :   https://support.ebird.org/en/support/solutions/articles/48001009443-ebird-hotspot-faqs)
+# curl  --header 'X-eBirdApiToken: VOTRECLEAPI' --location -g 'https://api.ebird.org/v2/ref/hotspot/CA-QC?fmt=csv' > eBird_hotspots_CA_QC.csv
+
+pts_chauds_ebird = "data/eBird_hotspots_CA_QC_.csv"
+# Mettre le fichier en mémoire 
+ebird_hp = read.csv(file = pts_chauds_ebird, 
+                    header = FALSE)
+
+# Ajouter un nom aux colonnes 
+names(ebird_hp) <- c("locId", "countryCode", 
+                     "subnational1Code", "subnational2Code", 
+                     "lat", "lng", "locName", 
+                     "latestObsDt","numSpeciesAllTime")
+```
+
+Ce fichier CSV contient de l'information spatiale (`lng`, `lat`). Les fonctions `st_as_sf` et `st_set_crs`, définissent les données spatiales (POINT) du CSV importé.
+
+```{r pt_ebirds_sf}
+# Préparer les données spatiales pour une cartographie 
+ebird_hp_sf = ebird_hp |>  
+  st_as_sf(coords = c('lng', 'lat')) |> 
+  st_set_crs(value = 4326) |>  
+  mutate(
+    date_obs_recent = as.POSIXct(
+      latestObsDt,
+      format="%Y-%m-%d %H:%M",
+      tz = Sys.timezone()
+    )
+  ) |> 
+  st_transform(crs = masterCRS)
+```
+
+```{r exploration_donnees}
+# Nombre de lignes dans les données
+nrow(ebird_hp_sf)
+# premières colonnes
+head(ebird_hp_sf, n = 2)
+# Histogramme des dernières années d'observation pour chaque site 
+# hist(ebird_hp_sf$date_obs_recent, "years")
+
+# Filtration pour voir l'effet 
+ebird_hp_sf |> 
+  # Application du filtrer 
+  filter(numSpeciesAllTime >= 150, 
+         date_obs_recent >= as.POSIXct('2020-01-01 00:00', 
+                                       format="%Y-%m-%d %H:%M")) |> 
+  nrow()
+
+```
+
+Le code plus bas montre la carte avec tous les points. Cela fait beaucoup de points donc je vous laisse essayer! 
+
+```{r exploration_donnees_carte_tous, eval=FALSE}
+# Regarder les points chauds d'observations eBird 
+mapview(
+  ebird_hp_sf, 
+  zcol = 'numSpeciesAllTime',  # Ajout de la couleur en fonction du nombre d'espèces vues
+  layer.name = 'Nb Esp.')
+```
+
+On peut aussi répondre à des questions de coin de table : où sont les sites avec plus de 250 espèces différentes?
+
+```{r ebird_carte_filtre, eval=TRUE}
+ebird_hp_sf |> 
+  filter(numSpeciesAllTime >= 250) |> 
+  mapview(zcol = 'numSpeciesAllTime', 
+          layer.name = 'Nb Esp.<br> filtre(>=250)')
+```
+
+Par mal juste des parcs bien visités et documentés. Aussi, la totalité se retrouve près de cours d'eau, marais, réservoirs ou un milieu soit-disant humide. Ce qui pointe démontre une fois de plus l'importance des milieux humides pour la biodiversité.
+
+Regardons où sont les sites avec plus de 150 observations.
+
+```{r exploration_donnees_carte_filtre_nb, eval=TRUE}
+# Regarder seulement les sites qui ont plus de 150 espèces 
+ebird_hp_sf |> 
+  filter(numSpeciesAllTime >= 150)  |> 
+  mapview(zcol = 'numSpeciesAllTime', 
+          layer.name = 'Nb Esp.<br> filtre(>=150)')
+```
+
+Les sites avec le plus d'espèces sont plus au sud. Deux explications rapides : 1. il y a plus de monde au sud du Québec qui note des observations à différents moments dans l'année, ce qui augment l'effort d'échantillonnage (et donc la probabilité de trouver des espèces plus rares). 2. la diversité des oiseaux change en fonction de la latitude. Donc plus les points se retrouvent dans le nord, moins d'espèces devraient se retrouver. Nous pourrions regarder cela avec un modèle linéaire.
+
+```{r model_lm_latitude_effort}
+# Extraire les coordonnées 
+ebird_hp_coord  = ebird_hp_sf |>  
+  st_coordinates() |> 
+  as.data.frame() |> 
+  rename(lng = X, 
+         lat = Y)
+
+# Ajouter les coordonnées 
+ebird_hp_sf_coords = bind_cols(ebird_hp_sf, 
+                               ebird_hp_coord)
+# Montre la relation entre Le nombre d'espèces et la latitude
+gg_ebird_lm = ebird_hp_sf_coords |> 
+  ggplot(mapping = aes(x = lat, 
+                       y = numSpeciesAllTime)) + 
+  geom_point() + 
+  scale_y_sqrt() + 
+  geom_smooth(method = 'lm')
+gg_ebird_lm
+```
+
+```{r modele_lineaire}
+# Faire un modèle linéaire 
+lm.out = lm(sqrt(numSpeciesAllTime) ~ lat, 
+            data = ebird_hp_sf_coords)
+# Voir le résultat du modèle 
+slm = summary(lm.out)
+
+slm$adj.r.squared
+```
+
+Bon, OK, on n'explique pas beaucoup de la variance... est-ce qu'on peut faire confiance à ce résultat?
+
+```{r modele_lineaire_assume}
+# Voir si la distribution est normal (les points devraient être sur la ligne 1:1)
+plot(lm.out, which = 2)
+# Histogramme des résiduels pour voir si cela est distribué avec la forme 'normale'
+hist(residuals(lm.out))
+```
+
+Bref, ce qu'on peut dire, c'est qu'on a un petit biais d'échantillonnage dans le sud du Québec ($lat < 50.5$ ou la valeur de `pts[2]` = `r formatC(pts[2], format = "f", big.mark = "", digits = 2)`!).
+
+```{r montre_portion_sud_biais}
+# Minimum latitude 
+min_lat = min(ebird_hp_sf_coords$lat)
+# Maximum latitude 
+seuil_nord_lat = pts[2]
+
+# Prépare les données
+ebird_hp_sf_coords |>
+  # Faire une variable qui change l'opacité des points en fonction d'un seuil de latitude (50.5)
+  mutate(lat_seuil = ifelse(test = lat <= seuil_nord_lat, 
+                            yes = 1, 
+                            no = 0)) |> 
+  # Structure de base 
+  ggplot(mapping = aes(x = lat, 
+                       y = numSpeciesAllTime, 
+                       alpha = lat_seuil)) + 
+  # Points sans légende 
+  geom_point(show.legend = FALSE) + 
+  scale_y_sqrt() + 
+  # Ajout d'un modèle linéaire 
+  geom_smooth(data = ebird_hp_sf_coords |>
+                filter(lat <= seuil_nord_lat),
+              mapping = aes(x = lat, 
+                            y = numSpeciesAllTime),
+              method = 'lm', 
+              inherit.aes = FALSE) +
+  # Rectangle autour des points en focus 
+    annotate("rect", 
+           xmin = min_lat, 
+           xmax = seuil_nord_lat,
+           ymin = 0, 
+           ymax = max(ebird_hp_sf_coords$numSpeciesAllTime, na.rm = TRUE),
+  alpha = .2, 
+  colour = "red", 
+  fill = NA)
+```
+
+Puis en regardant le résultat du modèle linéaire avec juste les données du sub, vite comme cela, il n'y  a pas grand-chose à dire ($r^2 = 0$).
+
+```{r lm_seulement_lat_basse}
+# Faire un modèle linéaire 
+lm.out = lm(sqrt(numSpeciesAllTime) ~ lat, 
+            data = ebird_hp_sf_coords |> 
+              filter(lat < seuil_nord_lat))
+# Voir le résultat du modèle 
+slm = summary(lm.out)
+# R^2 
+slm$adj.r.squared
+```
+
+Pour avancer à la prochaine étape, il pourrait être intéressant de regarder que le nombre de points ($n$) avec le plus d'observations pour une MRC.
+
+### Points chauds eBird pour une seule région
+
+Nous pouvons extraire les points les plus importants pour chaque région dans tout le Québec ce qui serait intéressant pour un portait (comme une application Shiny). 
+
+```{r joindre_ebird_pts_admin}
+# Joindre les informations de MRC pour chaque point d'observation eBird
+eb_qc = ebird_hp_sf |>  
+  st_join(y = regqc_t)
+
+# Donne le top n des sites en fonction du nombre d'espèces vues
+eb_qc_top20n = eb_qc |>  
+  # Groupe par MRC pour faire le sommaire (filtration) 
+  group_by(MRS_NM_MRC) |> 
+  # Extraction des 20 points les plus importants en nombre d'oiseaux par MRC 
+  slice_max(n = 20, 
+            order_by = numSpeciesAllTime)
+```
+
+```{r carte_points_ebird_admin_qc, eval=FALSE}
+mapview(st_simplify(regqc_t, dTolerance = 5000), 
+        legend = FALSE, 
+        zcol = 'MRS_NM_MRC') + 
+  mapview(eb_qc_top20n,
+          legend = FALSE, 
+          cex = 'numSpeciesAllTime',
+          zcol = 'MRS_NM_MRC', 
+          label = 'locName') 
+```
+
+Par contre, nous allons focaliser seulement sur la partie sud et faire un filtre spatial pour afficher un peu moins de points. 
+
+```{r joindre_ebird_pts_admin_sud_seulement}
+# Joindre les informations de MRC pour chaque point d'observation eBird
+eb_qc = ebird_hp_sf |>  
+  st_join(y = regqc_t) |> 
+  # Ne prendre que les points qui sont dans les régions rognées 
+      st_filter(y = regqc_simp_rogner) 
+
+# Donne le top n des sites en fonction du nombre d'espèces vues
+eb_qc_top10n = eb_qc |>  
+  # Groupe par MRC pour faire le sommaire (filtration) 
+  group_by(MRS_NM_MRC) |> 
+  # Exrtraction des 20 points les plus importants en nombre d'oiseaux par MRC 
+  slice_max(n = 10, 
+            order_by = numSpeciesAllTime)
+
+```
+
+```{r carte_points_ebird_admin_qc_sud_seulement, eval=TRUE}
+mapview(st_simplify(regqc_simp_rogner, dTolerance = 1000), 
+        legend = FALSE, 
+        zcol = 'MRS_NM_MRC', 
+        layer.name = 'MRC') + 
+  mapview(eb_qc_top10n,
+          legend = FALSE, 
+          cex = 'numSpeciesAllTime',
+          zcol = 'MRS_NM_MRC', 
+          label = 'locName', 
+          layer.name = 'Top 10 Nb Esp') 
+```
+
+
+#### Ajout des points sur la carte de base
+
+On pourrait reprendre la carte d'avant (`gg_qc_db`) et ajouter les points (`eb_qc_top20n`), mais le résultat est pas super. 
+
+```{r ggplot_top_ebird_points, eval=FALSE}
+gg_qc_db +
+  geom_sf(data = eb_qc_top20n, aes(size = numSpeciesAllTime, 
+                                 colour = numSpeciesAllTime)) +
+  # Rogner le graphique
+  coord_sf(xlim = zoom_mtl[c(1,3)], 
+           ylim = zoom_mtl[c(2,4)]) 
+```
+
+
+```{r zoom_mtl_reg_qc_bbox}
+# Prendre les coordonnées pour Montréal et rogner le graphique 
+zoom_mtl = regqc_t |> 
+  filter(MRS_NM_MRC == "Montréal") |> 
+  st_bbox()
+```
+
+Nous n'avons pas besoin de tous les détails de cette base de données. Donc nous allons prendre seulement ce qui se retrouve dans l'emprise de Montréal et Laval.
+
+```{r grhq_mtl_laval}
+# Extraire l'emprise spatiale autour de Montréal et Laval 
+emprise_region_villes = regqc_t |> 
+  filter(MRS_NM_MRC %in% c("Montréal", 'Laval')) |> 
+  st_bbox()
+
+# Rogner l'information hydrologique pour cette région 
+hq_lvl_mtl = hq_filt_complete |> 
+  # Rogner pour les régions de Montréal et Laval
+  st_crop(y = emprise_region_villes)
+```
+
+
+```{r prepare_couches_carte}
+# Extraire tous les polygones dans l'emprise de Montréal et Laval
+reg_mtl = regqc_t |> 
+  st_crop(y = emprise_region_villes)
+
+# Eau pour l'emprise de Montréal et Laval 
+hq_sel_t = hq_lvl_mtl |> 
+  st_crop(reg_mtl)
+
+# Prendre les 20 points les plus élevés en nombre d'espèces pour Montréal et Laval 
+eb_qc_topn_lvl_mtl = eb_qc_top20n |> 
+  filter(MRS_NM_MRC %in% c("Montréal", 'Laval')) |> 
+  mutate(label = sprintf('%s (%s)', locName, numSpeciesAllTime))
+```
+
+À noter que si on regarde de très près la région de Montréal et Laval, la classification des domaines écologiques est assez uniforme. Donc pas besoin de l'ajouter à notre carte. 
+
+Pour se rendre à ces sites, on pourrait y aller en vélo? Le [réseau cyclable de Montréal (DQC)](https://www.donneesquebec.ca/recherche/dataset/vmtl-pistes-cyclables) et [pistes cyclables et piétonnières de Laval (DQC)](https://www.donneesquebec.ca/recherche/dataset/pistes-cyclables-et-pietonnieres)
+
+```{r reseau_cyclable_spatial_mtl_lvl}
+
+lien_reseau_cycl_mtl = "https://montreal-prod.storage.googleapis.com/resources/0dc6612a-be66-406b-b2d9-59c9e1c65ebf/reseau_cyclable.geojson?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=test-datapusher-delete%40amplus-data.iam.gserviceaccount.com%2F20250905%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20250905T135125Z&X-Goog-Expires=604800&X-Goog-SignedHeaders=host&x-goog-signature=00dafc8457f4e76db9fae977051100354a52a64cc1b898953826b6e995e3d9a95da6e8dd9bbdaa506489734e261118553486db29faac37d930cf1431f8da271c5d45b8c4298e7434dcb03f89e4beb776f34424925a6c4c8b663880ca8696c7e781f0a88c11731c35c159b857fb189c438b0f6d19f1d1c87ca2b482db195fd46b8c014754a12edc9e65702dfd95c95f70acff959f84915af271bd20ad1747bb94c787c299e1ef9d90d8d756f05ec4e5deb00631d443f0545fc4399ad86955079cfbe746b73f43cd4d293e0d41f4e57793db3ffc952e8a75241740ac8edc2d16ff076ac9503d9f55eb090183a68ad812fe4fea1bdb733421ca26ca9d4e2bf7e09b"
+
+
+lien_reseau_cycl_lvl = "https://www.donneesquebec.ca/recherche/dataset/8f75f060-8884-4918-8ebf-dab254326748/resource/0441b0e7-6a2a-430c-97e3-28df2926d79a/download/pistes-cyclables-et-pietonnieres.geojson"
+
+reseau_cyclable_mtl = st_read(dsn = lien_reseau_cycl_mtl, quiet = TRUE)
+reseau_cyclable_lvl = st_read(dsn = lien_reseau_cycl_lvl, quiet = TRUE)
+```
+
+
+```{r carte_mtl_laval}
+set.seed(123456)
+gg_carte_points_inret_ebird = ggplot() + 
+  # Polygones des MRCs 
+  geom_sf(data = reg_mtl) + 
+  # Polygones d'eau
+  geom_sf(data = hq_sel_t, fill = 'lightblue') + 
+  # Lignes du Réseau cyclable
+  geom_sf(data = reseau_cyclable_mtl, colour = "#A1D998", alpha = .5) + 
+  geom_sf(data = reseau_cyclable_lvl, colour = "#A1D998", alpha = .5) + 
+  # Top Points eBirds
+  geom_sf(data = eb_qc_topn_lvl_mtl, 
+          aes(size = numSpeciesAllTime, 
+              shape = MRS_NM_MRC,
+              colour = numSpeciesAllTime)) +
+  # Texte nom de villes 
+  ggrepel::geom_text_repel(data = eb_qc_topn_lvl_mtl, 
+                           mapping = aes(label = label, 
+                                         geometry = geometry),
+                           stat = "sf_coordinates", 
+                           size = 2.25,
+                           # Ajout de fond blanc pour les noms de villes 
+                           bg.color = "white",
+                           bg.r = 0.15) +
+  # Couleur des points
+  scale_colour_viridis_c() +
+  # Thème minimal 
+  theme_void() +
+  # Ajout de titre aux légendes
+  labs(colour = "Nb espèces", 
+       size = "Nb espèces",
+    shape = "MRC")
+gg_carte_points_inret_ebird
+```
+
+### Références
+
+::: {#refs}
+:::
