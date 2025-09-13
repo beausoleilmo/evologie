@@ -17,11 +17,10 @@ editor_options:
 
 ### Exploration de l'Atlas Biodiversité Québec
 
-J'assume ici une familiarité avec l'utilisation de R. Si vous cherchez comment débuter en R, je recommande les ateliers R du Centre de la science de la biodiversité du Québec.
-
 Quelques progiciels utilisées pour manipuler les données
 
 Importer des fonctions nécessaire.
+
 ```{r prep_path, echo=FALSE}
 # Charge selon la position du chemin d'accès 
 if (!grepl(pattern = '2025_05_24_Guide_biodiv_qc', x = getwd())) {
@@ -30,6 +29,11 @@ if (!grepl(pattern = '2025_05_24_Guide_biodiv_qc', x = getwd())) {
   source(file = 'scripts/00_initialize.R')
   }
 ```
+
+```{r}
+
+```
+
 
 ```{r importe_fonctions_biodiv_qc, eval=FALSE}
 # Charge des fonctions et chargement de l'object 'atlas_dates'
@@ -69,7 +73,6 @@ duckdb::dbWriteTable(
   append = TRUE)
 dbDisconnect(con)
 ```
-
 
 Nous voudrions avoir les observations avec un niveau taxonomique d'espèce. Nous pouvons assumer que les noms d'espèces avec 2 mots et plus correspond en général au nom binomial (Genre espèce).
 
@@ -237,23 +240,93 @@ AVES_prop_nb_sp_per_class |>
 
 <!-- # Mmmmm... y'a des noms louche là dedans... je vois 'Trilobita', pas des fossils ça?  -->
 
-<!-- # vérifier si les titres de certain jeux de données pourrait aider à filtrer les fossils --> <!-- atlas_sp |>  --> <!--   filter(class == 'Trilobita') |>  --> <!--   pull(dataset_name) |>  --> <!--   unique() -->
+<!-- # vérifier si les titres de certain jeux de données pourrait aider à filtrer les fossils -->
 
-<!-- # Inspection d'un nom random qui me dit rien pour savoir c'est quoi.  --> <!-- atlas_sp |>  --> <!--   filter(class == 'Filosia') |>  --> <!--   pull(dataset_name) |>  --> <!--   unique() --> <!-- atlas_sp |> # Cette espèce est un fossil --> <!--   filter(valid_scientific_name == 'Cornulites serpularius') |>  --> <!--   pull(dataset_name) |>  --> <!--   unique() -->
+<!-- atlas_sp |>  -->
 
-<!-- atlas_sp |>  --> <!--   filter(dataset_name %in% 'Trace element-contaminated soil Metagenome') |>  --> <!--   count() -->
+<!--   filter(class == 'Trilobita') |>  -->
 
-<!-- atlas_sp |>  --> <!--   filter(dataset_name %in% 'Trace element-contaminated soil Metagenome') |>  --> <!--   distinct(valid_scientific_name) -->
+<!--   pull(dataset_name) |>  -->
 
-<!-- unique(atlas_sp$dataset_creator) --> <!-- unique(atlas_sp$dataset_name) -->
+<!--   unique() -->
 
-<!-- nb_phyla = atlas_rem |>  --> <!--   # Compte le nombre de lignes avec trilobites. --> <!--   count(phylum, class, order, family, valid_scientific_name) |>  --> <!--   # Obtenir les données en format 'tibble' localement --> <!--   collect() -->
+<!-- # Inspection d'un nom random qui me dit rien pour savoir c'est quoi.  -->
 
-<!-- # Oups! Des trilobites?  --> <!-- tbt = atlas_rem |>  --> <!--   # Filtrer pour iobtenir les trilobites seulement  --> <!--   filter(class == "Trilobita") |>  --> <!--   # Compte le nombre de lignes avec trilobites. --> <!--   count() |>  --> <!--   # Obtenir les données en format 'tibble' localement --> <!--   collect() -->
+<!-- atlas_sp |>  -->
+
+<!--   filter(class == 'Filosia') |>  -->
+
+<!--   pull(dataset_name) |>  -->
+
+<!--   unique() -->
+
+<!-- atlas_sp |> # Cette espèce est un fossil -->
+
+<!--   filter(valid_scientific_name == 'Cornulites serpularius') |>  -->
+
+<!--   pull(dataset_name) |>  -->
+
+<!--   unique() -->
+
+<!-- atlas_sp |>  -->
+
+<!--   filter(dataset_name %in% 'Trace element-contaminated soil Metagenome') |>  -->
+
+<!--   count() -->
+
+<!-- atlas_sp |>  -->
+
+<!--   filter(dataset_name %in% 'Trace element-contaminated soil Metagenome') |>  -->
+
+<!--   distinct(valid_scientific_name) -->
+
+<!-- unique(atlas_sp$dataset_creator) -->
+
+<!-- unique(atlas_sp$dataset_name) -->
+
+<!-- nb_phyla = atlas_rem |>  -->
+
+<!--   # Compte le nombre de lignes avec trilobites. -->
+
+<!--   count(phylum, class, order, family, valid_scientific_name) |>  -->
+
+<!--   # Obtenir les données en format 'tibble' localement -->
+
+<!--   collect() -->
+
+<!-- # Oups! Des trilobites?  -->
+
+<!-- tbt = atlas_rem |>  -->
+
+<!--   # Filtrer pour iobtenir les trilobites seulement  -->
+
+<!--   filter(class == "Trilobita") |>  -->
+
+<!--   # Compte le nombre de lignes avec trilobites. -->
+
+<!--   count() |>  -->
+
+<!--   # Obtenir les données en format 'tibble' localement -->
+
+<!--   collect() -->
 
 <!-- tbt -->
 
-<!-- licences = atlas_rem |> distinct(license)|> collect() --> <!-- # ob_val =  atlas_rem |> distinct(observation_value)|> collect() # ???  --> <!-- atlas_rem |> distinct(observation_type)|> collect() --> <!-- atlas_rem |> distinct(dataset_name)|> collect() --> <!-- atlas_rem |> distinct(dataset_creator)|> collect() --> <!-- atlas_rem |> distinct(dataset_publisher)|> collect() --> <!-- atlas_rem |> distinct(effort_sampling_method)|> collect() --> <!-- ``` -->
+<!-- licences = atlas_rem |> distinct(license)|> collect() -->
+
+<!-- # ob_val =  atlas_rem |> distinct(observation_value)|> collect() # ???  -->
+
+<!-- atlas_rem |> distinct(observation_type)|> collect() -->
+
+<!-- atlas_rem |> distinct(dataset_name)|> collect() -->
+
+<!-- atlas_rem |> distinct(dataset_creator)|> collect() -->
+
+<!-- atlas_rem |> distinct(dataset_publisher)|> collect() -->
+
+<!-- atlas_rem |> distinct(effort_sampling_method)|> collect() -->
+
+<!-- ``` -->
 
 ### Compte nombre d'observations iNaturalist selon des taxons
 
@@ -386,4 +459,3 @@ atlas_sp |>
             hjust = 1.2,
             angle = 90, colour = "white") 
 ```
-

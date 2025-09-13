@@ -1,11 +1,11 @@
 ---
 title: "Guide d'identification de biodiversité du Québec - Partie 1 : les cartes"
-description: "Est-ce que <a href='https://inaturalist.ca' target='_blank'>iNaturalist</a>  ou les données <a href='https://www.gbif.org' target='_blank'>GBIF</a> sont pertinentes pour informer le développement d'un guide d'identification des espèces courantes?"
+description: "Est-ce que les données de biodiversité issues de la science citoyenne permettraientt l'élaboration d'un guide d'identification des espèces fréquemment observées?"
 bibliography: ../../posts/ref_blg.bib
 csl: ../../posts/evolution.csl
 # date: "2025-05-24"
 date: "2025-09-24"
-categories: ["guide-biodiversité", "analysis"]
+categories: ["guide", "biodiversité", "analyse", "code", "Données"]
 image: "https://marcolivierbeausoleil.wordpress.com/wp-content/uploads/2015/07/cropped-imgp81461.jpg"
 execute: 
   message: false
@@ -20,33 +20,41 @@ editor_options:
 
 <!-- NOTE ../../postsevolution.csl should be ../evolution.csl in final product-->
 
-## Un guide d'identification motivé par les données citoyennes
+## Six milliards de solitudes, ça fait beaucoup.
 
-Les chiffres en lien avec la biodiversité sont simplement incroyables. Voici quelques statistiques. Sur la terre il y aurait X organismes vivants (excluant bactéries, archés et autres petites bestioles plus difficiles à classer en espèce). De ce nombre, X sont des insectes. Comme le disait le scientifique Robert M. May [-@mayBiologicalDiversityHow1986] :
+Les chiffres en lien avec la biodiversité sont simplement incroyables. Voici quelques statistiques. Le site web [ChecklistBank](https://www.checklistbank.org), une référence qui catalogue l'ensemble des espèces connues, répertorie plus de 2.2 millions d'organismes sur la terre. Mais il en existe beaucoup plus. Les estimations du nombre d'espèces sur la terre sont très large allant de quelques millions à plusieurs milliards. Un article propose même un potentiel de six milliards, en incluant le plus de vivant possible, tout en excluant les virus [@larsenInordinateFondnessMultiplied2017].
 
-> Le nombre total d'espèces effectivement nommées et cataloguées est d'un peu plus d'un million. La plupart d'entre elles sont des insectes. En effet, à une bonne approximation, toutes les espèces sont des insectes ![^1]
+<!-- De ce nombre, X sont des insectes. Comme le disait le scientifique Robert M. May [-@mayBiologicalDiversityHow1986] : -->
 
-[^1]: Citation originale *The total number of species actually named and catalogued is just over one million. Most of these are insects. Indeed, to a good approximation, all species are insects!*
+<!-- > Le nombre total d'espèces effectivement nommées et cataloguées est d'un peu plus d'un million. La plupart d'entre elles sont des insectes. En effet, à une bonne approximation, toutes les espèces sont des insectes ![^1] -->
 
-La perte de biodiversité est un enjeu majeur de notre époque.
+<!-- [^1]: Citation originale *The total number of species actually named and catalogued is just over one million. Most of these are insects. Indeed, to a good approximation, all species are insects!* -->
+
+Le rapport de la Plateforme intergouvernementale scientifique et politique sur la biodiversité et les services écosystémiques (IPBES), colligé par un groupe internationnal d'experts sur la biodiversité, [rapporte qu'environ 1 million d'espèces](https://www.ipbes.net/news/Media-Release-Global-Assessment) animales et végétales sont menacées d'extinction [@ipbesResumeDecideurs2016]. Depuis les années 1970, la taille des populations animale a chuté de 73%, selon l'[indice planète vivante](https://www.livingplanetindex.org/lpi).
+
+La perte de biodiversité est un enjeu majeur de notre époque. Comme le rappel le rapport du Cadre mondial de la biodiversité de Kunming-Montréal [@conventiondivbioCBM2022] :
+
+> La biodiversité est essentielle au bien-être humain, à la santé de la planète et à la prospérité économique de tous les peuples, notamment à la réalisation de modes de vie équilibrés et en harmonie avec la Terre nourricière.
+
+Nous avons passé une partie de notre histoire à penser que nous étions positionné au centre de l'univers. Maintenant, nous en savons autrement. Par contre, nous avons encore beaucoup de chemin à faire pour réalisé que nous ne sommes pas la partie la plus importante de la nature. Nous formons un tout avec l'environnement. Nous en sommes dépendant pour y vivre en santé physique et psychologique. Jamais dans toute l'histoire de l'humanité, la biodiversité ne s'est détérioré aussi rapidement dans le monde [@ipbesResumeDecideurs2016]. Par contre, tout le monde peut y faire quelque chose. Une des premières étapes est de s'intéresser au sujet de la biodiversité!
 
 ## On ne protège que ce qu'on connaît
 
-<https://www.broquet.ca/collection/guide-eclair/>
+Au Canada, le manque d'information en lien avec la biodiversité est un enjeu de haute importance. Le territoire est vaste et la distribution des humains dans ses terre est inégale. À l'heure actuelle, il n'existe pas de coordination nationale qui permettrait d'obtenir un portrait éclairé sur l'état de la biodiversité et des tendances spatiales et temporelles @gonzalezBiodiversityObservationNetwork2025. Cela veut dire que l'information sur la biodiversité est très morcelé et il est difficile de savoir l'état actuel véritable. Mais pire, nous n'avons pas moyen de savoir si des actions on un effet plus ou moins important sur la biodiversité puisque nous n'avons pas un bon portrait dans le temps des tendances des populations de la diversité des organismes que nous cotoyons.
 
-Au Canada, le manque d'information en lien avec la biodiversité et les habitats est un enjeu de haute importance. À l'heure actuelle, il n'existe pas de coordination nationale qui permettrait d'obtenir un portrait éclairé sur l'état de la biodiversité et des tendances spatiales et temporelles @gonzalezBiodiversityObservationNetwork2025.
+Heureusement, la technologie dans nos poches peut aider à collecter des données de biodiveristé. Aujourd'hui, les téléphones intelligents peuvent prendre des points GPS lors de la prise d'une photo. En capturant l'image d'une bibitte, nous pouvons l'exporter sur des plateformes de collecte de données de biodiversité de science citoyenne. Avec les données de la photo dont la géoréférence et la date, il est possible d'apposer une étiquette comme les naturalistes collectionnaient des organismes à rapporter dans les musées.
 
-Les plateformes de collecte de données de biodiversité (science citoyenne)
+Une des missions de [Biodiversité Québec](https://biodiversite-quebec.ca/fr/a_propos) est l'agrégation de données de biodiversités de plusieurs sources dont le Système mondial d’information sur la biodiversité <a href='https://www.gbif.org' target='_blank'>GBIF (Global Biodiversity Information Facility)</a>, le Ministère des Forêts, de la Faune et des Parcs, le Regroupement QuébecOiseaux, le Service canadien de la faune et bien d'autres. Cela facilite l'accès aux données de différentes sources et accélère l'analyse de données de biodiversité (bio-informatique). En plus, l'utilisation de GBIF permet d'avoir accès aux portails de science citoyenne comme [iNaturalist](https://www.inaturalist.org), [eBird](https://ebird.org/home), [Observation.org](https://observation.org), [Pl\@ntnet](https://plantnet.org) et beaucoup d'autres! En plus, Biodiversité Québec donne [accès aux données publiques de l'Atlas](https://biodiversite-quebec.ca/fr/documentation/acces-atlas) en langage de programmation R.
 
-Une des missions de [Biodiversité Québec](https://biodiversite-quebec.ca/fr/a_propos) est l'agrégation de données de biodiversités de plusieurs sources dont le Système mondial d’information sur la biodiversité [GBIF (Global Biodiversity Information Facility)](https://www.gbif.org), le Ministère des Forêts, de la Faune et des Parcs, le Regroupement QuébecOiseaux, le Service canadien de la faune et bien d'autres. Cela facilite l'accès aux données de différentes sources et accélère l'analyse de données de biodiversité (bio-informatique). En plus, l'utilisation de GBIF permet d'avoir accès aux portails de science citoyenne comme [iNaturalist](https://www.inaturalist.org), [eBird](https://ebird.org/home), [Observation.org](https://observation.org), [Pl\@ntnet](https://plantnet.org) et beaucoup d'autres! En plus, Biodiversité Québec donne [accès aux données publiques de l'Atlas](https://biodiversite-quebec.ca/fr/documentation/acces-atlas) en langage de programmation R.
+## Guide d'identification motivé par les données citoyennes
 
-## Guide du naturaliste inspiré de la science citoyenne : format dépliant de poche
+Une manière de diminuer l'effort que cela prend pour en apprendre sur la biodiversité est de commencer tranquillement avec quelques espèces qui sont faciles à apprendre. Les guides d'identification sont une source importante d'information sur la biodiversité. Par contre, pour un débutant, on peut rapidement être submergé par toutes les espèces et les nuances entre différentes formes d'une même espèce sans accompagnement.
 
-Une manière de diminuer l'effort que cela prend pour en apprendre sur la biodiversité est de commencer tranquillement avec quelques espèces qui sont faciles à apprendre. Les guides d'identification sont une source importante d'information sur la biodiversité. Par contre, pour un débutant, on peut rapidement être submergé par toutes les espèces et les nuances entre différentes formes d'une même espèce sans accompagnement. Aussi, même pour ceux qui en font régulièrement, cela peut être encombrant à apporter dans son sac. Les petits dépliants avec les espèces les plus fréquentes semblent un bon milieu entre apporter un guide complet et ne pas avoir de référence. De mon expérience sur le terrain, c'est toujours pertinent d'avoir une référence pour montrer à des visiteurs curieux ce que nous observons.
+Aussi, même pour ceux qui en font régulièrement, cela peut être encombrant à apporter dans son sac. Les petits dépliants avec les espèces les plus fréquentes semblent un bon milieu entre apporter un guide complet et ne pas avoir de référence. Être sur le terrain avec un groupe de personne dont des enfants, avoir une référence pour montrer à des visiteurs curieux ce que nous observons est intéressant.
 
-### Recherche sur des guides existants
+L'éditeur Broquet a une collection de [Guides éclair](https://www.broquet.ca/collection/guide-eclair/) sur le thème de la nature. Nous nous inspirons de ce genre de guide pour ce projet. D'autres guides (voir les guides de [Waterford Press](https://www.waterfordpress.com/product)) montrent aussi les domaines biologiques ou les écorégions et les endroits pour aller faire des observations (une vingtaine de point). Pour les données de biodiversité, des observations sont rapportés par des naturalistes débutants ou experts sur des plateformes comme [iNaturalist](https://www.inaturalist.org) ou
 
-Certains de ces guides montrent aussi les domaines biologiques ou les écorégions et les endroits pour aller faire des observations (une vingtaine). Pour les oiseaux, des guides montrent les espèces les plus fréquemment observées dans différents groupes taxonomiques : 1. la sauvagine et les oiseaux de rivage (environ entre 45 et 60 espèces; pour ceux-ci, les femelles canards sont souvent montrées), 2. le gibier (2-4 espèces), 3. les colombes, pics, martin-pêcheurs, colibris, martinets, etc. (11-12 espèces), 4. les oiseaux de proie (12-13 espèces), 5. Les oiseaux percheurs (45-54).
+<!-- Pour les oiseaux, des guides montrent les espèces les plus fréquemment observées dans différents groupes taxonomiques : 1. la sauvagine et les oiseaux de rivage (environ entre 45 et 60 espèces; pour ceux-ci, les femelles canards sont souvent montrées), 2. le gibier (2-4 espèces), 3. les colombes, pics, martin-pêcheurs, colibris, martinets, etc. (11-12 espèces), 4. les oiseaux de proie (12-13 espèces), 5. Les oiseaux percheurs (45-54). -->
 
 ### Objectifs du projet
 
@@ -58,7 +66,7 @@ Donc pour résumer les objectifs de notre projet :
 4.  (optionnel) Faire une liste de tailles (longueur, envergure, poids) pour ajouter cette information en description. Ensuite nous pourrions ajouter des informations comme des trucs mnémotechniques pour les oiseaux chanteurs.
 5.  (optionnel) Extraire des photos d'organismes à mettre dans un dépliant.
 
-iNaturalist a un [portail d'observation d'espèces](https://inaturalist.ca/observations?place_id=13336&taxon_id=47125&view=species) qui permet d'obtenir de l'information sur les organismes les plus vus dans une région donnée et même de filtrer en fonction d'un niveau taxonomique d'intérêt. Ici, mon objectif est aussi de montrer comment faire de la cartographie dans R, de manipuler des jeux de données de biodiversité et de voir comment interagir avec les portails de science citoyenne. En même temps, ce projet permettrait d'avoir une sorte de dépliant que l'on peut imprimer serait pratique lors d'activité de vulgarisation sur la biodiversité (pas besoin d'appareil électronique, de connexion à internet ou de compte iNaturalist). Aussi, cela peut être remis à des intéressés qui veulent débuter leur aventure d'identification.
+Je commence par la cartographie puisque nous allons avoir besoin de manipuler de l'information spatiale à un moment. J'assume ici une familiarité avec l'utilisation de R. Si vous cherchez comment débuter en R, je recommande les [ateliers R du Centre de la science de la biodiversité du Québec](https://r.qcbs.ca/fr/).
 
 ## Recherche de données
 
@@ -73,7 +81,7 @@ Pour réaliser le projet, nous devons trouver des jeux de données pertinents po
 
 Pour les données de biodiversité, il existe aussi plusieurs sources. D'abord, il y a le [Global Biodiversity Information Facility (GBIF)](https://www.gbif.org) qui contient en date du 1er septembre 2025, plus de 37 millions de données pour le Québec ([filtration directement sur le site web](https://www.gbif.org/occurrence/search?occurrence_status=present&gadm_gid=CAN.11_1)). Pour ce projet, je veux explorer les données de l'[Atlas de Biodiversité Québec (ABQC)](https://biodiversite-quebec.ca/fr/documentation/acces-atlas).
 
-Aussi, il pourrait être intéressant d'avoir des informations sur la taille des organismes et autres traits morphologiques. Au lieu d'aller chercher ces valeurs individuellement, des bases de données sont déjà disponibles dont pour les amniotes @myhrvoldAmnioteLifehistoryDatabase2015 et pour les oiseaux @tobiasAVONETMorphologicalEcological2022. Finalement, la science citoyenne permet d'enregistrer des observations de la nature sur iNaturalist. Un des fondements de cette plateforme est d'avoir des preuves d'observation que la communauté peut identifier. Une bonne partie de ces preuves sont des photos. Nous pourrions donc extraire les photos qui sont libres de droits et finaliser notre projet de dépliant pour en faire une preuve de concept.
+Aussi, il pourrait être intéressant d'avoir des informations sur la taille des organismes et autres traits morphologiques. Au lieu d'aller chercher ces valeurs individuellement, des bases de données sont déjà disponibles dont pour les amniotes @myhrvoldAmnioteLifehistoryDatabase2015 et pour les oiseaux @tobiasAVONETMorphologicalEcological2022. Finalement, la science citoyenne permet d'enregistrer des observations de la nature sur <a href='https://inaturalist.ca' target='_blank'>iNaturalist</a>. Un des fondements de cette plateforme est d'avoir des preuves d'observation que la communauté peut identifier. Une bonne partie de ces preuves sont des photos. Nous pourrions donc extraire les photos qui sont libres de droits et finaliser notre projet de dépliant pour en faire une preuve de concept.
 
 -   Données d'occurrences : [Biodiversité Québec (ABQC)](https://biodiversite-quebec.ca/fr/documentation/acces-atlas)
 -   Traits : [AVONET pour les oiseaux](https://figshare.com/s/b990722d72a26b5bfead) @tobiasAVONETMorphologicalEcological2022 ou une [base de données des amniotes](https://www.esapubs.org/archive/ecol/E096/269/) @myhrvoldAmnioteLifehistoryDatabase2015 pour les oiseaux, mammifères, reptiles et amphibiens.
@@ -243,7 +251,7 @@ Super! Un fond de carte pas pire pour l'ensemble du Québec! Par contre, il manq
 
 ### Carte : hydrologie et villes
 
-Notre carte de base manque de contexte. Plusieurs endroits aux Québec sont facilement reconnaissables par leur structure hydrologique, ce qui permettrait de mieux se situer sur la carte. La Géobase du réseau hydrographique du Québec (GRHQ) est un large ensemble de données disponibles sur le site de [Données Québec (DQC)](https://www.donneesquebec.ca/recherche/fr/dataset/grhq). Nous allons seulement télécharger les données pour le sud du Québec (incluant les zones 00, 01, 02, 03, 04, 05, 06, 07_1, 07_2, 08, 14 de [l'index de téléchargement (DQC)](https://www.donneesquebec.ca/recherche/dataset/grhq/resource/4ef6703f-0ecb-46a0-bdb4-7074f00ff514)). Ces données sont ensuite téléchargées manuellement. Un script (`scripts/Preparation_hydrologique.R`) permet de préparer les données en Geopackage (`data/grhq_sud_qc.gpkg`) pour ce projet (DISPONIBLE SUR BOREALIS_ICI). Lors de la préparation pour réduire la taille du fichier, j'ai appliqué un filtre pour garder les polygones de $1e6 m^2$ d'aire et plus. 
+Notre carte de base manque de contexte. Plusieurs endroits aux Québec sont facilement reconnaissables par leur structure hydrologique, ce qui permettrait de mieux se situer sur la carte. La Géobase du réseau hydrographique du Québec (GRHQ) est un large ensemble de données disponibles sur le site de [Données Québec (DQC)](https://www.donneesquebec.ca/recherche/fr/dataset/grhq). Nous allons seulement télécharger les données pour le sud du Québec (incluant les zones 00, 01, 02, 03, 04, 05, 06, 07_1, 07_2, 08, 14 de [l'index de téléchargement (DQC)](https://www.donneesquebec.ca/recherche/dataset/grhq/resource/4ef6703f-0ecb-46a0-bdb4-7074f00ff514)). Ces données sont ensuite téléchargées manuellement. Un script (`scripts/Preparation_hydrologique.R`) permet de préparer les données en Geopackage (`data/grhq_sud_qc.gpkg`) pour ce projet (DISPONIBLE SUR BOREALIS_ICI). Lors de la préparation pour réduire la taille du fichier, j'ai appliqué un filtre pour garder les polygones de $1e6 m^2$ d'aire et plus.
 
 ```{r prep_donnees_grhq_prep, eval=FALSE}
 source('scripts/Preparation_hydrologique.R')
@@ -258,13 +266,13 @@ hq_filt_complete = st_read(
   st_transform(crs = masterCRS)
 ```
 
-Aussi, nous pourrions inclure le nom de villes avec une grande population sur la carte ce qui serait super pour visualiser les données. Le site de [portraits climatiques d'Ouranos](https://portraits.ouranos.ca/fr/) a un fichier qui nous facilitera la tâche. Nous pouvons télécharger les données directement avec le lien. Nous allons ensuite extraire certaines villes pour afficher sur la carte. Le scirpt `scripts/Preparation_villes.R` prépare un fichier Geopackage (`output/villes_qc_ouranos.gpkg`) que nous pouvons charger directement. Le script importe un fichier GeoJSON disponible sur le site d'Ouranos directement à partir du lien html. La création d'un geopackage permet de stocker ces données et d'y faire référence même si le serveur Ouranos change ou n'est plus accessible.  
+Aussi, nous pourrions inclure le nom de villes avec une grande population sur la carte ce qui serait super pour visualiser les données. Le site de [portraits climatiques d'Ouranos](https://portraits.ouranos.ca/fr/) a un fichier qui nous facilitera la tâche. Nous pouvons télécharger les données directement avec le lien. Nous allons ensuite extraire certaines villes pour afficher sur la carte. Le scirpt `scripts/Preparation_villes.R` prépare un fichier Geopackage (`output/villes_qc_ouranos.gpkg`) que nous pouvons charger directement. Le script importe un fichier GeoJSON disponible sur le site d'Ouranos directement à partir du lien html. La création d'un geopackage permet de stocker ces données et d'y faire référence même si le serveur Ouranos change ou n'est plus accessible.
 
 ```{r prep_donnees_villes_prep, eval=FALSE}
 source('scripts/Preparation_villes.R')
 ```
 
-Nous pouvons charger notre geopackage et sélectionner des villes qui nous intéresse pour mettre sur notre carte. 
+Nous pouvons charger notre geopackage et sélectionner des villes qui nous intéresse pour mettre sur notre carte.
 
 ```{r villes_spatiales, echo=TRUE, eval=TRUE}
 # Va chercher les villes et populations importantes sur le site d'Ouranos
@@ -380,7 +388,7 @@ pts = st_point(x = c(centre, 50.5)) |>
 
 <!-- lulc_mer -->
 
-Puisque nous établissons une borne nord maximale, nous allons remplacer `ymax` par la valeur `Y` de notre point placé au centre du Québec au nord. Puis nous allons rogner (*crop*) la carte pour enlever tout ce qui se retrouve au-dessus du 50.5 latitude (ou  `pts[2]` = `r formatC(pts[2], format = "f", big.mark = "", digits = 2)` mètres selon le `masterCRS`).
+Puisque nous établissons une borne nord maximale, nous allons remplacer `ymax` par la valeur `Y` de notre point placé au centre du Québec au nord. Puis nous allons rogner (*crop*) la carte pour enlever tout ce qui se retrouve au-dessus du 50.5 latitude (ou `pts[2]` = `r formatC(pts[2], format = "f", big.mark = "", digits = 2)` mètres selon le `masterCRS`).
 
 ```{r decoupe_carte_qc}
 # Remplacer la valeur de la borne supérieure 
@@ -499,7 +507,7 @@ ebird_hp_sf |>
 
 ```
 
-Le code plus bas montre la carte avec tous les points. Cela fait beaucoup de points donc je vous laisse essayer! 
+Le code plus bas montre la carte avec tous les points. Cela fait beaucoup de points donc je vous laisse essayer!
 
 ```{r exploration_donnees_carte_tous, eval=FALSE}
 # Regarder les points chauds d'observations eBird 
@@ -611,7 +619,7 @@ ebird_hp_sf_coords |>
   fill = NA)
 ```
 
-Puis en regardant le résultat du modèle linéaire avec juste les données du sub, vite comme cela, il n'y  a pas grand-chose à dire ($r^2 = 0$).
+Puis en regardant le résultat du modèle linéaire avec juste les données du sub, vite comme cela, il n'y a pas grand-chose à dire ($r^2 = 0$).
 
 ```{r lm_seulement_lat_basse}
 # Faire un modèle linéaire 
@@ -628,7 +636,7 @@ Pour avancer à la prochaine étape, il pourrait être intéressant de regarder 
 
 ### Points chauds eBird pour une seule région
 
-Nous pouvons extraire les points les plus importants pour chaque région dans tout le Québec ce qui serait intéressant pour un portait (comme une application Shiny). 
+Nous pouvons extraire les points les plus importants pour chaque région dans tout le Québec ce qui serait intéressant pour un portait (comme une application Shiny).
 
 ```{r joindre_ebird_pts_admin}
 # Joindre les informations de MRC pour chaque point d'observation eBird
@@ -655,7 +663,7 @@ mapview(st_simplify(regqc_t, dTolerance = 5000),
           label = 'locName') 
 ```
 
-Par contre, nous allons focaliser seulement sur la partie sud et faire un filtre spatial pour afficher un peu moins de points. 
+Par contre, nous allons focaliser seulement sur la partie sud et faire un filtre spatial pour afficher un peu moins de points.
 
 ```{r joindre_ebird_pts_admin_sud_seulement}
 # Joindre les informations de MRC pour chaque point d'observation eBird
@@ -687,10 +695,9 @@ mapview(st_simplify(regqc_simp_rogner, dTolerance = 1000),
           layer.name = 'Top 10 Nb Esp') 
 ```
 
-
 #### Ajout des points sur la carte de base
 
-On pourrait reprendre la carte d'avant (`gg_qc_db`) et ajouter les points (`eb_qc_top20n`), mais le résultat est pas super. 
+On pourrait reprendre la carte d'avant (`gg_qc_db`) et ajouter les points (`eb_qc_top20n`), mais le résultat est pas super.
 
 ```{r ggplot_top_ebird_points, eval=FALSE}
 gg_qc_db +
@@ -700,7 +707,6 @@ gg_qc_db +
   coord_sf(xlim = zoom_mtl[c(1,3)], 
            ylim = zoom_mtl[c(2,4)]) 
 ```
-
 
 ```{r zoom_mtl_reg_qc_bbox}
 # Prendre les coordonnées pour Montréal et rogner le graphique 
@@ -723,7 +729,6 @@ hq_lvl_mtl = hq_filt_complete |>
   st_crop(y = emprise_region_villes)
 ```
 
-
 ```{r prepare_couches_carte}
 # Extraire tous les polygones dans l'emprise de Montréal et Laval
 reg_mtl = regqc_t |> 
@@ -739,21 +744,18 @@ eb_qc_topn_lvl_mtl = eb_qc_top20n |>
   mutate(label = sprintf('%s (%s)', locName, numSpeciesAllTime))
 ```
 
-À noter que si on regarde de très près la région de Montréal et Laval, la classification des domaines écologiques est assez uniforme. Donc pas besoin de l'ajouter à notre carte. 
+À noter que si on regarde de très près la région de Montréal et Laval, la classification des domaines écologiques est assez uniforme. Donc pas besoin de l'ajouter à notre carte.
 
 Pour se rendre à ces sites, on pourrait y aller en vélo? Le [réseau cyclable de Montréal (DQC)](https://www.donneesquebec.ca/recherche/dataset/vmtl-pistes-cyclables) et [pistes cyclables et piétonnières de Laval (DQC)](https://www.donneesquebec.ca/recherche/dataset/pistes-cyclables-et-pietonnieres)
 
 ```{r reseau_cyclable_spatial_mtl_lvl}
 
-lien_reseau_cycl_mtl = "https://montreal-prod.storage.googleapis.com/resources/0dc6612a-be66-406b-b2d9-59c9e1c65ebf/reseau_cyclable.geojson?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=test-datapusher-delete%40amplus-data.iam.gserviceaccount.com%2F20250905%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20250905T135125Z&X-Goog-Expires=604800&X-Goog-SignedHeaders=host&x-goog-signature=00dafc8457f4e76db9fae977051100354a52a64cc1b898953826b6e995e3d9a95da6e8dd9bbdaa506489734e261118553486db29faac37d930cf1431f8da271c5d45b8c4298e7434dcb03f89e4beb776f34424925a6c4c8b663880ca8696c7e781f0a88c11731c35c159b857fb189c438b0f6d19f1d1c87ca2b482db195fd46b8c014754a12edc9e65702dfd95c95f70acff959f84915af271bd20ad1747bb94c787c299e1ef9d90d8d756f05ec4e5deb00631d443f0545fc4399ad86955079cfbe746b73f43cd4d293e0d41f4e57793db3ffc952e8a75241740ac8edc2d16ff076ac9503d9f55eb090183a68ad812fe4fea1bdb733421ca26ca9d4e2bf7e09b"
-
-
-lien_reseau_cycl_lvl = "https://www.donneesquebec.ca/recherche/dataset/8f75f060-8884-4918-8ebf-dab254326748/resource/0441b0e7-6a2a-430c-97e3-28df2926d79a/download/pistes-cyclables-et-pietonnieres.geojson"
+lien_reseau_cycl_mtl = 'data/res_cyclable/reseau_cyclable.geojson'
+lien_reseau_cycl_lvl = "data/res_cyclable/pistes-cyclables-et-pietonnieres.geojson"
 
 reseau_cyclable_mtl = st_read(dsn = lien_reseau_cycl_mtl, quiet = TRUE)
 reseau_cyclable_lvl = st_read(dsn = lien_reseau_cycl_lvl, quiet = TRUE)
 ```
-
 
 ```{r carte_mtl_laval}
 set.seed(123456)

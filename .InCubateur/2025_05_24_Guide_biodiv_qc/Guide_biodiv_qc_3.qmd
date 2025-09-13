@@ -51,6 +51,8 @@ amniotes_traits_dimor = amniotes_traits |>
 
 ## 5. Photos ou images
 
+iNaturalist a un [portail d'observation d'espèces](https://inaturalist.ca/observations?place_id=13336&taxon_id=47125&view=species) qui permet d'obtenir de l'information sur les organismes les plus vus dans une région donnée et même de filtrer en fonction d'un niveau taxonomique d'intérêt. Ici, mon objectif est aussi de montrer comment faire de la cartographie dans R, de manipuler des jeux de données de biodiversité et de voir comment interagir avec les portails de science citoyenne. En même temps, ce projet permettrait d'avoir une sorte de dépliant que l'on peut imprimer serait pratique lors d'activité de vulgarisation sur la biodiversité (pas besoin d'appareil électronique, de connexion à internet ou de compte iNaturalist). Aussi, cela peut être remis à des intéressés qui veulent débuter leur aventure d'identification.
+
 ```{r classes_pour_dépliant}
 # Pour notre exercice, il y a des classes que nous ne voulons pas inclure (e.g., Ascidiacea)
 unique(top_nb_sp_per_class$class)
