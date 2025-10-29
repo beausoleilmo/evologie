@@ -1,13 +1,20 @@
 project:
   type: website
 
+# https://github.com/quarto-dev/quarto-cli/blob/main/src/resources/language/_language-fr.yml
 lang: fr
 language:
   fr:
     title-block-author-single: "Auteur"
+    # title-block-author-plural: "Auteurs"
+    # title-block-published: "Date de publication"
+    appendix-attribution-cite-as: "Citation : "
+    # appendix-attribution-bibtex: "Citation BibTeX : "
 
 website:
   title: "évologie"
+  site-url: https://evologie.netlify.app
+  description: "Réflexions sur l'évolution, la biodiversité et la vie"
   navbar:
     right:
       - about.qmd
@@ -15,6 +22,8 @@ website:
         href: https://github.com/beausoleilmo
       # - icon: linkedin
         # href: https://www.linkedin.com/in/marcolivierbeausoleil/
+      # - icon: rss
+      #   href: index.xml
 
 format:
   html:
