@@ -1,10 +1,10 @@
 ---
 title: "Guide d'identification de biodiversité du Québec - Partie 2"
 description: "Est-ce que iNaturalist ou les données GBIF sont pertinentes pour informer le développement d'un guide d'identification des espèces courantes?"
-bibliography: ../ref_blg.bib
-csl: ../evolution.csl
+bibliography: ../../posts/ref_blg.bib
+csl: ../../posts/evolution.csl
 date: "2025-05-24"
-categories: ["guide-biodiversité", "analysis"]
+categories: ["guide", "biodiversité", "analyse", "code", "données"]
 image: "https://marcolivierbeausoleil.wordpress.com/wp-content/uploads/2015/07/cropped-imgp81461.jpg"
 execute: 
   message: false
@@ -13,33 +13,63 @@ editor_options:
   chunk_output_type: console
 ---
 
-## Biodiversité : ça mange quoi en hiver? 
+## Objectifs du projet
 
-Définition de biodiversité : 
+étape 3?
 
-## Collectionner la biodiversité 
+## On ne protège que ce qu'on connaît
 
-### C'est quoi une donnée de biodiversité? 
+Bien qu'il existe plusieurs efforts pour étudier la biodiversité au Canada, il manque encore beaucoup d'information. Et cela est compréhensible : le territoire Canadien est vaste et la distribution des humains dans ses terres est inégale. À l'heure actuelle, il n'existe pas de coordination nationale qui permettrait d'obtenir des données de biodiversité, de les partager et de les interpréter pour faire le portrait de l'état de la biodiversité sur l'ensemble du territoire @gonzalezBiodiversityObservationNetwork2025.
 
-Pourquoi c'est important? 
+Auparavant, pour obtenir des données de biodiversité, les naturalistes allaient sur le terrain collecter des spécimens en prenant soin d'inscrire la date et le lieu, le nom des organismes, puis la personne qui a ramassé l'échantillon. De nombreuses notes additionnelles sur l'habitat, l'altitude, etc., <a href='https://irbv.umontreal.ca/recherche/collections/herbier-marie-victorin/' target='_blank'>sont ajoutées au besoin</a>. Les expéditions de terrain et la collecte de données de biodiversité peuvent devenir coûteuses pour payer les commodités de l'équipe d'échantillonnage : la nourriture, l'hébergement, le transport, surtout si on a besoin de prendre l'avion, sans compter le matériel nécessaire pour la prise de données!
+
+Heureusement, la démocratisation des technologies facilite la collecte des données de biodiversité. Plus besoin d'être une autorité reconnue pour identifier des organismes ou d'avoir un mécène qui supporte une expédition de collecte de données. Aujourd'hui, les GPS dans les téléphones intelligents permettent d'ajouter une référence géographique aux photos tout en capturant la date et l'heure. En plus, votre observation est associée à votre compte. C'est tout ce dont nous avons besoin pour avoir une donnée minimalement intéressante pour la science, comme les étiquettes dans les musées! C'est le principe directeur des plateformes de science citoyenne pour la collecte de données de biodiversité dont <a href='https://www.inaturalist.org' target='_blank'>iNaturalist</a>, <a href='https://ebird.org/home' target='_blank'>eBird</a>, <a href='Observation.org' target='_blank'>Observation.org</a> et <a href='https://plantnet.org' target='_blank'>Pl\@ntnet</a>. Donc devenir naturaliste aujourd'hui peut commencer par se faire un compte sur une plateforme et de vous intéresser à la vie qui vous entoure.
+
+Imaginez une chercheuse, Paule, qui souhaiterait faire une étude sur la conservation de la grive de Bicknell (*Catharus bicknelli*). Elle pourrait bénéficier des données partagées sur les plateformes de science citoyenne. Par contre, avec toutes ces plateformes de publication de données de biodiversité, comment aller chercher cette information afin de faire les analyses de conservation ? La réponse comporte quatre lettres : GBIF <a href='https://www.gbif.org/fr/what-is-gbif' target='_blank'>GBIF (Global Biodiversity Information Facility)</a>.
+
+Le <a href='https://www.gbif.org' target='_blank'>Système mondial d’information sur la biodiversité (SMIB) ou, en anglais, GBIF (Global Biodiversity Information Facility)</a> est un réseau international et une infrastructure qui cherche à donner accès gratuitement et ouvertement aux données de biodiversité. Et on parle de toutes formes de données : les collections des musées, les herbiers, les fossiles, des données génétiques ou simplement des données de présence d'individus, des données collectées selon des protocoles standardisés, etc. GBIF facilite l'accès aux données de différentes sources (comme les plateformes de science citoyenne, mais beaucoup plus!) et accélère l'analyse de données de biodiversité. C'est comme cela que Paule pourra extraire les données provenant d'<a href='https://www.inaturalist.org' target='_blank'>iNaturalist</a>, <a href='https://ebird.org/home' target='_blank'>eBird</a>, <a href='Observation.org' target='_blank'>Observation.org</a>, <a href='https://plantnet.org' target='_blank'>Pl\@ntnet</a> et beaucoup d'autres, dont des agences gouvernementales et des entreprises! La collecte de données peut donc être facilitée grandement et Paule peut produire son article de conservation.
+
+Comme le dirais Raôul Duguay : Merci Tôulmônd!
+
+## Biodiversité : ça mange quoi en hiver?
+
+<https://www.iso.org/standard/17298>
+
+Définition de biodiversité :
+
+## Collectionner la biodiversité
+
+### C'est quoi une donnée de biodiversité?
+
+Pourquoi c'est important?
 
 ### Les occurences (présences)
 
-La présence d'organismes à un endroit et un moment déterminé. Certains protocoles d'échantillonnage ont aussi des absences : parfois les absences sont tout aussi importante que les présences puisque cela permet d'obtenir un peut plus d'information sur le potentiel de qualité d'habitat d'une espèce. Les traces d'organismes vivants comme les empreintes, un terrier, les galles de certaines plantes dûe à des insectes, un arbre grignoté par un castor, etc. comptent aussi comme la preuve d'une présence d'un organisme, donc c'est une sorte d'occurence. Les restants d'organismes (morts, excréments, coquillages, etc.) ou témoignage de la vie par des traces laisser par les fossiles sont aussi des données fondementales pour faire toutes sortes d'analyse en biogéographie. Imaginez, même les traces de vie sur Mars pourraient faire partie de GBIF [@hurowitzRedoxdrivenMineralOrganic2025]! 
+La présence d'organismes à un endroit et un moment déterminé. Certains protocoles d'échantillonnage ont aussi des absences : parfois les absences sont tout aussi importante que les présences puisque cela permet d'obtenir un peut plus d'information sur le potentiel de qualité d'habitat d'une espèce. Les traces d'organismes vivants comme les empreintes, un nid, un terrier, une cavité creusé par un pic, les marques laissées par l'agrile du Frêne, les galles de certaines plantes dûe à des insectes, un arbre grignoté par un castor, etc. comptent aussi comme la preuve d'une présence d'un organisme, donc c'est une sorte d'occurence. Les restants d'organismes (morts, excréments, coquillages, etc.) ou témoignage de la vie par des traces laisser par les fossiles sont aussi des données fondementales pour faire toutes sortes d'analyse en biogéographie. Imaginez, même les traces de vie sur Mars pourraient faire partie de GBIF [@hurowitzRedoxdrivenMineralOrganic2025]!
 
-L'ADN des organismes ou de l'information génétique sous forme d'ADN se retrouvant dans l'environnement (eDNA ou ADN environnementale). Les collections de musées sont aussi riche pour faire des analyses de présence historique d'organismes ou de faire des comparaisons de changement morphologique des populations entre des populations échantillonnées récemment et des mesures similaire fait sur les organismes dans des collections muséales. 
-Les données collectées automatiquement par des machines (caméra de chasses, enregistreur audio, images de drones, signatures spectrales, etc.)
+L'ADN des organismes ou de l'information génétique sous forme d'ADN se retrouvant dans l'environnement (eDNA ou ADN environnementale). Les collections de musées sont aussi riche pour faire des analyses de présence historique d'organismes ou de faire des comparaisons de changement morphologique des populations entre des populations échantillonnées récemment et des mesures similaire fait sur les organismes dans des collections muséales. Les données collectées automatiquement par des machines (caméra de chasses, enregistreur audio, images de drones, signatures spectrales, etc.)
 
-### Événement d'échantillonnage 
+### Événement d'échantillonnage
 
-L'acquisition de données avec des protocoles standardisé, par exemple si l'effort d'échantillonnage est enregistré, est riche pour les chercheurs puisque cela permet de faire des analyses beaucoup plus intéressante. Par exemple, en ayant l'effort d'échantillonnage, il est possible de comparer des sites et rendre les estimations de biodiversité plus robuste. Cela permet de mieux modéliser l'incertitude sur les résultats et donc d'être plus robuste. 
-7. les mesures de traits d'organismes (mesures du poids, taille du bec, longueur du corps, etc.);
-8. les données de mouvement avec la télémétrie;
+L'acquisition de données avec des protocoles standardisé, par exemple si l'effort d'échantillonnage est enregistré, est riche pour les chercheurs puisque cela permet de faire des analyses beaucoup plus intéressante. Par exemple, en ayant l'effort d'échantillonnage, il est possible de comparer des sites et rendre les estimations de biodiversité plus robuste. Cela permet de mieux modéliser l'incertitude sur les résultats et donc d'être plus robuste.
 
+### Des listes et métadonnées
+
+Une liste d'organismes vivant pour un milieu est la plus simple et la première pièce d'information intéressante : une collection de noms d'organismes assemblés selon des critères. Un exemple de liste au Québec est la [Liste de la faune vertévrée du Québec (LFVQ; DQC)](https://www.donneesquebec.ca/recherche/dataset/liste-de-la-faune-vertebree-du-quebec) ou celle de [des champignons du Québec par mycoquébec.org](https://www.mycoquebec.org).
+
+### Extensions
+
+La présence d'un organisme est une pièce d'information de base. Mais il est encore plus pertinent d'obtenir des détails sur chaque organisme. En fait, de savoir qu'une espèce est présente est intéresssant pour faire certaines analyses, comme pour prédire la présence de population d'espèce dans des environnements différents. Par contre, la biodiversité est aussi la variation que *chaque individu apporte* au sein d'une populaiton. En effet, des analyses morphologiques nécessitent des mesures de traits d'organismes (mesures du poids, taille du bec, longueur du corps, etc.). Aussi, des données de mouvement d'individus avec la télémétrie ou des GPS est hautement intéressant pour connaître l'écologie du mouvement des organismes, surtout dans un monde où les environnements sont dynamiques. On peut simplement penser aux modifications du territoire par l'humain dans les derniers 400 ans. Une gravure de Thomas Patten [-@pattenVueOrientaleMontreal1760] montre ce à quoi pouvait ressembler la berge de l'île de Montréal, déjà modifié par les colons, mais loin de l'être comme aujourd'hui.
+
+![Gravure [@pattenVueOrientaleMontreal1760]](https://www.beaux-arts.ca/sites/default/files/styles/ngc_scale_1200/public/12679653.jpg?itok=RocHG5z9&timestamp=1656294282)
+
+\[IMAGE DU PORT DE MONTRÉAL \]
 
 ## 3. Données de biodiversité
 
-### Exploration de l'Atlas Biodiversité Québec
+### Exploration des données du Système mondial d'information sur la biodiversité (GBIF)
+
+https://www.gbif.org/fr/article/5g1AjKfCHKGUoK0woYsAQq/quest-ce-que-le-gbif
 
 Quelques progiciels utilisées pour manipuler les données
 
@@ -48,15 +78,15 @@ Importer des fonctions nécessaire.
 ```{r prep_path, echo=FALSE}
 # Charge selon la position du chemin d'accès 
 if (!grepl(pattern = '2025_05_24_Guide_biodiv_qc', x = getwd())) {
-  source(file = '.InCubateur/2025_05_24_Guide_biodiv_qc/scripts/00_initialize.R')
+  source(file = '.InCubateur/2025_05_24_Guide_biodiv_qc/scripts/00_init/00_initialize.R')
 } else {
-  source(file = 'scripts/00_initialize.R')
+  source(file = 'scripts/00_init/00_initialize.R')
 }
 ```
 
 ### Traitement local des données
 
-Le portail GBIF (https://www.gbif.org) permet d'extraire facilement les données en applicant différents filtres. Lors de l'extraction des données, il y a un code (JSON) qui permet de reproduire exactement le même jeu de données. J'ai filtrer les données pour le Québec en entier (CAN.11_1 : c'est le Québec) et pour seulement les données de présence (OCCURRENCE_STATUS == present, donc en excluant les absences). Le code plus bas est formaté en JSON et c'est ce qui est envoyé à GBIF pour retourner les données.
+Le [portail GBIF](https://www.gbif.org) permet d'extraire facilement les données en applicant différents filtres. Lors de l'extraction des données, il y a un code (`JSON`) qui permet de reproduire exactement le même jeu de données. J'ai filtrer les données pour le Québec en entier (`CAN.11_1` : c'est le Québec) et pour seulement les données de présence (`OCCURRENCE_STATUS == present`, donc en excluant les absences). Le code plus bas est formaté en `JSON` et c'est ce qui est envoyé à GBIF pour retourner les données.
 
 ```{json}
 {
@@ -78,63 +108,77 @@ Le portail GBIF (https://www.gbif.org) permet d'extraire facilement les données
 }
 ```
 
-Il est possible d'aller filtrer les données directement sur le site de GBIF comment en sélectionnant les données pour iNaturalist seulement ou le règne (_kindgom_) `Animalia` directement. Je voulais apprendre à utiliser `duckDB` avec R. Pourquoi? Parce que les données GBIF pour l'ensemble du Québec en fichier CSV (comma separated values) font plus de 20GB ce qui est beaucoup pour beaucoup d'ordinateur portable! J'ai donc téléchargé un jeu de données pour toutes les occurences présentes au Québec et filtré les donnée pour le besoin de ce projet (donc seulement les données d'iNaturalist avec un niveau de précision taxonomique, puis les animaux; voir plus bas un exemple de code pour faire cette filtration). Je ne veux pas avoir plus de 20GB sur mon disque juste pour faire des tests. Donc le disque externe est une option rapide pour éviter d'avoir à garder le gros jeu de données sur mon ordinateur. J'exporte un jeu de données beaucoup plus petit (moins de 200 MB!) après la filtration pour ce projet.
+Par contre, ce jeu de données contient plus de données que ce dont nous avons besoin pour ce projet. Et cela prend un certain temps pour que GBIF prépare et nous donne accès aux données. Il est possible de filtrer davantage les données directement sur le site de GBIF pour ne prendre que les données pour iNaturalist et le règne (*kindgom*) `Animalia`.
 
-Pour citer les données GBIF avec un filtre différent de celui des données GBIF se fait avec le `datasetKey` et en utilisant l'outil de [jeux de données dérivés de GBIF](https://www.gbif.org/citation-guidelines#derivedDatasets) et voir aussi cet [article de blogue de GBIF sur les données dérivées](https://data-blog.gbif.org/post/derived-datasets/). Le progiciel R [`rgbif` permet aussi](https://docs.ropensci.org/rgbif/reference/derived_dataset.html) d'enregistrer des données dérivés (ou filtrées) avec les `datasetKey`. 
+Pour ce projet, je voulais apprendre à utiliser `duckDB` avec R. Pourquoi? Parce que les données GBIF pour l'ensemble du Québec en fichier `CSV` (comma separated values) font plus de 20GB ce qui est beaucoup pour beaucoup d'ordinateur portable! En utilisant `duckDB`, il est possible de faire des requêtes aux données sans les charger au complet en mémoire. Ainsi, les données téléchargé sont pour toutes les occurences présentes au Québec, mais filtré par après pour garder les donnée d'iNaturalist avec un niveau de précision taxonomique à l'espèce et plus bas (variété, etc.), puis le règne des animaux. Un exemple de code plus bas montre comment faire cette filtration.
 
-Si vous réutilisez le même filtre et téléchargez les données, il est fort possible que les données soient différentes: en effet, vous auriez les données plus à jour! Dans toutes les recherches, il est une bonne pratique de garder la commande exacte pour filtrer les données. Je garder aussi le numéro de téléchargement (e.g., 0047252-250827131500795) pour référence future. Une fois téléchargé, j'ai manipuler le jeu de données avec duckdb qui permet de lire et manipuler des jeux de données gigantesque (et qui n'entrerais pas en mémoire). L'exécution des opérations encore plus rapide avec `duckdb`. Dans tous les cas, il faut
+J'ai téléchargé les données sur un disque externe (chemin d'accès `/Volumes/Disk_fun/gbif_data`) pour éviter d'avoir à garder le gros jeu de données (\>20GB) sur mon ordinateur. Donc on peut lire les données à partir du disque externe, mais exporter le résultat filtré localement. Après l'application de filtres pertinents pour ce projet, le fichier exporté a une taille d'environ 200 MB! Cela est permet de mettre toutes les données en mémoire et permet de faire des calculs plus rapide qu'avec le jeu de données complet. Il serait intéressant de tester avec un 'disque' NVMe SSD ce qui a le potentiel d'être beaucoup plus rapide.
 
-```{r eval=FALSE}
+Une fois téléchargé, j'ai manipulé le jeu de données (voir `GBIF_duckdb.R`) avec une connection `duckdb` qui permet de lire et manipuler des jeux de données gigantesque (et qui n'entrerais pas en mémoire, e.g., avec 8GB de RAM). Essentiellement, il faut
+
+1.  ouvrir un connexion à une session `duckdb` : (`con <- dbConnect(duckdb())`). L'objet 'con' sera notre session pour faire des opérations avec `duckdb`, mais en restant dans R et en utilisant dplyr! Donc nous pouvons utiliser `duckdb` tout en utilisant les outils qu'on connaît bien.
+2.  lire le fichier `CSV` avec `duckdb` : (`gb_dat <- duckdb::tbl_file(con, path_csv)`)
+3.  manipuler les avec `duckdb` via dplyr et utiliser `collect()` pour amener les résultats dans la mémoire vive (RAM) de l'orginateur : (`gb_dat |> filter([...]) |> dplyr::select([...]) |> collect()`)
+4.  exporter les données filtrées en mémoire avec en `CSV` : (`write.csv([...])`)
+
+```{r preparation_donnees_gbif, eval=FALSE}
 [...]
-# Données GBIF pour le Québec en entier : 
-csv = "/Volumes/Disk_fun/gbif_data/0047252-250827131500795.csv" # Données de plus de 20GB! 
-# csv = "data/gbif_data/0047252-250827131500795.csv"
+# Données GBIF pour le Québec en entier ----------------------------------------
+path_csv = "/Volumes/g_magni/gbif_data/0047252-250827131500795.csv" # Données de plus de 20GB! 
 
-# Se connecter à une session duckDB 
-con <- dbConnect(duckdb())
+# 1. ouvrir un connexion à une session `duckdb` --------------------------------
+con <- DBI::dbConnect(duckdb()) 
 
-# Création d'une vue des données dans duckDB. 
-DBI::dbExecute(conn = con, 
-               statement = sprintf("CREATE VIEW gb_data AS SELECT * FROM read_csv('%s')", 
-                                   csv))
+# 2. lire le fichier CSV avec `duckdb` -----------------------------------------
+gb_dat <- duckdb::tbl_file(con, path_csv)
 
-gb_dat = dplyr::tbl(con, from = "gb_data")
-
-# Extraction des données avec les filtres 
-# Ne prend que quelques secondes sur un ordinateur portable avec les données sur un disque dur (ce qui n'est vraiment pas le plus rapide!). 
-# Il faudrait tester avec un 'disque' NVMe SSD qui est beaucoup plus rapide.  
-tictoc::tic() # 180 secondes (~3 min), ce temps est pour des conditions sous-optimales. Il est facile d'obtenir un meilleur temps si les données étaient directement dans mon ordinateur (disque plus rapide). 
-inatdb_animaux = gb_dat |> 
-  # iNaturalist Research-grade Observations voir 
-  # https://www.gbif.org/dataset/50c9509d-22c7-4a22-a47d-8c48425ef4a7
+# 3. manipuler les avec `duckdb` via dplyr : Filtrer les données
+# Point de repère temporel : 
+#   - 25 sec avec données sur NVMe PCIE 4. 
+#   - 180 sec sur disque externe (hard drive) 
+tictoc::tic() # Débuter le minuteur 
+# Prendre les données gbif 
+inat_dat = gbif_qc |> 
+  # Sélectionner seulement les colonnes pertinantes pour un projet  
+  dplyr::select(kingdom,
+                phylum, class, order, family, species, 
+                scientificName, verbatimScientificName,
+                decimalLatitude, decimalLongitude, 
+                coordinateUncertaintyInMeters, 
+                identifiedBy, recordedBy, 
+                eventDate, 
+                taxonRank, 
+                datasetKey,
+                license) |> 
+  # Filtrer seulement les observations du jeu de données : 
+  #   - 'iNaturalist Research-grade Observations' == '50c9509d-22c7-4a22-a47d-8c48425ef4a7'
   filter(datasetKey == '50c9509d-22c7-4a22-a47d-8c48425ef4a7', 
          # prendre seulement les observations au niveau de l'espèce et plus précis
          taxonRank %in% c("SPECIES", "SUBSPECIES", "VARIETY"), 
-         # Extraire le règne animal seulement pour le moment
-         kingdom %in% c('Animalia') 
-  ) |>
-  # Extraction de certaines colonnes pour avoir un fichier vraiment plus petit
-  dplyr::select(# kingdom,
-    phylum, class, order, family, species, scientificName, verbatimScientificName,
-    decimalLatitude, decimalLongitude, coordinateUncertaintyInMeters, 
-    identifiedBy, recordedBy, 
-    eventDate, 
-    datasetKey,
-    license) |> 
-  collect()
-tictoc::toc()
+         # Seulement les animaux 
+         kingdom %in% c('Animalia')) |> 
+  # Puisque toutes les mêmes données, on peut enlever cette colonne 
+  dplyr::select(-kingdom) |> 
+# 4. Exportation de inat_dat ---------------------------------------------------
+duckplyr::as_duckdb_tibble() |>  
+# CSV out pour inat seulement fait environ ~140MB 
+duckplyr::compute_csv(path = 'data/partie_2/biodiv/gbif_data/inat_research_grade_obs_animalia.csv') 
+
+tictoc::toc() # Fin du minuteur
+
 [...]
-# Exportation de inat_dat
-write.csv(x = inatdb_animaux, 
-          file = 'data/gbif_data/inat_research_grade_obs_animalia.csv')
 
 ```
 
-Nous voudrions avoir les observations avec un niveau taxonomique d'espèce.
+Cela donne un `CSV` d'environ 140MB. Ensuite, on peut lire les données comme d'habitude!
 
 ```{r lire_donnees_inat_prefiltre}
-ginat = read.csv(file = 'data/gbif_data/inat_research_grade_obs_animalia.csv')
+ginat = read.csv(file = 'data/partie_2/biodiv/gbif_data/inat_research_grade_obs_animalia.csv')
 ```
+
+Pour citer les données GBIF avec un filtre différent de celui des données GBIF se fait avec le `datasetKey` (dans notre cas, seulement `r unique(ginat$datasetKey)` avec `r nrow(ginat)` occurences) et en utilisant l'outil de [jeux de données dérivés de GBIF](https://www.gbif.org/citation-guidelines#derivedDatasets) et voir aussi cet [article de blogue de GBIF sur les données dérivées](https://data-blog.gbif.org/post/derived-datasets/). Le progiciel R [`rgbif` permet aussi](https://docs.ropensci.org/rgbif/reference/derived_dataset.html) d'enregistrer des données dérivés (ou filtrées) avec les `datasetKey`.
+
+Si vous réutilisez le même filtre et téléchargez les données, il est fort possible que les données soient différentes: en effet, vous auriez les données plus à jour! Dans toutes les recherches, il est une bonne pratique de garder la commande exacte pour filtrer les données. Je garder aussi le numéro de téléchargement (e.g., `0047252-250827131500795`) pour référence future.
 
 ```{r preparation_noms_binomial, eval=FALSE}
 colnames(ginat)
@@ -150,10 +194,14 @@ nb_unique_nom_sp = ginat |>
 count(ginat)
 
 # Nombre d'espèces unique pour chaque ordre. 
-ginat |> 
+nb_sp_top = ginat |> 
+  # Obtenir les espèces distinctes (unique)
   distinct(phylum, class, order, family, species) |> 
   count(phylum, class, order) |> 
-  arrange(-n) 
+  group_by(phylum) |> 
+  # Compte le nombre d'espèce par 'order' en gardant 'phylum' et 'class.'  
+  slice_max(order_by = n, n = 3)
+nb_sp_top
 ```
 
 ```{r extraction_classe_plus_nombreuse}

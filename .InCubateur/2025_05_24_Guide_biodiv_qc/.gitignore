@@ -1,4 +1,6 @@
-data
-output
+data/
+zdata/
+output/
+zscript/
 Guide_biodiv_qc_*_f*
 Guide_biodiv_qc_*.html
