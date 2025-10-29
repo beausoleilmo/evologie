@@ -8,15 +8,16 @@ listing:
   categories: true
   sort-ui: false
   filter-ui: false
+  feed: true
 page-layout: full
 title-block-banner: true
 ---
 
-# Séries
+<!-- # Séries -->
 
-##### [Projet : Guide de biodiversité](biodiv_qc-series.html)
+<!-- ##### [Projet : Guide de biodiversité](biodiv_qc-series.html) -->
 
-Dans cette série, on fait un projet utilisant la science citoyenne pour extraire les observations les plus fréquentes.
+<!-- Dans cette série, on fait un projet utilisant la science citoyenne pour extraire les observations les plus fréquentes. -->
 
 ------------------------------------------------------------------------
 

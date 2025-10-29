@@ -130,7 +130,7 @@ window.Quarto = {
 </script>
 
 <link rel="stylesheet" href="styles.css">
-</head>
+<link rel="alternate" type="application/rss+xml" title="évologie" href="index.xml" data-external="1"></head>
 
 <body class="nav-fixed quarto-light">
 
@@ -195,14 +195,10 @@ window.Quarto = {
 
 
 
-<section id="séries" class="level1">
-<h1>Séries</h1>
-<section id="projet-guide-de-biodiversité" class="level5">
-<h5 class="anchored" data-anchor-id="projet-guide-de-biodiversité"><a href="biodiv_qc-series.html">Projet : Guide de biodiversité</a></h5>
-<p>Dans cette série, on fait un projet utilisant la science citoyenne pour extraire les observations les plus fréquentes.</p>
+<!-- # Séries -->
+<!-- ##### [Projet : Guide de biodiversité](biodiv_qc-series.html) -->
+<!-- Dans cette série, on fait un projet utilisant la science citoyenne pour extraire les observations les plus fréquentes. -->
 <hr>
-</section>
-</section>
 <section id="tous-les-articles" class="level1">
 <h1>Tous les articles</h1>
 
@@ -355,7 +351,7 @@ Marc-Olivier Beausoleil
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/evologie\.netlify\.app");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
