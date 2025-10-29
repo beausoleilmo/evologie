@@ -13,6 +13,30 @@ editor_options:
   chunk_output_type: console
 ---
 
+## Biodiversité : ça mange quoi en hiver? 
+
+Définition de biodiversité : 
+
+## Collectionner la biodiversité 
+
+### C'est quoi une donnée de biodiversité? 
+
+Pourquoi c'est important? 
+
+### Les occurences (présences)
+
+La présence d'organismes à un endroit et un moment déterminé. Certains protocoles d'échantillonnage ont aussi des absences : parfois les absences sont tout aussi importante que les présences puisque cela permet d'obtenir un peut plus d'information sur le potentiel de qualité d'habitat d'une espèce. Les traces d'organismes vivants comme les empreintes, un terrier, les galles de certaines plantes dûe à des insectes, un arbre grignoté par un castor, etc. comptent aussi comme la preuve d'une présence d'un organisme, donc c'est une sorte d'occurence. Les restants d'organismes (morts, excréments, coquillages, etc.) ou témoignage de la vie par des traces laisser par les fossiles sont aussi des données fondementales pour faire toutes sortes d'analyse en biogéographie. Imaginez, même les traces de vie sur Mars pourraient faire partie de GBIF [@hurowitzRedoxdrivenMineralOrganic2025]! 
+
+L'ADN des organismes ou de l'information génétique sous forme d'ADN se retrouvant dans l'environnement (eDNA ou ADN environnementale). Les collections de musées sont aussi riche pour faire des analyses de présence historique d'organismes ou de faire des comparaisons de changement morphologique des populations entre des populations échantillonnées récemment et des mesures similaire fait sur les organismes dans des collections muséales. 
+Les données collectées automatiquement par des machines (caméra de chasses, enregistreur audio, images de drones, signatures spectrales, etc.)
+
+### Événement d'échantillonnage 
+
+L'acquisition de données avec des protocoles standardisé, par exemple si l'effort d'échantillonnage est enregistré, est riche pour les chercheurs puisque cela permet de faire des analyses beaucoup plus intéressante. Par exemple, en ayant l'effort d'échantillonnage, il est possible de comparer des sites et rendre les estimations de biodiversité plus robuste. Cela permet de mieux modéliser l'incertitude sur les résultats et donc d'être plus robuste. 
+7. les mesures de traits d'organismes (mesures du poids, taille du bec, longueur du corps, etc.);
+8. les données de mouvement avec la télémétrie;
+
+
 ## 3. Données de biodiversité
 
 ### Exploration de l'Atlas Biodiversité Québec
@@ -27,159 +51,116 @@ if (!grepl(pattern = '2025_05_24_Guide_biodiv_qc', x = getwd())) {
   source(file = '.InCubateur/2025_05_24_Guide_biodiv_qc/scripts/00_initialize.R')
 } else {
   source(file = 'scripts/00_initialize.R')
-  }
+}
 ```
-
-```{r}
-
-```
-
-
-```{r importe_fonctions_biodiv_qc, eval=FALSE}
-# Charge des fonctions et chargement de l'object 'atlas_dates'
-source("http://atlas.biodiversite-quebec.ca/bq-atlas-parquet.R")
-```
-
-```{r connection_atlas_biodiv, eval=FALSE}
-# Obtenir la date de données la plus récente avec l'objet préchargé 'atlas_dates' (voir bq-atlas-parquet.R)
-bd_recent = tail(x = atlas_dates$dates, n = 1) # AAAA-MM-JJ la plus récente 
-# Téléchargement local des données (avec le nom "atlas_public_AAAA-MM-JJ.parquet", parquet_date = date la plus récente disponible)
-atlas_local(parquet_date = bd_recent,
-            # destination_folder = '/Volumes/Brainmemory/data/atlas_biodiv_qc/')
-            destination_folder = 'data/atlas_biodiv_qc/')
-```
-
-La structure du jeu de données (en classe) fait à chaque fois qu'on exécute une commande sur la base de données, on doit dire au serveur (l'ordinateur qui a accès à faire des calculs sur les données) d'exécuter la tâche avec la fonction collect().
 
 ### Traitement local des données
 
-```{r charge_donnees_prefiltre}
-# Please delete the data there: 
-# load(file = '/Volumes/Brainmemory/data/atlas_biodiv_qc/atlas_public_2025-03-17.RData', verbose = TRUE)
+Le portail GBIF (https://www.gbif.org) permet d'extraire facilement les données en applicant différents filtres. Lors de l'extraction des données, il y a un code (JSON) qui permet de reproduire exactement le même jeu de données. J'ai filtrer les données pour le Québec en entier (CAN.11_1 : c'est le Québec) et pour seulement les données de présence (OCCURRENCE_STATUS == present, donc en excluant les absences). Le code plus bas est formaté en JSON et c'est ce qui est envoyé à GBIF pour retourner les données.
 
-# Ouvrir une connection aux données 
-atlas_sp = duckdbfs::open_dataset("data/atlas_biodiv_qc/atlas_public_2025-03-17.parquet", 
-                       tblname = 'atlas') 
+```{json}
+{
+  "type": "and",
+  "predicates": [
+    {
+      "type": "equals",
+      "key": "GADM_GID",
+      "value": "CAN.11_1",
+      "matchCase": false
+    },
+    {
+      "type": "equals",
+      "key": "OCCURRENCE_STATUS",
+      "value": "present",
+      "matchCase": false
+    }
+  ]
+}
 ```
 
-```{r}
-library(duckdb)
-drv <- duckdb(dbdir ="data/biodiv_db_atlas_public_2025-03-17.duckdb")
-con <- DBI::dbConnect(drv)
-duckdb::dbWriteTable(
-  conn = con, 
-  name = "atlas_biodiv.dbi",
-  value = atlas_sp, 
-  append = TRUE)
-dbDisconnect(con)
+Il est possible d'aller filtrer les données directement sur le site de GBIF comment en sélectionnant les données pour iNaturalist seulement ou le règne (_kindgom_) `Animalia` directement. Je voulais apprendre à utiliser `duckDB` avec R. Pourquoi? Parce que les données GBIF pour l'ensemble du Québec en fichier CSV (comma separated values) font plus de 20GB ce qui est beaucoup pour beaucoup d'ordinateur portable! J'ai donc téléchargé un jeu de données pour toutes les occurences présentes au Québec et filtré les donnée pour le besoin de ce projet (donc seulement les données d'iNaturalist avec un niveau de précision taxonomique, puis les animaux; voir plus bas un exemple de code pour faire cette filtration). Je ne veux pas avoir plus de 20GB sur mon disque juste pour faire des tests. Donc le disque externe est une option rapide pour éviter d'avoir à garder le gros jeu de données sur mon ordinateur. J'exporte un jeu de données beaucoup plus petit (moins de 200 MB!) après la filtration pour ce projet.
+
+Pour citer les données GBIF avec un filtre différent de celui des données GBIF se fait avec le `datasetKey` et en utilisant l'outil de [jeux de données dérivés de GBIF](https://www.gbif.org/citation-guidelines#derivedDatasets) et voir aussi cet [article de blogue de GBIF sur les données dérivées](https://data-blog.gbif.org/post/derived-datasets/). Le progiciel R [`rgbif` permet aussi](https://docs.ropensci.org/rgbif/reference/derived_dataset.html) d'enregistrer des données dérivés (ou filtrées) avec les `datasetKey`. 
+
+Si vous réutilisez le même filtre et téléchargez les données, il est fort possible que les données soient différentes: en effet, vous auriez les données plus à jour! Dans toutes les recherches, il est une bonne pratique de garder la commande exacte pour filtrer les données. Je garder aussi le numéro de téléchargement (e.g., 0047252-250827131500795) pour référence future. Une fois téléchargé, j'ai manipuler le jeu de données avec duckdb qui permet de lire et manipuler des jeux de données gigantesque (et qui n'entrerais pas en mémoire). L'exécution des opérations encore plus rapide avec `duckdb`. Dans tous les cas, il faut
+
+```{r eval=FALSE}
+[...]
+# Données GBIF pour le Québec en entier : 
+csv = "/Volumes/Disk_fun/gbif_data/0047252-250827131500795.csv" # Données de plus de 20GB! 
+# csv = "data/gbif_data/0047252-250827131500795.csv"
+
+# Se connecter à une session duckDB 
+con <- dbConnect(duckdb())
+
+# Création d'une vue des données dans duckDB. 
+DBI::dbExecute(conn = con, 
+               statement = sprintf("CREATE VIEW gb_data AS SELECT * FROM read_csv('%s')", 
+                                   csv))
+
+gb_dat = dplyr::tbl(con, from = "gb_data")
+
+# Extraction des données avec les filtres 
+# Ne prend que quelques secondes sur un ordinateur portable avec les données sur un disque dur (ce qui n'est vraiment pas le plus rapide!). 
+# Il faudrait tester avec un 'disque' NVMe SSD qui est beaucoup plus rapide.  
+tictoc::tic() # 180 secondes (~3 min), ce temps est pour des conditions sous-optimales. Il est facile d'obtenir un meilleur temps si les données étaient directement dans mon ordinateur (disque plus rapide). 
+inatdb_animaux = gb_dat |> 
+  # iNaturalist Research-grade Observations voir 
+  # https://www.gbif.org/dataset/50c9509d-22c7-4a22-a47d-8c48425ef4a7
+  filter(datasetKey == '50c9509d-22c7-4a22-a47d-8c48425ef4a7', 
+         # prendre seulement les observations au niveau de l'espèce et plus précis
+         taxonRank %in% c("SPECIES", "SUBSPECIES", "VARIETY"), 
+         # Extraire le règne animal seulement pour le moment
+         kingdom %in% c('Animalia') 
+  ) |>
+  # Extraction de certaines colonnes pour avoir un fichier vraiment plus petit
+  dplyr::select(# kingdom,
+    phylum, class, order, family, species, scientificName, verbatimScientificName,
+    decimalLatitude, decimalLongitude, coordinateUncertaintyInMeters, 
+    identifiedBy, recordedBy, 
+    eventDate, 
+    datasetKey,
+    license) |> 
+  collect()
+tictoc::toc()
+[...]
+# Exportation de inat_dat
+write.csv(x = inatdb_animaux, 
+          file = 'data/gbif_data/inat_research_grade_obs_animalia.csv')
+
 ```
 
-Nous voudrions avoir les observations avec un niveau taxonomique d'espèce. Nous pouvons assumer que les noms d'espèces avec 2 mots et plus correspond en général au nom binomial (Genre espèce).
+Nous voudrions avoir les observations avec un niveau taxonomique d'espèce.
+
+```{r lire_donnees_inat_prefiltre}
+ginat = read.csv(file = 'data/gbif_data/inat_research_grade_obs_animalia.csv')
+```
 
 ```{r preparation_noms_binomial, eval=FALSE}
+colnames(ginat)
 # Compte le nombre d'entrées (pas nécessairement des espèces avec nom binomiale)
 # Prend quelques secondes 
-nb_unique_nom_sp = atlas_sp |> 
+nb_unique_nom_sp = ginat |> 
   # Garde les noms unique seulement
-  distinct(valid_scientific_name) |> 
-  collect()
-
-# Voir les noms d'espèces binomial seulement (en trouvant les noms avec 2 mots et +)
-nb_binom_unique = nb_unique_nom_sp |> 
-  # Ajout d'une colonne avec le nombre de mots ('\\w+')
-  mutate(compte_nb_mots = stringr::str_count(valid_scientific_name, '\\w+'))  |> 
-  # Garde ceux qui ont plus de deux mots 
-  filter(compte_nb_mots >= 2) |> 
-  # retrait du compte (c'était juste pour le filtre)
-  dplyr::select(-compte_nb_mots) |> 
-  pull(valid_scientific_name)
-
-# Nombre espèces avec nom binominal (binôme linnéen)
-mess_nb_sp = sprintf("--> Retrait de %s 'valid_scientific_name' pour les binômes linnéens seulement.", 
-                     nrow(nb_unique_nom_sp)-length(nb_binom_unique))
-message(mess_nb_sp)
-```
-
-```{r noms_sp_retires, eval=FALSE}
-# Voir les noms que nous avons enlevés.
-nb_unique_nom_sp |> 
-  # Retirer de nb_unique_nom_sp tous les noms d'espèces qui sont dans nb_binom_unique
-  filter(!(valid_scientific_name %in% nb_binom_unique))
-```
-
-L'étape d'exploration et de filtration des données est pour ne pas faire ce travail plus tard. Parce qu'à un moment donnée, il va falloir vérifier l'information. En procédant de cette manière, on assure que les données seront 'propres' le plus possible tout le long de l'analyse.
-
-```{r telecharger_donnees_et_object, eval=FALSE}
-# Obtenir les noms unique des jeux de données
-# dt_nm = atlas_sp |> 
-#   distinct(dataset_name) |> 
-#   collect()
-
-# db_exclure = grep(pattern = 'paleon|fossil|Trace', 
-#                   x = unique(dt_nm$dataset_name), 
-#                   ignore.case = TRUE, 
-#                   value = TRUE)
-
-# Préparation des données pour faire l'analyse sur le fichier parquet directement
-# tictoc::tic() # prend ~ 130 sec
-# atlas_sp = atlas_sp |> 
-#   # garder certaines espèces : Extraire les données d'espèces avec 2 mots et +
-#   filter(valid_scientific_name %in% nb_binom_unique,
-#          # Filtre pour garder seulement les règnes d'intérêt (ajouté suite à exploration de la BD)
-#          kingdom %in% c("Animalia"),
-#          !(dataset_name %in% db_exclure),
-#          # Vérification avec iNaturalist : très rare ou peu d'intérêt pour faire un guide qui focus sur les plus grandes occurence 
-#          # !(phylum %in% c("Acanthocephala", "Brachiopoda", 
-#          #                 "Chaetognatha", "Nemertea", "Priapulida", 
-#          #                 "Sipuncula", "Blastocladiomycota", "Chytridiomycota", 
-#          #                 "Entomophthoromycota", "Glomeromycota", "Mucoromycota")),
-#          phylum %in% c(#"Acanthocephala", "Annelida",
-#            "Arthropoda",
-#            #"Brachiopoda", "Bryozoa", "Chaetognatha",
-#            "Chordata")
-#          # "Cnidaria", "Ctenophora", "Echinodermata", "Mollusca", "Nematoda",
-#          # "Nemertea", "Platyhelminthes", "Porifera", "Priapulida", "Rotifera", "Sipuncula")         
-#   ) |>
-#   # kingdom %in% c("Plantae", "Animalia", "Fungi")) |>
-#   collect()
-# tictoc::toc() # Arrêter le chrono (le temps total est copié en haut pour référence dans le futur)
-
-# * Note : Chercher seulement ceux qui contiennent '*paleon*' * voulant dire tout ce qui peut avoir les lettres paleon peut importe ou, puis la même chose pour fossil. Par contre, nous voulons chercher ces deux choses en même temps pour éviter une autre ligne de code. Le caractère '|' ou barre verticale nous permet de dire 'ou'. Donc nous cherchons tout ce qui contient paleon OU fossils dans les noms de bases de données. Extraire le nom des bases de données avec `bd_noms = unique(atlas_sp$dataset_name)` puis `(noms_fossils = grep(pattern = 'paleon|fossil|Trace', x = bd_noms, value = TRUE, ignore.case = TRUE))`. On compte le nombre d'occurence de ces fossils `atlas_sp |> filter(dataset_name %in% noms_fossils) |> count()`.
-
-# On a encore plus d'information sur les noms. Quand on a regardé les Trilobites, on a vu que 4 noms différents. Ici nous en avons 7. 
-
-# * Note : C'est long à rouler. Mais sur macbook air avec puce M3, ça prend environ (j'estime avec `tictoc::tic()` et `tictoc::toc()`. Un petit outil pour mesurer le temps de calcul. J'ajoute une note pour me dire environ combien de temps (arondi à la hausse) roule une analyse. Comme cela, ça me donne une idée plus claire de comment organiser mon travail et attendre pour une commande et faire autre chose pendant que ça roule. Surtout savoir quand y revenir).
-# * Note : Filtre nom d'espèce --- Nous voulons nous assurer que les noms d'espèces respectent la nomenclature binomiale. Mais aussi, nous voulons garder les identification à l'espèce et plus bas. Plusieurs analyses assume d'avoir de l'information sur les espèces. Cette supposition pourrait être discutable : si on a deux espèces plus difficile à différencier (chez les oiseaux pour certains goélands, chez certaines espèces de mésanges), on voudrait peut-être les inclures... faudrait voir l'impact. Mais nous nous allons arrêter de nous en faire puis continuer. 
-# * Note : Filtre de kingdom --- En vérifiant avec le nom des règnes `count(x = atlas_sp, kingdom)` incertae sedis Haha! De position incertaines... ouin on pourrait les enlever pour rendr enotre jeux de données. 
-# On devrait probablement enlevé les bactéries (pas massif la contribution au données et de toute manière on est pas encore à cnoosidéré les bactéries ou même les Chromista, Protozoa, et encore moins les incertae sedis!)
-# * Note : Nom des kingdom --- Pour extraire `dput(unique(atlas_sp$kingdom))`
-
-# Exporter les données pour utilisation plus tard 
-# tictoc::tic() # prend ~  230 sec
-# save(atlas_sp, 
-#      # file = '/Volumes/Brainmemory/data/atlas_biodiv_qc/atlas_public_2025-03-17.RData')
-#      file = 'data/atlas_biodiv_qc/atlas_public_2025-03-17.RData')
-# tictoc::toc()
+  count(species) 
 ```
 
 ```{r exploration_donnes_biodiv}
 # Compte le nombre d'occurence après filtration (pas mal!)
-count(atlas_sp)
+count(ginat)
 
 # Nombre d'espèces unique pour chaque ordre. 
-atlas_sp |> 
-  distinct(phylum, class, order, family, genus, valid_scientific_name) |> 
+ginat |> 
+  distinct(phylum, class, order, family, species) |> 
   count(phylum, class, order) |> 
-  arrange(-n) |> 
-  collect()
+  arrange(-n) 
 ```
 
 ```{r extraction_classe_plus_nombreuse}
 # Regarder le nombre d'observations dans chaque règne-classe dans la base de données
-nb_class = atlas_sp |> 
+nb_class = ginat |> 
   count(phylum, class) |> 
-  arrange(-n) |> 
-  collect()
+  arrange(-n)
 
 # Extraction des classes avec plus de n observations 
 class_select = nb_class |> 
@@ -188,31 +169,27 @@ class_select = nb_class |>
 ```
 
 ```{r top_5_especes_en_n_observations_par_classe_et_ordre}
-top_nb_sp_per_class = atlas_sp |> 
+top_nb_sp_per_class = ginat |> 
   filter(!(class %in% c("Aves")))  |> 
   dplyr::count(class, 
                order, 
-               family, 
-               valid_scientific_name) |> 
+               species) |> 
   group_by(class, 
            order) |> 
   filter(class %in% class_select) |> 
   slice_max(n = 5,
-            order_by = n) |> 
-  collect()
+            order_by = n)
 ```
 
 Pour les oiseaux, nous allons utiliser la base de données sous format .parquet directement pour filtrer les données, faire un calcul du compte d'observation de chaque espèce.
 
 ```{r AVES_top_5_especes_en_n_observations_par_classe_et_ordre}
-tictoc::tic() # ~0.45 sec!!!!! 
-AVES_top_nb_sp_per_class = atlas_sp |> 
-    filter(class %in% c("Aves")) |>  
+AVES_top_nb_sp_per_class = ginat |> 
+  filter(class %in% c("Aves")) |>  
   count(class, 
-        order, family,
-        valid_scientific_name) |> 
-  collect()
-tictoc::toc()
+        order, 
+        family,
+        species)
 ```
 
 Lire des fichiers .parquet est d'une rapidité incroyable.
@@ -236,98 +213,6 @@ AVES_prop_nb_sp_per_class |>
 
 ```
 
-<!-- ``````{r} -->
-
-<!-- # Mmmmm... y'a des noms louche là dedans... je vois 'Trilobita', pas des fossils ça?  -->
-
-<!-- # vérifier si les titres de certain jeux de données pourrait aider à filtrer les fossils -->
-
-<!-- atlas_sp |>  -->
-
-<!--   filter(class == 'Trilobita') |>  -->
-
-<!--   pull(dataset_name) |>  -->
-
-<!--   unique() -->
-
-<!-- # Inspection d'un nom random qui me dit rien pour savoir c'est quoi.  -->
-
-<!-- atlas_sp |>  -->
-
-<!--   filter(class == 'Filosia') |>  -->
-
-<!--   pull(dataset_name) |>  -->
-
-<!--   unique() -->
-
-<!-- atlas_sp |> # Cette espèce est un fossil -->
-
-<!--   filter(valid_scientific_name == 'Cornulites serpularius') |>  -->
-
-<!--   pull(dataset_name) |>  -->
-
-<!--   unique() -->
-
-<!-- atlas_sp |>  -->
-
-<!--   filter(dataset_name %in% 'Trace element-contaminated soil Metagenome') |>  -->
-
-<!--   count() -->
-
-<!-- atlas_sp |>  -->
-
-<!--   filter(dataset_name %in% 'Trace element-contaminated soil Metagenome') |>  -->
-
-<!--   distinct(valid_scientific_name) -->
-
-<!-- unique(atlas_sp$dataset_creator) -->
-
-<!-- unique(atlas_sp$dataset_name) -->
-
-<!-- nb_phyla = atlas_rem |>  -->
-
-<!--   # Compte le nombre de lignes avec trilobites. -->
-
-<!--   count(phylum, class, order, family, valid_scientific_name) |>  -->
-
-<!--   # Obtenir les données en format 'tibble' localement -->
-
-<!--   collect() -->
-
-<!-- # Oups! Des trilobites?  -->
-
-<!-- tbt = atlas_rem |>  -->
-
-<!--   # Filtrer pour iobtenir les trilobites seulement  -->
-
-<!--   filter(class == "Trilobita") |>  -->
-
-<!--   # Compte le nombre de lignes avec trilobites. -->
-
-<!--   count() |>  -->
-
-<!--   # Obtenir les données en format 'tibble' localement -->
-
-<!--   collect() -->
-
-<!-- tbt -->
-
-<!-- licences = atlas_rem |> distinct(license)|> collect() -->
-
-<!-- # ob_val =  atlas_rem |> distinct(observation_value)|> collect() # ???  -->
-
-<!-- atlas_rem |> distinct(observation_type)|> collect() -->
-
-<!-- atlas_rem |> distinct(dataset_name)|> collect() -->
-
-<!-- atlas_rem |> distinct(dataset_creator)|> collect() -->
-
-<!-- atlas_rem |> distinct(dataset_publisher)|> collect() -->
-
-<!-- atlas_rem |> distinct(effort_sampling_method)|> collect() -->
-
-<!-- ``` -->
-
 ### Compte nombre d'observations iNaturalist selon des taxons
 
 ```{r fonction_pour_compte_nb_obs_group_ord}
@@ -343,12 +228,14 @@ AVES_prop_nb_sp_per_class |>
 plot_data <- function(data, n, order_sel = 'Lepidoptera') {
   data_order = data |> 
     filter(order %in% order_sel) 
+  
   if (nrow(data_order)==0) {
     stop("Pas de données pour l'ordre sélectionné")
   }
+  
   data_order |>  
     group_by(phylum, class, 
-             valid_scientific_name,
+             species,
              order) |> 
     summarize(total=sum(cnt)) |> 
     arrange(phylum, class, order, desc(total)) |> 
@@ -361,11 +248,11 @@ plot_data <- function(data, n, order_sel = 'Lepidoptera') {
                                               .x = total_obs, 
                                               .fun = sum, 
                                               .desc = TRUE), 
-           sci_lab = gsub(pattern = ' ', replacement = '\n', x = valid_scientific_name),
+           sci_lab = gsub(pattern = ' ', replacement = '\n', x = species),
            sci_nom = forcats::fct_reorder(sci_lab, 
                                           total, .desc = TRUE)) |> 
     # Prendre seuelemnt les n premiers
-    ggplot(aes(x=forcats::fct_reorder(valid_scientific_name, 
+    ggplot(aes(x=forcats::fct_reorder(species, 
                                       total, .desc = TRUE),
                y = total)) + 
     scale_y_log10()+ 
@@ -380,19 +267,12 @@ plot_data <- function(data, n, order_sel = 'Lepidoptera') {
 ```
 
 ```{r}
-sp_count <- atlas_sp |> 
-  filter(dataset_name == 'iNaturalist Research-grade Observations') |> 
-  group_by(phylum, class, order, dataset_name, 
-           valid_scientific_name, vernacular_fr, 
-           group_fr) |> 
-  summarize(cnt=count()) |> 
-  ungroup() |> 
-  collect()
+sp_count <- ginat |> 
+  count(phylum, class, order, species, name = 'cnt') 
 
 # Compte le nombre d'observation par grand groupe d'organimse
 # On peut voir qu'il y a des biais dans les informations rapporté (il y a nettement plus de coléoptère : 'Indeed, to a good approximation, all species are insects!' R. May 1986, https://www.annualreviews.org/docserver/fulltext/ento/63/1/annurev-ento-020117-043348.pdf?expires=1755916267&id=id&accname=guest&checksum=1939D9B95199827819F220903CE2448B)
-order_count = atlas_sp |> 
-  filter(dataset_name == 'iNaturalist Research-grade Observations') |>
+order_count = ginat |> 
   count(phylum, class,  order, name = 'total_par_groupe') |> 
   arrange(-total_par_groupe) |> 
   collect()
@@ -408,23 +288,19 @@ plot_data(data = sp_count, n = 60,  order_sel = 'Passeriformes')
 
 ```{r}
 
-atlas_sp |> 
+ginat |> 
   filter(phylum %in% c('Chordata','Arthropoda'), 
-         !(class %in% 'Teleostei'),
-         dataset_name == 'iNaturalist Research-grade Observations') |> 
-  group_by(phylum, class, order, dataset_name, 
-           valid_scientific_name, vernacular_fr, 
-           group_fr) |> 
-  summarize(cnt=count()) |> 
+         !(class %in% 'Teleostei')) |> 
+  group_by(phylum, class, order, species) |> 
+  count(name = 'cnt') |> 
   ungroup() |> 
-  collect() |> 
   # Filtre seulement les ordres avec un nombre d'observation précis 
   group_by(order) |> 
   mutate(total_order = sum(cnt)) |> 
   filter(total_order>50) |> 
   # Sommaire taxonomique d'observation
   group_by(phylum, class, 
-           valid_scientific_name,
+           species,
            order) |> 
   summarize(total=sum(cnt)) |> 
   arrange(phylum, class, order, desc(total)) |> 
@@ -442,7 +318,7 @@ atlas_sp |>
                                             .x = total_obs, 
                                             .fun = sum, 
                                             .desc = TRUE), 
-         sci_lab = gsub(pattern = ' ', replacement = '\n', x = valid_scientific_name),
+         sci_lab = gsub(pattern = ' ', replacement = '\n', x = species),
          sci_nom = forcats::fct_reorder(sci_lab, 
                                         total, .desc = TRUE)) |> 
   # Prendre seuelemnt les n premiers
