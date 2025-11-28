@@ -1,0 +1,108 @@
+
+```{r}
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+## Prépare les MRC du Québec 
+## 
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+# date création: 2025-08-31
+# auteur: Marc-Olivier Beausoleil
+
+## ____________####
+## Lisez-moi --------
+#   --> Préparation de la couche spatiale des MRC du Québec pour exportation en GeoPackage au lieu d'un shapefile 
+
+## ____________####
+## Prépare l'environnement --------
+```
+
+```{r model_lm_latitude_effort}
+# Extraire les coordonnées 
+ebird_hp_coord  = ebird_hp_sf |>  
+  st_coordinates() |> 
+  as.data.frame() |> 
+  rename(lng = X, 
+         lat = Y)
+
+# Ajouter les coordonnées 
+ebird_hp_sf_coords = bind_cols(ebird_hp_sf, 
+                               ebird_hp_coord)
+# Montre la relation entre Le nombre d'espèces et la latitude
+gg_ebird_lm = ebird_hp_sf_coords |> 
+  ggplot(mapping = aes(x = lat, 
+                       y = numSpeciesAllTime)) + 
+  geom_point() + 
+  scale_y_sqrt() + 
+  geom_smooth(method = 'lm')
+gg_ebird_lm
+```
+
+```{r modele_lineaire}
+# Faire un modèle linéaire 
+lm.out = lm(sqrt(numSpeciesAllTime) ~ lat, 
+            data = ebird_hp_sf_coords)
+# Voir le résultat du modèle 
+slm = summary(lm.out)
+
+slm$adj.r.squared
+```
+
+Bon, OK, on n'explique pas beaucoup de la variance... est-ce qu'on peut faire confiance à ce résultat?
+  
+```{r modele_lineaire_assume}
+# Voir si la distribution est normal (les points devraient être sur la ligne 1:1)
+plot(lm.out, which = 2)
+# Histogramme des résiduels pour voir si cela est distribué avec la forme 'normale'
+hist(residuals(lm.out))
+```
+
+Bref, ce qu'on peut dire, c'est qu'on a un petit biais d'échantillonnage dans le sud du Québec ($lat < 50.5$ ou la valeur de `pts[2]` = `r formatC(pts[2], format = "f", big.mark = "", digits = 2)`!).
+
+```{r montre_portion_sud_biais}
+# Minimum latitude 
+min_lat = min(ebird_hp_sf_coords$lat)
+# Maximum latitude 
+seuil_nord_lat = pts[2]
+
+# Prépare les données
+ebird_hp_sf_coords |>
+  # Faire une variable qui change l'opacité des points en fonction d'un seuil de latitude (50.5)
+  mutate(lat_seuil = ifelse(test = lat <= seuil_nord_lat, 
+                            yes = 1, 
+                            no = 0)) |> 
+  # Structure de base 
+  ggplot(mapping = aes(x = lat, 
+                       y = numSpeciesAllTime, 
+                       alpha = lat_seuil)) + 
+  # Points sans légende 
+  geom_point(show.legend = FALSE) + 
+  scale_y_sqrt() + 
+  # Ajout d'un modèle linéaire 
+  geom_smooth(data = ebird_hp_sf_coords |>
+                filter(lat <= seuil_nord_lat),
+              mapping = aes(x = lat, 
+                            y = numSpeciesAllTime),
+              method = 'lm', 
+              inherit.aes = FALSE) +
+  # Rectangle autour des points en focus 
+  annotate("rect", 
+           xmin = min_lat, 
+           xmax = seuil_nord_lat,
+           ymin = 0, 
+           ymax = max(ebird_hp_sf_coords$numSpeciesAllTime, na.rm = TRUE),
+           alpha = .2, 
+           colour = "red", 
+           fill = NA)
+```
+
+Puis en regardant le résultat du modèle linéaire avec juste les données du sub, vite comme cela, il n'y a pas grand-chose à dire ($r^2 = 0$).
+
+```{r lm_seulement_lat_basse}
+# Faire un modèle linéaire 
+lm.out = lm(sqrt(numSpeciesAllTime) ~ lat, 
+            data = ebird_hp_sf_coords |> 
+              filter(lat < seuil_nord_lat))
+# Voir le résultat du modèle 
+slm = summary(lm.out)
+# R^2 
+slm$adj.r.squared
+```

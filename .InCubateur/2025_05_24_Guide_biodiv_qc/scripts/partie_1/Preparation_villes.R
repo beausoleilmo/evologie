@@ -16,9 +16,9 @@
 
 # Charge selon la position du chemin d'accès 
 if (!grepl(pattern = '2025_05_24_Guide_biodiv_qc', x = getwd())) {
-  source(file = '.InCubateur/2025_05_24_Guide_biodiv_qc/scripts/00_initialize.R')
+  source(file = '.InCubateur/2025_05_24_Guide_biodiv_qc/scripts/00_init/00_initialize.R')
 } else {
-  source(file = 'scripts/00_initialize.R')
+  source(file = 'scripts/00_init/00_initialize.R')
 }
 
 # Créer un dossier pour exporter nos données 
@@ -39,8 +39,16 @@ villes_qc = st_read(
 ## ____________####
 ## Exporter les données --------
 
-st_write(obj = villes_qc, 
-         dsn = 'output/villes_qc_ouranos.gpkg', 
-         # Donner un nom à la colonne de géométrie 
-         layer_options="GEOMETRY_NAME=geometry",
-         delete_dsn = TRUE)
+st_write(
+  obj = villes_qc, 
+  dsn = 'data/partie_1/villes/villes_qc_ouranos.gpkg', 
+  # Donner un nom à la colonne de géométrie 
+  layer_options="GEOMETRY_NAME=geometry",
+  delete_dsn = TRUE
+)
+
+# Vous pouvez aussi directement exporter en CSV tout en conservant la géométrie avec layer_options pour nommer les colonnes longitude latitude. 
+# st_write(obj = villes_qc, 
+#          dsn = "data/villes_qc_all.csv", 
+#          layer_options = "GEOMETRY=AS_XY")
+

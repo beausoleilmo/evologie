@@ -18,9 +18,9 @@
 
 # Charge selon la position du chemin d'accès 
 if (!grepl(pattern = '2025_05_24_Guide_biodiv_qc', x = getwd())) {
-  source(file = '.InCubateur/2025_05_24_Guide_biodiv_qc/scripts/00_initialize.R')
+  source(file = '.InCubateur/2025_05_24_Guide_biodiv_qc/scripts/00_init/00_initialize.R')
 } else {
-  source(file = 'scripts/00_initialize.R')
+  source(file = 'scripts/00_init/00_initialize.R')
 }
 
 # Créer un dossier pour exporter nos données 
@@ -32,14 +32,30 @@ dir.create(path = 'data',
 ## Charge les données --------
 # Ici c'est le Shapefile 
 regqc = sf::st_read(
-  dsn = "data/adim_reg_qc/mrc_s.shp"
+  dsn = "zdata/partie_1/admin_geo/SHP/mrc_s.shp"
 ) 
 
+# regqc_simp = st_simplify(
+#   x = regqc, 
+#   dTolerance = 20
+# )
+
+regcan = sf::st_read(
+  dsn = "zdata/partie_1/admin_geo/admin_reg_can/lpr_000a21f_f/lpr_000a21f_f.gdb"
+) 
 
 ## ____________####
 ## Exporter les données --------
 
-# Exporter le fichier SHP 
-sf::st_write(obj = regqc,
-             dsn = "data/adim_reg_qc/mrc_s.gpkg"
+# Exporter en fichier geopackage
+sf::st_write(
+  obj = regqc,
+  dsn = "data/partie_1/admin_geo/admin_reg_qc/mrc_s.gpkg",
+  delete_dsn = TRUE
+) 
+
+# Exporter en fichier geopackage
+sf::st_write(
+  obj = regcan,
+  dsn = "data/partie_1/admin_geo/admin_reg_can/can_lim.gpkg"
 ) 
