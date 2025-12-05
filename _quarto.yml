@@ -11,6 +11,7 @@ language:
     appendix-attribution-cite-as: "Citation : "
     # appendix-attribution-bibtex: "Citation BibTeX : "
 
+# NOTE : site-url and description for RSS feed 
 website:
   title: "évologie"
   site-url: https://evologie.netlify.app
@@ -20,10 +21,10 @@ website:
       - about.qmd
       - icon: github
         href: https://github.com/beausoleilmo
-      # - icon: linkedin
-        # href: https://www.linkedin.com/in/marcolivierbeausoleil/
-      # - icon: rss
-      #   href: index.xml
+      - icon: linkedin
+        href: https://www.linkedin.com/in/marcolivierbeausoleil/
+      - icon: rss
+        href: index.xml
 
 format:
   html:
