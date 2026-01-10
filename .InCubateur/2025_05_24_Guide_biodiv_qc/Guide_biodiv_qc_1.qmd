@@ -1,12 +1,13 @@
 ---
 title: "Guide d'identification de biodiversité du Québec - Partie 1 : les cartes"
-description: "Est-ce que les données de biodiversité issues de la science citoyenne permettraient l'élaboration d'un guide d'identification des espèces fréquemment observées?"
+description: "Comment les données de biodiversité issues de la science citoyenne permettraient-elles l'élaboration de dépliants d'identification d'espèces?"
 bibliography: ../../posts/ref_blg.bib
-csl: ../../posts/evolution.csl
+# csl: ../../posts/evolution.csl
 # date: "2025-05-24"
 # date: "2025-10-24"
-date: "2025-11-26"
-categories: ["guide", "biodiversité", "analyse", "code", "données", "cartes"]
+# date: "2025-12-20"
+date: "2026-01-12"
+categories: ["biodiversité", "analyse", "cartes", "tutoriel"]
 image: "https://marcolivierbeausoleil.wordpress.com/wp-content/uploads/2015/07/cropped-imgp81461.jpg"
 author:
   - name: Marc-Olivier Beausoleil
@@ -23,126 +24,70 @@ editor_options:
   chunk_output_type: console
 ---
 
-<!-- IMPORTANT -->
 
-<!-- NOTE ../../posts/ref_blg.bib should be ../ref_blg.bib in final product-->
+```{r variable_montre_carte_interactive, echo=FALSE}
+# Mettre 'FALSE' pour une exportation rapide du blogue
+# TRUE produira toutes les cartes 
+intermap_slow = FALSE
+```
 
-<!-- NOTE ../../postsevolution.csl should be ../evolution.csl in final product-->
 
-## Six milliards de solitudes, ça fait beaucoup
+## Un guide qui s'adapte
 
-Les chiffres en lien avec la biodiversité (appelé aussi diversité biologique ou « biodiv » pour les intimes) sont stupéfiants. Voici quelques statistiques. Le site web <a href='https://www.checklistbank.org' target='_blank'>ChecklistBank</a>, une référence qui catalogue l'ensemble des espèces connues, répertorie plus de 2.2 millions d'organismes sur la terre. Mais il en existe beaucoup plus. Les estimations du nombre d'espèces sur la terre sont varient beaucoup selon la source : allant de quelques millions à plusieurs milliards. Un article propose même un potentiel de six milliards (🤯), tout en excluant les virus [@larsenInordinateFondnessMultiplied2017].
+Dans le [dernier billet](Guide_biodiv_qc_0.qmd) où nous parlions de biodiversité, nous avons terminé sur mon plan pour faire un projet permettant de représenter la biodiversité du Québec dans un dépliant. Ce guide d'identification serait basé sur les données de science citoyenne et sur des données publiques qui nous permettraient de faire des cartes. 
 
-La proportion du nombre d'espèces décrites actuellement (environ 1.5 million) par rapport au nombre hypothétique total d'espèces (entre un à six milliards) est d'entre `r round(1.5e6/1e9*100, 2)`% et `r round(1.5e6/6e9*100, 2)` %. Selon ces estimations, nous ne connaîtrions que moins de 0.2% de tous les organismes avec qui nous partageons notre unique planète. Toute cette vie qui a survécu de manière ininterrompue depuis au moins 3.5 milliards d'années. 
+Avant de se lancer dans ce billet, qui est un tutoriel pour faire de la cartographie dans R, voici mon plan détaillé pour ce projet. 
 
-<!-- Et l'ensemble des populations capables de former une descendance viable forment une espèce biologique. -->
+### Plan et objectifs du projet
 
-On parle bien d'espèce : rappelons que la biodiversité n'est pas que le nombre d'espèces, mais aussi tous les individus au sein des populations ainsi que leur habitat.
+Pour ce projet, nous devons remplir quelques objectifs qui seront abordés lors de cette série « Guide d'identification de biodiversité du Québec » :
 
-La <a href='https://www.cbd.int/convention/articles?a=cbd-02' target='_blank'>Convention sur la diversité biologique (CDB)</a> définit la biodiversité comme suit :
+A) **Cartographie et spatialisation des données**
 
-> Variabilité des organismes vivants de toute origine y compris, entre autres, les écosystèmes terrestres, marins et autres écosystèmes aquatiques et les complexes écologiques dont ils font partie; cela comprend la diversité au sein des espèces et entre espèces ainsi que celle des écosystèmes.
+    1.1  **Cartographie de référence** : produire une carte avec les MRC du Québec et les domaines biologiques du Québec;
+  
+    1.2  **Identification des zones critiques de biodiversité** : obtenir et cartographier des sites ornithologiques ayant un fort volume d'observations issues de la science citoyenne, et qui seront utilisées pour mettre en évidence des zones à haut potentiel de biodiversité;
+  
+    2.1 **Inventaire des espèces observées** : élaborer, pour une région d'intérêt donnée, une liste d'espèces souvent vues par la science citoyenne ;
 
-Mais qu'est-ce que cela veut dire? Une manière d'interpréter cette définition se fait par la lentille de l'évolution, et en particulier, le processus de la sélection naturelle. La variabilité des organismes dans les populations que nous voyons est intimement liée avec l'environnement : ce sont les conditions de l'environnement qui favorisent ou défavorisent certains individus (et leur génétique) à un moment donné. Et les individus modifient leur environnement à leur tour pour faciliter leur transmission génétique (fabrication d'un nid, d'un barrage pour les castors, les fleurs pour favoriser la pollinisation, etc.).
+B) **Contenu descriptif et visuel pour le dépliant (optionnel)**
 
-## Voyager avec son bagage génétique
+    3.1  **Liste de traits** : Compiler des informations morphologiques (longueur, envergure, poids, etc.) à intégrer aux descriptions. Selon le design du dépliant, ajouter des éléments pédagogiques comme des trucs mnémotechniques pour l'identification des oiseaux chanteurs.
+    
+    3.2  **Portrait photo des organismes** : Intégrer des photos d'organismes afin d'enrichir le contenu visuel et faciliter l'identification.
 
-Chaque individu transporte son propre bagage génétique et voyage à travers le paysage. Eh oui, cela veut dire que vous êtes en quelque sorte, le véhicule de voyage de votre bagage génétique. Ensemble, vous faites un voyage à travers le paysage et les générations! Les différences génétiques entre tous les individus constituent la variété de la vie.
+La première partie de cette série commence par la cartographie (1.1 et 1.2) puisque nous allons avoir besoin de manipuler de l'information spatiale lorsque nous allons travailler avec des données de biodiversité (dans un autre billet de blogue). Plus spécifiquement, nous utiliserons des progiciels[^1] [R](https://cran.r-project.org) pour faire des analyses spatiales. J'assume ici une familiarité avec le langage R [@R-base]. Si vous voulez débuter avec le langage R, je recommande les <a href='https://r.qcbs.ca/fr/workshops/' target='_blank'>ateliers R du Centre de la science de la biodiversité du Québec</a>.
 
-<!-- ##################################################################################### -->
-
-Et cela n'est pas anodin : car sans variation, l'évolution n'est pas possible. 
-
-Imaginez un ensemble d'organismes tous strictement identiques. Dans ce monde étrange, aucune mutation n'est possible, ce qui empêche l'émergence de différences génétiques. Le code génétique est absolument pareil d'un individu à l'autre. Dans ce cas, contrairement à ce que nous observons actuellement, la sélection naturelle qui mènerait à l'émergence de nouvelles espèces ne peut pas fonctionner : aucun choix n'est possible entre organismes puisque tous les codes génétiques sont des clones^[L'épigénétique pourrait être un moyen d'avoir tout de même des différences d'expressions des gènes, mais imaginons que nous n'avons même pas ce genre de variation] ! Le pire serait qu'il n'y aurait même pas de potentiel d'évolution suite à de grands changements environnementaux...
-
-Heureusement, notre monde est plein de variations. Et les populations hébergent une diversité génétique. Autrement dit, l'évolution s'observe au niveau des populations puisqu'elles sont diversifiées. Les biologistes qui étudient l'évolution tentent d'expliquer les changements de la composition des populations à la lumière des mécanismes évolutifs. Ils se posent ce genre de questions : pourquoi certaines populations changent-elles tellement qu'elles deviennent de nouvelles espèces? Pourquoi d'autres s'éteignent-elles? Pourquoi des populations ont-elles plus de succès que d'autres? Pourquoi certaines populations préfèrent-elles plus tel environnement à un autre? etc. 
-<!-- ##################################################################################### -->
-
-Imaginez-vous à l'épicerie un samedi matin : vous êtes parmi tous ces gens qui font leurs commissions en même temps au même endroit. Vous êtes tous des êtres uniques autant par votre manière d'être, mais aussi génétiquement. Si nous pouvions séquencer tous les codes génétiques des clients de l'épicerie, incluant le vôtre, nous pourrions établir le bassin génétique de cette « population » d'individus qui font leur épicerie à ce moment. 
-
-Tout comme dans l'exemple précédent, la collection d'individus et leur code génétique différent contribuent à un bassin génétique pour un habitat quelconque. <!-- , puisqu'ils sont tous génétiquement différents les uns des autres  --> C'est donc dans ce bassin de gènes que les individus sont sélectionnés naturellement en fonction des conditions de l'environnement. Cela détermine quel ensemble de bagage génétique pourra voyager dans la prochaine génération. <!-- À quel point l'environnement est exigeant pour les organismes sélection naturelle est d'observer des changements génétiques au niveau des populations.  -->
-
-Rappelons donc que la biodiversité change constamment. Les processus évolutifs peuvent le garantir. Il existe donc des conditions environnementales qui peuvent favoriser ou empêcher l'émergence de biodiversité. Certains moments de l'histoire de la vie montrent effectivement que la biodiversité augmente et diminue à des taux différents [@alroyPhanerozoicTrendsGlobal2008].
-
-<!-- De ce nombre, X sont des insectes. Comme le disait le scientifique Robert M. May [-@mayBiologicalDiversityHow1986] : -->
-
-<!-- > Le nombre total d'espèces effectivement nommées et cataloguées est d'un peu plus d'un million. La plupart d'entre elles sont des insectes. En effet, à une bonne approximation, toutes les espèces sont des insectes ![^1] -->
-
-<!-- [^1]: Citation originale *The total number of species actually named and catalogued is just over one million. Most of these are insects. Indeed, to a good approximation, all species are insects!* -->
-
-<!-- (imaginez le défis collosal si on incluait les espèces fossiles ou éteintes 🦤!) -->
-
-## Les bassins génétiques s'érodent...
-
-Cependant, plusieurs experts sont inquiets : alors que les scientifiques n'ont même pas accès à un portrait complet des espèces vivantes actuellement sur la terre, nous en perdons à un rythme jamais enregistré de l'histoire de l'humanité.
-
-Le rapport de la *Plateforme intergouvernementale scientifique et politique sur la biodiversité et les services écosystémiques* (IPBES), colligé par un groupe international d'experts sur la biodiversité, rapporte qu'environ 1 million d'espèces animales et végétales sont actuellement menacées d'extinction [@ipbesResumeDecideurs2016]. Au Canada, depuis les années 1970, la taille de certaines populations animales a chuté de 62% et plus de la moitié des 910 espèces étudiées ont décliné en abondance [@wwf-canadaRapportPlaneteVivante2025]. Le *Rapport Planète vivante Canada 2025* est clair [-@wwf-canada2025] :
-
-> Le constat est qu'il y a des déclins persistants des populations d'espèces suivies depuis plus d'un demi-siècle.
-
-La perte de biodiversité est un enjeu majeur de notre époque. Comme le rappel le rapport du Cadre mondial de la biodiversité de Kunming-Montréal [@conventiondivbioCBM2022] :
-
-> La biodiversité est essentielle au bien-être humain, à la santé de la planète et à la prospérité économique de tous les peuples, notamment à la réalisation de modes de vie équilibrés et en harmonie avec la Terre nourricière.
-
-En d'autres mots, nous ne pouvons pas nous passer le la biodiversité. Et sa perte est liée à la nôtre. Il semble donc impératif d'en apprendre plus sur ces êtres vivants, petits et grands.
-
-<!-- Une des missions de [Biodiversité Québec](https://biodiversite-quebec.ca/fr/a_propos) est l'agrégation de données de biodiversités de plusieurs sources dont le Système mondial d’information sur la biodiversité <a href='https://www.gbif.org' target='_blank'>GBIF (Global Biodiversity Information Facility)</a>, le Ministère des Forêts, de la Faune et des Parcs, le Regroupement QuébecOiseaux, le Service canadien de la faune et bien d'autres.  En plus, Biodiversité Québec donne [accès aux données publiques de l'Atlas](https://biodiversite-quebec.ca/fr/documentation/acces-atlas) en langage de programmation R. -->
-
-## Guide d'identification motivé par les données citoyennes
-
-Alors, qu'est-ce qui pourrait aider à en apprendre plus sur nos voisins et cousins animaux, plantes, champignons avec qui nous partageons l'environnement?
-
-Où débuter en tant que naturalistes en herbe? <!-- et aider des scientifiques à faire des études en conservation.  --> Les guides d'identification contiennent une source importante d'information sur la biodiversité. Par contre, pour un débutant qui n'est pas accompagné d'un spécialiste, on peut rapidement être submergé par toutes les espèces et les nuances entre différentes formes d'une même espèce. En plus, les livres d'identification sont souvent plutôt lourds à apporter dans un sac. Mais ne pas avoir de guide n'est pas une option si notre but est de connaître les organismes que nous pourrions rencontrer pour une région donnée.
-
-Un juste milieu entre un guide complet sous forme de livre et ne pas avoir de guide pourrait être des petits dépliants avec les espèces locales les plus probables d'être observées dans un milieu. Ce dépliant serait aussi un bon point de départ pour parler de diversité lors de sorties sur le terrain avec un groupe de personnes, dont des enfants, ou pour montrer à des visiteurs curieux ce que nous observons. <!-- C'est une manière de compararer les organismes et leurs liens écologiques, etc. Bref, c'est une sorte de présentation PowerPoint de biodiversité qui vous suit. -->
-
-Serait-il possible de faire un court guide avec des espèces souvent observées pour le Québec? Est-ce possible d'utiliser les données de présence d'espèces pour faire un dépliant de biodiversité? Comme inspiration, la collection de <a href='https://www.broquet.ca/collection/guide-eclair/' target='_blank'>Guides éclair (Broquet)</a> sur le thème de la nature ou les guides de <a href='https://www.waterfordpress.com' target='_blank'>Waterford Press</a> sont le genre de dépliant qui pourrait être fait avec les données de science citoyenne (comme <a href='https://www.inaturalist.org' target='_blank'>iNaturalist</a>). Certains dépliants ajoutent de l'information comme des cartes avec des endroits intéressants pour aller faire des observations en nature.
-
-Faire ce genre de dépliant, avant l'effort collectif amené par la science citoyenne, aurait été une tâche monastique. Les outils et les bases de données de biodiversité, maintenant accessible, rendent ce genre de projet possible.
-
-OK, faisons un plan pour réaliser un dépliant.
-
-<!-- Pour les oiseaux, des guides montrent les espèces les plus fréquemment observées dans différents groupes taxonomiques : 1. la sauvagine et les oiseaux de rivage (environ entre 45 et 60 espèces; pour ceux-ci, les femelles canards sont souvent montrées), 2. le gibier (2-4 espèces), 3. les colombes, pics, martin-pêcheurs, colibris, martinets, etc. (11-12 espèces), 4. les oiseaux de proie (12-13 espèces), 5. Les oiseaux percheurs (45-54). -->
-
-### Objectifs du projet
-
-Pour ce projet, j'imagine ces objectifs qui seront abordés lors de cette série « Guide d'identification de biodiversité du Québec » :
-
-1.  **Cartographie** : faire une carte avec les MRC du Québec et les domaines biologiques du Québec;
-2.  **Zones critiques de biodiversité** : obtenir des sites ornithologiques intéressants (donc beaucoup d'observations) à utiliser pour indiquer des endroits ayant un haut potentiel de biodiversité (dont la diversité d'espèces et d'habitats);
-3.  **Liste d'espèces (présence d'espèces)** : faire une liste d'espèces (nom français et latin) souvent vues par la science citoyenne pour une région d'intérêt;
-4.  (Optionnel) **Liste de traits** : Faire une liste de tailles (longueur, envergure, poids) pour ajouter cette information en description. Selon le design du dépliant, nous pourrions ajouter des informations comme des trucs mnémotechniques pour les oiseaux chanteurs.
-5.  (Optionnel) **Portrait photo des organismes** : Ajouter des photos d'organismes dans le dépliant.
-
-La première partie de cette série commence par la cartographie puisque nous allons avoir besoin de manipuler de l'information spatiale plus tard lorsque nous allons travailler avec des données de biodiversité. Ce billet montre comment utiliser des progiciels R pour faire des analyses spatiales. J'assume ici une familiarité avec le langage R [@R-base]. Si vous cherchez comment débuter en R, je recommande les <a href='https://r.qcbs.ca/fr/workshops/' target='_blank'>ateliers R du Centre de la science de la biodiversité du Québec</a>.
+[^1]: Un progiciel est un ensemble de fonctions qui servent à accomplir des tâches. Dans R, on les mets en mémoire en éxécutant `library(base)` dans la console. Un progiciel s'installe avec la commande `install.packages("dplyr")`. 
 
 ### Reproduire les analyses
 
-Si vous voulez reproduire les analyses ou suivre le code en même temps, l'ensemble des données de ce projet est disponible sur le site [de l'Open Science Framework (OSF) : Guide d’identification de biodiversité du Québec](https://osf.io/92zv4/overview?view_only=528c78edcd814d10a7204e72fdde8490) [@MOBGuideIDBiodiv2025]. N'hésitez pas à vous pratiquer! Notez que les progiciels et données ont leur référence dans le fichier `ref_blg.bib` et sont cités à la fin de ce billet.
+Si vous voulez reproduire les analyses ou suivre le code en même temps, l'ensemble des données de ce projet est disponible sur le site [de l'Open Science Framework (OSF) : Guide d’identification de biodiversité du Québec](https://osf.io/92zv4/overview?view_only=528c78edcd814d10a7204e72fdde8490) [@MOBGuideIDBiodiv2025]. Cliquez sures données (data.zip), téléchargez (icone de téléchargement) et décompressez le fichier. La structure des dossiers de données respecte la structure dans les scripts R. N'hésitez pas à vous pratiquer! Si quelque chose ne tourne pas rond, les commentaires sont bienvenus! 
 
-L'environnement de travail a été capturé avec le progiciel `renv`, ce qui permet d'avoir les mêmes versions de progiciels R pour ce tutoriel. Des explications sont fournies plus bas <!-- (voir @sec-prepenv) --> pour restaurer l'environnement de travail.
+Notez que les progiciels et données ont leur référence dans le fichier [`ref_blg.bib`](https://github.com/beausoleilmo/evologie/blob/7253741bf2edba6bffb354c396cd53c72c804b48/posts/ref_blg.bib) et sont cités à la fin de ce billet.
+
 
 ## Recherche de données
 
-Pour réaliser le projet, nous devons trouver des jeux de données pertinents pour faire une carte et mettre des observations de biodiversité. Beaucoup de jeux de données pour de l'information cartographique administrative ou décrivant le territoire sont disponibles sur [Données Québec (DQC)](https://www.donneesquebec.ca). Pour la biodiversité, le [Global Biodiversity Information Facility (GBIF) ou Système mondial d'information sur la biodiversité (SMIB)](https://www.gbif.org) est *la* source de données la plus reconnue, en particulier pour les données de présence d'espèces Les acronymes (DQC, GBIF, etc.) seront utilisés à côté d'un jeu de données pour connaître leur source rapidement.
+Pour réaliser le projet, nous devons trouver des jeux de données pertinents pour faire une carte et mettre des observations de biodiversité. Beaucoup de jeux de données pour de l'information cartographique administrative ou décrivant le territoire sont disponibles sur [Données Québec (DQC)](https://www.donneesquebec.ca). Pour la biodiversité, le [Global Biodiversity Information Facility (GBIF) ou Système mondial d'information sur la biodiversité (SMIB)](https://www.gbif.org) est **la** source de données la plus reconnue, en particulier pour les données de présence d'espèces Les acronymes (DQC, GBIF, etc.) seront utilisés à côté d'un jeu de données pour connaître leur source rapidement.
 
-### Données administratives et fond de carte
+### Données administratives et du territoire (villes, hydrologie, etc.)
 
-Voici les jeux de données requis pour faire notre carte de base :
+Voici les jeux de données que je propose pour faire notre carte de base (disponible sur [l'Open Science Framework (OSF)](https://osf.io/92zv4/overview?view_only=528c78edcd814d10a7204e72fdde8490)) :
 
 -   **Régions administratives** : [Découpages administratifs (DQC)](https://www.donneesquebec.ca/recherche/dataset/decoupages-administratifs/resource/b368d470-71d6-40a2-8457-e4419de2f9c0) [@MRNFDecAdmin2018] et celles du site [Statistique Canada](https://www12.statcan.gc.ca/census-recensement/2021/geo/sip-pis/boundary-limites/index2021-fra.cfm?year=21) pour les limites du recensement du Canada (voir *Recensement de 2021 - Fichiers des limites* [@statistiquecanadaRecensement2021Fichier2025]);
 -   **Hydrologie** : [Géobase du réseau hydrographique du Québec (GRHQ; DQC)](https://www.donneesquebec.ca/recherche/fr/dataset/grhq) [@MRNFGeobaseResHydro2019];
 -   Référence écologique du Québec avec information sur les biomes : [Classification écologique du territoire québécois (DQC)](https://www.donneesquebec.ca/recherche/dataset/systeme-hierarchique-de-classification-ecologique-du-territoire/resource/b336d842-9f1d-4d0e-88c1-d771d8ade785) [@MRNFClassEcoTerritoire2016];
--   **Villes et toponymie** : Quelques données provenant du [portail de données des portraits climatiques d'Ouranos](https://portraits.ouranos.ca/fr/spatial?a=0&c=0&discrete=1&e=CMIP6&fro=1&i=tg_mean&mun=0&p=50&r=qc000&s=annual&scen=ssp370&w=0&yr=2071) pour le nom des villes et la population de celles-ci [@ouranosPlaces2024]. Par contre, la *Base de données toponymiques du Canada (BDTC)* pourrait être utilisée pour le Canada et sélectionner les villes, les parcs ou autres entités ayant un toponyme [@GouvCanRessNatCan2025]. Ce dernier jeu de données contient des règles d'affichage des étiquettes de toponymie selon l'échelle si cela vous intéresse.
+-   **Villes et toponymie** : Quelques données provenant du [portail de données des portraits climatiques d'Ouranos](https://portraits.ouranos.ca/fr/spatial?a=0&c=0&discrete=1&e=CMIP6&fro=1&i=tg_mean&mun=0&p=50&r=qc000&s=annual&scen=ssp370&w=0&yr=2071) pour le nom des villes et la population de celles-ci [@ouranosPlaces2024]. Par contre, la *Base de données toponymiques du Canada (BDTC)* pourrait être utilisée pour le Canada et sélectionner les villes, les parcs ou autres entités ayant un toponyme [@GouvCanRessNatCan2025]. Ce dernier jeu de données contient des règles d'affichage des étiquettes de toponymie selon l'échelle, mais nous allons pas utiliser celui-ci dans ce tutoriel.
 
-### Données de biodiversité
+### Données de biodiversité de science citoyenne
 
 Pour les données de biodiversité, il existe aussi plusieurs sources. D'abord, il y a le [Global Biodiversity Information Facility (GBIF)](https://www.gbif.org) qui contient en date d'octobre 2025, plus de 43 millions de données de présences d'individus pour le Québec (vous pouvez aller voir cette information directement sur le [site web GBIF avec le filtre de région](https://www.gbif.org/occurrence/search?occurrence_status=present&gadm_gid=CAN.11_1)). Les données de biodiversité du Québec seront explorées dans la deuxième partie de cette série.
 
 -   **Points d'observations eBird** : voir la [documentation ici](https://support.ebird.org/en/support/solutions/articles/48001009443-ebird-hotspot-faqs#anchorAllHotspots) pour accéder aux données. J'en reparlerai plus tard dans le billet;
 -   **Données de présence d'espèces** : [GBIF](https://www.gbif.org) qui peuvent être accessibles directement sur le site web ou avec le [progiciel `rgbif`](https://docs.ropensci.org/rgbif/index.html) [@R-rgbif].
 
-Aussi, il pourrait être intéressant d'avoir des informations sur la taille des organismes et autres traits morphologiques. Au lieu d'aller chercher ces valeurs individuellement, des bases de données sont déjà disponibles dont pour les oiseaux [@tobiasAVONETMorphologicalEcological2022] et plus généralement pour les mammifères et les reptiles [@myhrvoldAmnioteLifehistoryDatabase2015].
+Aussi, il pourrait être intéressant d'avoir des informations sur la taille des organismes et autres traits morphologiques. Au lieu d'aller chercher ces valeurs individuellement, des bases de données sont déjà disponibles, pour les oiseaux [@tobiasAVONETMorphologicalEcological2022] et plus généralement pour les mammifères et les reptiles [@myhrvoldAmnioteLifehistoryDatabase2015].
 
 -   **Traits des espèces** (optionnel) : [AVONET pour les oiseaux](https://figshare.com/s/b990722d72a26b5bfead) [@tobiasAVONETMorphologicalEcological2022] ou une [base de données des oiseaux, mammifères et reptiles](https://www.esapubs.org/archive/ecol/E096/269/) [@myhrvoldAmnioteLifehistoryDatabase2015].
 
@@ -154,7 +99,7 @@ Finalement, des portails de science citoyenne, comme <a href='https://inaturalis
 
 Pour cette première partie, nous allons produire deux cartes pour le dépliant :
 
-1.  une carte de l'ensemble du territoire du Québec pour avoir un contexte général,
+1.  une carte couvrant l'ensemble du territoire du Québec afin d'offrir un contexte général,
 2.  puis une plus petite carte montrant les détails de points importants de biodiversité pour Montréal et Laval.
 
 <!-- Notre plan de match est de préparer notre session R pour avoir les progiciels et fonctions nécessaires pour faire tourner nos scripts. Ensuite, nous allons produire notre carte de fond et une carte avec des points d'observation de biodiversité. -->
@@ -176,16 +121,18 @@ if (!grepl(pattern = '2025_05_24_Guide_biodiv_qc', x = getwd())) {
 }
 ```
 
+L'environnement de travail a été capturé avec le progiciel `renv`, ce qui permet d'avoir les mêmes versions de progiciels R pour ce tutoriel. 
+
 ```{r renv_prep, eval=FALSE, echo=FALSE}
+library(renv)
 # renv::init()   # création de l'espace 
 renv::snapshot() # Enregistre la session actuelle
-renv::restore()  # Permet de restaurer la session avec les mêmes versions
 ```
 
-Un fichier `renv.lock` avec l'environnement de travail reproductible permet de préparer votre session R en installant les progiciels utilisés avec les mêmes versions pour ce tutoriel. Avec le progiciel `renv`, utilisez `renv::restore()` pour recréer cet espace.
+Pour restaurer l'environnement de travail, un fichier `renv.lock` avec l'environnement de travail reproductible permet de préparer votre session R en installant les progiciels utilisés avec les mêmes versions pour ce tutoriel. Avec le progiciel `renv`, utilisez `renv::restore()` pour recréer cet espace.
 
 ```{r renv_install, eval=FALSE, echo=TRUE}
-renv::restore()
+renv::restore() # Permet de restaurer la session avec les mêmes versions
 ```
 
 J'ai placé les progiciels R et autres scripts à appeler dans `00_initialize.R`.
@@ -227,7 +174,7 @@ Les principaux progiciels pour ce projet sont ici :
 
 Nous allons maintenant préparer le terrain pour faire notre carte de base.
 
-## 1. Cartographie
+## 1.1 Cartographie
 
 Lorsqu'on fait des cartes, un fond permet de contextualiser l'information avec des marqueurs spatiaux (délimitation d'une région administrative, lacs ou cours d'eau importants, une ville, etc.). Aussi, les données du fond de la carte sont parfois pertinentes pour faire des manipulations spatiales. Par exemple, il arrive de recouper le territoire par des noms connus (régions administratives), de faire un sommaire en fonction de régions connues ou d'appliquer des filtres à l'échelle d'une MRC.
 
@@ -265,10 +212,6 @@ Il serait intéressant de voir les données sur une carte rapidement. Le progici
 ```{r definir_tolerance, echo=TRUE}
 # Tolérance des informations géographiques pour une 
 tolerance_cartes = 0
-```
-
-```{r variable_montre_carte_interactive, echo=FALSE}
-intermap_slow = TRUE
 ```
 
 ```{r carte_interactive_qc_mrc, eval=TRUE}
@@ -371,7 +314,7 @@ mapview(
 
 C'est pas super comme carte... mais nous pourrions faire une carte qui superpose les *bordures* des régions administratives sur les domaines écologiques. C'est ce que nous allons faire avec une carte statique.
 
-## Carte statiques
+## Cartes statiques
 
 Le progiciel `ggplot2` [@ggplot22016; @R-ggplot2] a plusieurs fonctions pour ajouter des couches spatiales (par exemple `geom_sf`). Aussi, `ggplot()` ajoute les couches une par-dessus les autres : donc l'ordre dans lequel les couches sont placées pour faire la carte est important.
 
@@ -433,7 +376,7 @@ gg_reg_qc = geom_sf(
 Puis on assemble les couches pour faire la carte.
 
 ```{r ggplot_carte_cls_eco_reg}
-# Ajout des couches ggplot dans l'ordre voulue 
+# Ajout des couches ggplot dans l'ordre voulu 
 gg_qc_db = gg_base +
   # Ajout de la classification écologique
   gg_cls_eco + 
@@ -441,7 +384,7 @@ gg_qc_db = gg_base +
   gg_reg_qc
 ```
 
-Notez que la couche `gg_cls_eco` est dessinée en premier et `gg_reg_qc` après. Cela permet de voir les délimitations des régions administratives par dessus les domaines bioclimatiques. Le graphique est dans l'objet `gg_qc_db`. Notez qu'on ajoute une palette de couleur et change le thème de base pour notre carte.
+Notez que la couche `gg_cls_eco` est dessinée en premier et `gg_reg_qc` après. Cela permet de voir les délimitations des régions administratives par-dessus les domaines bioclimatiques. Le graphique est dans l'objet `gg_qc_db`. Notez qu'on ajoute une palette de couleur et change le thème de base pour notre carte.
 
 ```{r carte_statique_qc_affiche}
 # Afficher la carte 
@@ -461,7 +404,7 @@ Super! Un fond de carte pas pire pour l'ensemble du Québec! Par contre, il manq
 
 Notre carte de base manque de contexte. Plusieurs endroits au Québec sont facilement reconnaissables par leur structure hydrologique, ce qui permettrait de mieux se situer sur la carte.
 
-La Géobase du réseau hydrographique du Québec (GRHQ) est un large ensemble de données de référence de l'hydrographie disponibles sur le site de [Données Québec (DQC)](https://www.donneesquebec.ca/recherche/fr/dataset/grhq). Nous allons seulement télécharger manuellement les données pour le sud du Québec (incluant les zones 00, 01, 02, 03, 04, 05, 06, 07_1, 07_2, 08, 14 de [l'index de téléchargement (DQC)](https://www.donneesquebec.ca/recherche/dataset/grhq/resource/4ef6703f-0ecb-46a0-bdb4-7074f00ff514)). Un script (`scripts/partie_1/Preparation_hydrologique.R`) permet de préparer les données en géopackage (`data/partie_1/hydro/grhq_sud_qc.gpkg`) pour ce projet. Lors de la préparation pour réduire la taille du fichier, j'ai appliqué un filtre pour garder les polygones de $1e6 m^2$ d'aire et plus, ce qui permet d'afficher l'essentiel des polygones pour notre carte et de réduire considérablement la taille du fichier. 
+La Géobase du réseau hydrographique du Québec (GRHQ) est un large ensemble de données de référence de l'hydrographie disponibles sur le site de [Données Québec (DQC)](https://www.donneesquebec.ca/recherche/fr/dataset/grhq). Nous allons seulement télécharger manuellement les données pour le sud du Québec (incluant les zones 00, 01, 02, 03, 04, 05, 06, 07_1, 07_2, 08, 14 de [l'index de téléchargement (DQC)](https://www.donneesquebec.ca/recherche/dataset/grhq/resource/4ef6703f-0ecb-46a0-bdb4-7074f00ff514)). Un script (`scripts/partie_1/Preparation_hydrologique.R`) permet de préparer les données en géopackage (`data/partie_1/hydro/grhq_sud_qc.gpkg`) pour ce projet. Lors de la préparation pour réduire la taille du fichier, j'ai appliqué un filtre pour garder les polygones de $1e6 m^2$ d'aire et plus, ce qui permet d'afficher l'essentiel des polygones pour notre carte et de réduire considérablement la taille du fichier.
 
 ```{r prep_donnees_grhq_prep, eval=FALSE}
 # Fonctionne si vous téléchargez les jeux de données originaux localement. 
@@ -530,7 +473,7 @@ qcont_bord = can_bord |>
   st_transform(crs = projetCRS) 
 ```
 
-Vu qu'une partie du réseau hydrique est en Ontario, on fait une intersection pour « couper » les géométries selon la province (`st_intersection()`), puis on filtre pour ne garder que le nom de la province de notre choix (`filter()`).
+Étant donné qu'une partie du réseau hydrique est en Ontario, on fait une intersection pour « couper » les géométries selon la province (`st_intersection()`), puis on filtre pour ne garder que le nom de la province de notre choix (`filter()`).
 
 ```{r extraire_eau_qc}
 # Extraction de l'hydrologie du Québec seulement
@@ -692,14 +635,24 @@ La valeur `Y` de ce point fictif (créé en *epsg:4326* vers *epsg:32198*) rempl
 bbox_qc[4] <- pts[2]
 ```
 
-Nous sommes prêts à faire notre carte pour le Québec méridional. Je rogne les couches `cls_eco` et `regqc` (sans simplification) pour avoir les données les plus propre possible pour la carte finale.
+Nous sommes prêts à faire notre carte pour le Québec méridional. Je rogne les couches `cls_eco` et `regqc` (sans simplification) pour avoir les données les plus propres possible pour la carte finale.
 
 ```{r decoupe_carte_qc}
 # Péparation des domaines bioclimatiques pour le Québec méridional
 cls_eco_meridional = cls_eco |> 
   st_transform(crs = projetCRS) |> 
   # boite gabarit pour rogner
-  st_crop(y = bbox_qc)
+  st_crop(y = bbox_qc) |> 
+  mutate(
+    # Calcul de l'aire de chaque polygone des domaines bioclimatiques
+    aire_cls_eco = st_area(geom), 
+    # Proportion d'aire pour chaque polygone
+    # Note : une polygone (NOM_DB == 'Toundra forestière') est 
+    # très petit et peut être enlevé sans affecter la visualisation 
+    prop = round(aire_cls_eco/sum(aire_cls_eco), 4)*100
+    ) |> 
+  # Enlever NOM_DB == 'Toundra forestière'
+  filter(NOM_DB != "Toundra forestière")
 
 # Péparation/Rogner des régions administratives pour le Québec méridional
 regqc_meridional = regqc |> 
@@ -764,15 +717,22 @@ gg_qc_db = gg_base +
       # Légende en bas
       position = 'bottom',
       # Nombre de rangées pour les étiquettes de la légende 
-      nrow = 4,
+      nrow = 2,
       # Orientation horizontale
       direction = 'horizontal'
     )
   ) +
   # Thème au minium 
   theme_void() +
+  # Changement d'autres paramètres du thème
+  theme(
   # Changer l'espacement entre les étiquettes de la légende 
-  theme(legend.key.spacing.y = unit(x = 0.015, units = "cm"))
+    legend.key.spacing.y = unit(x = 0.015, units = "cm"), 
+    # Taille du texte
+    legend.text = element_text(size = 7),
+    # Taille du titre
+    legend.title = element_text(size = 8)
+  )
 ```
 
 Puis on admire notre résultat :
@@ -795,14 +755,13 @@ ggsave(
 )
 ```
 
-## 2. Zones critiques de biodiversité
+## 1.2 Zones critiques de biodiversité
 
 ### Carte : sites d'observations eBird
 
-Notre carte de fond est pas mal, mais elle ne dit pas grand chose côté biodiversité. Un des objectifs du dépliant est de présenter les zones critiques de biodiversité. Mais où seraient ces zones? Lorsque les ornithologues amateurs font des observations sur la plateforme eBird, ils enregistrent leurs observations dans des [points de sites publics](https://ebird.org/hotspots) [@eBirdHotspotsGeospatial2025]. Ainsi, les observations enregistrées à ces sites pourraient servir de proxy d'endroits intéressant pour la biodiversité : s'il y a beaucoup d'espèces d'oiseaux, c'est qu'il doit y avoir beaucoup de nourriture pour soutenir cette diversité d'organismes et ainsi, augmenter nos chances de voir d'autres choses intéressantes.
+Notre carte de fond est pas mal, mais elle ne dit pas grand-chose côté biodiversité. Un des objectifs du dépliant est de présenter les zones critiques de biodiversité. Mais où seraient situées ces zones? Lorsque les ornithologues amateurs font des observations sur la plateforme eBird, ils enregistrent leurs observations dans des [points de sites publics](https://ebird.org/hotspots) [@eBirdHotspotsGeospatial2025]. Ainsi, les observations enregistrées à ces sites pourraient servir de proxy d'endroits intéressants pour la biodiversité : s'il y a beaucoup d'espèces d'oiseaux, c'est qu'il doit y avoir beaucoup de nourriture pour soutenir cette diversité d'organismes et ainsi, augmenter nos chances de voir d'autres choses intéressantes.
 
-Il est possible d'aller cherche ces points de sites publics eBird directement avec l'API de eBird. Le fichier `data/partie_1/biodiv/eBird_hotspots_CA_QC*.csv` a été obtenu en suivant les explications sous la section '*Is there a list of all eBird Hotspots?*' au lien [eBird Hotspot FAQs](https://support.ebird.org/en/support/solutions/articles/48001009443-ebird-hotspot-faqs). Cela requiert une clé API de eBird (voir `VOTRECLEAPI` dans la commande plus bas). Le fichier `eBird regions and region codes_18Apr2023.xlsx` ([téléchargeable ici](https://support.ebird.org/helpdesk/attachments/48293281603) ) contient les codes régionaux (comme `CA-QC`) et permet de choisir la bonne zone à télécharger directement. La commande 'terminal' (en utilisant le langage 
-`bash` et non dans la console R) suivante permet (avec quelques modifications expliquées dans les liens ci-haut) d'obtenir le fichier `eBird_hotspots_CA_QC*.csv` à jour.
+Il est possible d'aller cherche ces points de sites publics eBird directement avec l'API de eBird. Le fichier `data/partie_1/biodiv/eBird_hotspots_CA_QC*.csv` a été obtenu en suivant les explications sous la section '*Is there a list of all eBird Hotspots?*' au lien [eBird Hotspot FAQs](https://support.ebird.org/en/support/solutions/articles/48001009443-ebird-hotspot-faqs). Cela requiert une clé API de eBird (voir `VOTRECLEAPI` dans la commande plus bas). Le fichier `eBird regions and region codes_18Apr2023.xlsx` ([téléchargeable ici](https://support.ebird.org/helpdesk/attachments/48293281603) ) contient les codes régionaux (comme `CA-QC`) et permet de choisir la bonne zone à télécharger directement. La commande 'terminal' (en utilisant le langage `bash` et non dans la console R) suivante permet (avec quelques modifications expliquées dans les liens ci-haut) d'obtenir le fichier `eBird_hotspots_CA_QC*.csv` à jour.
 
 ```{bash, eval=FALSE}
 # Prendre la date actuelle 
@@ -868,7 +827,7 @@ ebird_hp_sf = ebird_hp_prep |>
   )
 ```
 
-Une petite exploration des données montre qu'en filtrant les sites dont la dernière visite est après 2020 et ayant beaucoup d'espèces (150 et +) on obtient :  
+Une petite exploration des données montre qu'en filtrant les sites ayant beaucoup d'espèces (150 et +) et dont la dernière visite est après 2020, on obtient :
 
 ```{r exploration_donnees}
 ebird_hp_sf |> 
@@ -962,7 +921,7 @@ mapview(
 
 Les sites avec le plus d'espèces sont plus au sud. Deux explications rapides :
 
-1.  il y a plus de gens qui notent des observations au sud du Québec à différents moments dans l'année, ce qui augmente l'effort d'échantillonnage (et donc la probabilité de trouver des espèces plus rares).
+1.  il y a plus de personnes qui notent des observations au sud du Québec à différents moments dans l'année, ce qui augmente l'effort d'échantillonnage (et donc la probabilité de trouver des espèces plus rares).
 2.  la diversité des oiseaux change en fonction de la latitude. Donc, plus les points se retrouvent dans le nord, moins d'espèces devraient se retrouver. Nous pourrions regarder cela avec un modèle linéaire. Restons sur les objectifs de notre projet.
 
 Pour avancer à la prochaine étape, il pourrait être intéressant de garder les sites avec le plus d'observations pour une MRC (disons environ une vingtaine).
@@ -977,7 +936,7 @@ eb_qc = ebird_hp_sf |>
   st_join(y = regqc_t)
 ```
 
-Nous pouvons exporter ces données pour les mettre dans un logiciel GIS (comme QGIS), ou les intégrer à une base de données ce qui permettrait afficher chaque MRC. Ces données pourraient servir à une application Shiny.
+Nous pouvons exporter ces données pour les mettre dans un logiciel GIS (comme QGIS), ou les intégrer à une base de données ce qui permettrait d'afficher chaque MRC. Ces données pourraient servir dans une application Shiny.
 
 ```{r exportation_ebird_reg_gpkg}
 # Exportation des données en géopackage 
@@ -993,7 +952,7 @@ Voici une image montrant les sites eBird avec les MRC dans QGIS en utilisant que
 
 ![](images/QGIS_exemple_sites_eBird.png){fig-alt="Sites eBird avec MRC" fig-align="center"}
 
-Pour ce projet, nous allons extraire que les 20 sites avec le plus d'espèces d'oiseaux.
+Pour ce projet, nous allons extraire seulement les 20 sites ayant le plus d'espèces d'oiseaux.
 
 ```{r topN_ebird_pts_admin}
 # Donne le top n des sites en fonction du nombre d'espèces vues
@@ -1020,7 +979,7 @@ mapview(regqc_t,
 
 #### Ajout des sites eBird sur la carte de base
 
-À titre d'exemple, nous allons afficher seulement les sites eBirds qui se retrouvent dans l'emprise de Montréal et Laval. En utilisant les données de régions administratives, on peut filtrer et faire un boite limite avec seulement les régions voulues.
+À titre d'exemple, nous allons afficher seulement les sites eBirds qui se retrouvent dans l'emprise de Montréal et Laval. En utilisant les données de régions administratives, on peut filtrer et faire une boite limite avec seulement les régions voulues.
 
 ```{r grhq_mtl_laval}
 # Extraire l'emprise spatiale autour de Montréal et Laval 
@@ -1100,7 +1059,7 @@ gg_carte_points_inret_ebird
 
 ## Prochaines étapes
 
-Cette première partie avait pour but de faire un grand tour dans les fonctions utiles pour faire des analyses spatiales. Ainsi, il est possible d'importer et de manipuler les couches spatiales dans R et de préparer des couches pour en faire des cartes. Vous pouvez toujours exporter les couches et continuer dans votre logiciel GIS préféré après.
+Cette première partie avait pour but de faire un grand tour dans les fonctions utiles pour faire des analyses spatiales. Ainsi, il est possible d'importer et de manipuler les couches spatiales dans R et de préparer des couches pour en faire des cartes. Vous pouvez toujours exporter les couches et continuer dans votre logiciel GIS préféré ensuite
 
 Avec ces nouvelles connaissances, il sera plus facile de manipuler les données de biodiversité provenant de GBIF.
 
