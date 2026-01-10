@@ -10,6 +10,8 @@ language:
     # title-block-published: "Date de publication"
     appendix-attribution-cite-as: "Citation : "
     # appendix-attribution-bibtex: "Citation BibTeX : "
+    # citation-appendix-title: "Suggestion de citation : "
+    # section-title-footnotes: "Note de bas de page"
 
 # NOTE : site-url and description for RSS feed 
 website:
