@@ -13,29 +13,25 @@ editor_options:
   chunk_output_type: console
 ---
 
-## Biodiversité : ça mange quoi en hiver? 
+## Biodiversité : ça mange quoi en hiver?
 
-Définition de biodiversité : 
+Définition de biodiversité :
 
-## Collectionner la biodiversité 
+## Collectionner la biodiversité
 
-### C'est quoi une donnée de biodiversité? 
+### C'est quoi une donnée de biodiversité?
 
-Pourquoi c'est important? 
+Pourquoi c'est important?
 
 ### Les occurences (présences)
 
-La présence d'organismes à un endroit et un moment déterminé. Certains protocoles d'échantillonnage ont aussi des absences : parfois les absences sont tout aussi importante que les présences puisque cela permet d'obtenir un peut plus d'information sur le potentiel de qualité d'habitat d'une espèce. Les traces d'organismes vivants comme les empreintes, un terrier, les galles de certaines plantes dûe à des insectes, un arbre grignoté par un castor, etc. comptent aussi comme la preuve d'une présence d'un organisme, donc c'est une sorte d'occurence. Les restants d'organismes (morts, excréments, coquillages, etc.) ou témoignage de la vie par des traces laisser par les fossiles sont aussi des données fondementales pour faire toutes sortes d'analyse en biogéographie. Imaginez, même les traces de vie sur Mars pourraient faire partie de GBIF [@hurowitzRedoxdrivenMineralOrganic2025]! 
+La présence d'organismes à un endroit et un moment déterminé. Certains protocoles d'échantillonnage ont aussi des absences : parfois les absences sont tout aussi importante que les présences puisque cela permet d'obtenir un peut plus d'information sur le potentiel de qualité d'habitat d'une espèce. Les traces d'organismes vivants comme les empreintes, un terrier, les galles de certaines plantes dûe à des insectes, un arbre grignoté par un castor, etc. comptent aussi comme la preuve d'une présence d'un organisme, donc c'est une sorte d'occurence. Les restants d'organismes (morts, excréments, coquillages, etc.) ou témoignage de la vie par des traces laisser par les fossiles sont aussi des données fondementales pour faire toutes sortes d'analyse en biogéographie. Imaginez, même les traces de vie sur Mars pourraient faire partie de GBIF [@hurowitzRedoxdrivenMineralOrganic2025]!
 
-L'ADN des organismes ou de l'information génétique sous forme d'ADN se retrouvant dans l'environnement (eDNA ou ADN environnementale). Les collections de musées sont aussi riche pour faire des analyses de présence historique d'organismes ou de faire des comparaisons de changement morphologique des populations entre des populations échantillonnées récemment et des mesures similaire fait sur les organismes dans des collections muséales. 
-Les données collectées automatiquement par des machines (caméra de chasses, enregistreur audio, images de drones, signatures spectrales, etc.)
+L'ADN des organismes ou de l'information génétique sous forme d'ADN se retrouvant dans l'environnement (eDNA ou ADN environnementale). Les collections de musées sont aussi riche pour faire des analyses de présence historique d'organismes ou de faire des comparaisons de changement morphologique des populations entre des populations échantillonnées récemment et des mesures similaire fait sur les organismes dans des collections muséales. Les données collectées automatiquement par des machines (caméra de chasses, enregistreur audio, images de drones, signatures spectrales, etc.)
 
-### Événement d'échantillonnage 
+### Événement d'échantillonnage
 
-L'acquisition de données avec des protocoles standardisé, par exemple si l'effort d'échantillonnage est enregistré, est riche pour les chercheurs puisque cela permet de faire des analyses beaucoup plus intéressante. Par exemple, en ayant l'effort d'échantillonnage, il est possible de comparer des sites et rendre les estimations de biodiversité plus robuste. Cela permet de mieux modéliser l'incertitude sur les résultats et donc d'être plus robuste. 
-7. les mesures de traits d'organismes (mesures du poids, taille du bec, longueur du corps, etc.);
-8. les données de mouvement avec la télémétrie;
-
+L'acquisition de données avec des protocoles standardisé, par exemple si l'effort d'échantillonnage est enregistré, est riche pour les chercheurs puisque cela permet de faire des analyses beaucoup plus intéressante. Par exemple, en ayant l'effort d'échantillonnage, il est possible de comparer des sites et rendre les estimations de biodiversité plus robuste. Cela permet de mieux modéliser l'incertitude sur les résultats et donc d'être plus robuste. 7. les mesures de traits d'organismes (mesures du poids, taille du bec, longueur du corps, etc.); 8. les données de mouvement avec la télémétrie;
 
 ## 3. Données de biodiversité
 
@@ -78,9 +74,9 @@ Le portail GBIF (https://www.gbif.org) permet d'extraire facilement les données
 }
 ```
 
-Il est possible d'aller filtrer les données directement sur le site de GBIF comment en sélectionnant les données pour iNaturalist seulement ou le règne (_kindgom_) `Animalia` directement. Je voulais apprendre à utiliser `duckDB` avec R. Pourquoi? Parce que les données GBIF pour l'ensemble du Québec en fichier CSV (comma separated values) font plus de 20GB ce qui est beaucoup pour beaucoup d'ordinateur portable! J'ai donc téléchargé un jeu de données pour toutes les occurences présentes au Québec et filtré les donnée pour le besoin de ce projet (donc seulement les données d'iNaturalist avec un niveau de précision taxonomique, puis les animaux; voir plus bas un exemple de code pour faire cette filtration). Je ne veux pas avoir plus de 20GB sur mon disque juste pour faire des tests. Donc le disque externe est une option rapide pour éviter d'avoir à garder le gros jeu de données sur mon ordinateur. J'exporte un jeu de données beaucoup plus petit (moins de 200 MB!) après la filtration pour ce projet.
+Il est possible d'aller filtrer les données directement sur le site de GBIF comment en sélectionnant les données pour iNaturalist seulement ou le règne (*kindgom*) `Animalia` directement. Je voulais apprendre à utiliser `duckDB` avec R. Pourquoi? Parce que les données GBIF pour l'ensemble du Québec en fichier CSV (comma separated values) font plus de 20GB ce qui est beaucoup pour beaucoup d'ordinateur portable! J'ai donc téléchargé un jeu de données pour toutes les occurences présentes au Québec et filtré les donnée pour le besoin de ce projet (donc seulement les données d'iNaturalist avec un niveau de précision taxonomique, puis les animaux; voir plus bas un exemple de code pour faire cette filtration). Je ne veux pas avoir plus de 20GB sur mon disque juste pour faire des tests. Donc le disque externe est une option rapide pour éviter d'avoir à garder le gros jeu de données sur mon ordinateur. J'exporte un jeu de données beaucoup plus petit (moins de 200 MB!) après la filtration pour ce projet.
 
-Pour citer les données GBIF avec un filtre différent de celui des données GBIF se fait avec le `datasetKey` et en utilisant l'outil de [jeux de données dérivés de GBIF](https://www.gbif.org/citation-guidelines#derivedDatasets) et voir aussi cet [article de blogue de GBIF sur les données dérivées](https://data-blog.gbif.org/post/derived-datasets/). Le progiciel R [`rgbif` permet aussi](https://docs.ropensci.org/rgbif/reference/derived_dataset.html) d'enregistrer des données dérivés (ou filtrées) avec les `datasetKey`. 
+Pour citer les données GBIF avec un filtre différent de celui des données GBIF se fait avec le `datasetKey` et en utilisant l'outil de [jeux de données dérivés de GBIF](https://www.gbif.org/citation-guidelines#derivedDatasets) et voir aussi cet [article de blogue de GBIF sur les données dérivées](https://data-blog.gbif.org/post/derived-datasets/). Le progiciel R [`rgbif` permet aussi](https://docs.ropensci.org/rgbif/reference/derived_dataset.html) d'enregistrer des données dérivés (ou filtrées) avec les `datasetKey`.
 
 Si vous réutilisez le même filtre et téléchargez les données, il est fort possible que les données soient différentes: en effet, vous auriez les données plus à jour! Dans toutes les recherches, il est une bonne pratique de garder la commande exacte pour filtrer les données. Je garder aussi le numéro de téléchargement (e.g., 0047252-250827131500795) pour référence future. Une fois téléchargé, j'ai manipuler le jeu de données avec duckdb qui permet de lire et manipuler des jeux de données gigantesque (et qui n'entrerais pas en mémoire). L'exécution des opérations encore plus rapide avec `duckdb`. Dans tous les cas, il faut
 
@@ -91,7 +87,7 @@ csv = "/Volumes/Disk_fun/gbif_data/0047252-250827131500795.csv" # Données de pl
 # csv = "data/gbif_data/0047252-250827131500795.csv"
 
 # Se connecter à une session duckDB 
-con <- dbConnect(duckdb())
+con <- DBI::dbConnect(duckdb::duckdb())
 
 # Création d'une vue des données dans duckDB. 
 DBI::dbExecute(conn = con, 
@@ -101,13 +97,11 @@ DBI::dbExecute(conn = con,
 gb_dat = dplyr::tbl(con, from = "gb_data")
 
 # Extraction des données avec les filtres 
-# Ne prend que quelques secondes sur un ordinateur portable avec les données sur un disque dur (ce qui n'est vraiment pas le plus rapide!). 
-# Il faudrait tester avec un 'disque' NVMe SSD qui est beaucoup plus rapide.  
-tictoc::tic() # 180 secondes (~3 min), ce temps est pour des conditions sous-optimales. Il est facile d'obtenir un meilleur temps si les données étaient directement dans mon ordinateur (disque plus rapide). 
+tictoc::tic() 
 inatdb_animaux = gb_dat |> 
   # iNaturalist Research-grade Observations voir 
   # https://www.gbif.org/dataset/50c9509d-22c7-4a22-a47d-8c48425ef4a7
-  filter(datasetKey == '50c9509d-22c7-4a22-a47d-8c48425ef4a7', 
+  dplyr::filter(datasetKey == '50c9509d-22c7-4a22-a47d-8c48425ef4a7', 
          # prendre seulement les observations au niveau de l'espèce et plus précis
          taxonRank %in% c("SPECIES", "SUBSPECIES", "VARIETY"), 
          # Extraire le règne animal seulement pour le moment
@@ -121,7 +115,8 @@ inatdb_animaux = gb_dat |>
     eventDate, 
     datasetKey,
     license) |> 
-  collect()
+  # Extraction des données vers la mémoire 
+  dplyr::collect()
 tictoc::toc()
 [...]
 # Exportation de inat_dat
@@ -129,6 +124,11 @@ write.csv(x = inatdb_animaux,
           file = 'data/gbif_data/inat_research_grade_obs_animalia.csv')
 
 ```
+
+Performance :
+Ne prend que quelques secondes sur un ordinateur portable avec les données sur un disque dur (ce qui n'est vraiment pas le plus rapide!). 
+Il faudrait tester avec un 'disque' NVMe SSD qui est beaucoup plus rapide.  
+180 secondes (~3 min), ce temps est pour des conditions sous-optimales. Il est facile d'obtenir un meilleur temps si les données étaient directement dans mon ordinateur (disque plus rapide). 
 
 Nous voudrions avoir les observations avec un niveau taxonomique d'espèce.
 
