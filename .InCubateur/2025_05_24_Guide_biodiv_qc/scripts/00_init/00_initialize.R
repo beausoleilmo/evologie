@@ -65,8 +65,9 @@ library(rinat)    # Lire les données iNaturalist
 
 ## Citations progiciels ----------------------------------------------------
 # Exporter les citations des progiciels R en fichier texte
-knitr::write_bib(.packages(),
-                 "my_citations.bib")
+knitr::write_bib(
+  x = .packages(),
+  file = "citations_R_packages.bib")
 
 # ____________####
 # Charge les fonctions ----------------------------------------------------

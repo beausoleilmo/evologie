@@ -6,7 +6,8 @@ bibliography: ../../posts/ref_blg.bib
 # date: "2025-05-24"
 # date: "2025-10-24"
 # date: "2025-12-20"
-date: "2026-01-12"
+# date: "2026-01-12"
+date: "2026-01-17"
 categories: ["biodiversité", "analyse", "cartes", "tutoriel"]
 image: "https://marcolivierbeausoleil.wordpress.com/wp-content/uploads/2015/07/cropped-imgp81461.jpg"
 author:
@@ -100,7 +101,7 @@ Finalement, des portails de science citoyenne, comme <a href='https://inaturalis
 Pour cette première partie, nous allons produire deux cartes pour le dépliant :
 
 1.  une carte couvrant l'ensemble du territoire du Québec afin d'offrir un contexte général,
-2.  puis une plus petite carte montrant les détails de points importants de biodiversité pour Montréal et Laval.
+2.  une carte à plus fine échelle, mettant en évidence les principaux points d’intérêt en matière de biodiversité pour les régions de Montréal et Laval.
 
 <!-- Notre plan de match est de préparer notre session R pour avoir les progiciels et fonctions nécessaires pour faire tourner nos scripts. Ensuite, nous allons produire notre carte de fond et une carte avec des points d'observation de biodiversité. -->
 
@@ -201,27 +202,22 @@ regqc = sf::st_read(
 Regardons les premières lignes du jeu de données :
 
 ```{r head_reg_qc}
+# Sélection de colonnes
 regqc |> 
-  dplyr::select(MRS_NM_MRC, 
-                MRS_NM_REG) |> 
+  dplyr::select(
+    MRS_NM_MRC, 
+    MRS_NM_REG
+  ) |> 
+  # Extraction de quelques lignes
   head(n = 3)
 ```
 
 Il serait intéressant de voir les données sur une carte rapidement. Le progiciel [`mapview`](https://r-spatial.github.io/mapview/) est utile pour faire une carte interactive et colorier les MRC [@R-mapview].
 
-```{r definir_tolerance, echo=TRUE}
-# Tolérance des informations géographiques pour une 
-tolerance_cartes = 0
-```
-
 ```{r carte_interactive_qc_mrc, eval=TRUE}
-# Simplification du polygone pour accélérer l'exécution des scripts.
-regqc_simple = regqc |> 
-  sf::st_simplify(dTolerance = tolerance_cartes)
-
 # Faire une carte interactive.
 mapview::mapview(
-  x = regqc_simple, 
+  x = regqc, 
   zcol = 'MRS_NM_MRC', # Les couleurs représentent les MRCs
   legend = FALSE       # Ne pas ajouter de légende 
 ) 
@@ -290,23 +286,19 @@ regqc_t = st_transform(x = regqc,
 Nous pouvons superposer les cartes de régions administratives avec la classification des domaines écologiques avec `mapview()`. Vous pouvez activer ou désactiver les couches en passant votre curseur sur l'icône des couches spatiales (sous les contrôles plus et moins pour zoomer dans la carte) et en appuyant sur le bouton à bascule (boite à cocher) des couches désirées.
 
 ```{r carte_Classification_eco_superposition, eval=intermap_slow}
-# Carte interactive avec 2 couches spatiales simplifiées
-regqc_t_s = st_simplify(regqc_t, dTolerance = tolerance_cartes)
-cls_eco_s = st_simplify(cls_eco, dTolerance = tolerance_cartes)
-
 # Régions admin du QC
 mapview(
-  x = regqc_t_s, 
+  x = regqc_t, 
   zcol = 'MRS_NM_MRC', 
   layer.name = 'MRC du Québec',
   # Change la palette de couleur (voir les palettes ici `sort(hcl.pals())`)
-  col.regions = hcl.colors(n = nrow(regqc_t_s), 
+  col.regions = hcl.colors(n = nrow(regqc_t), 
                            palette = "Spectral"),
   legend = FALSE
 ) +
   # Classification Écologique
   mapview(
-    x = cls_eco_s, 
+    x = cls_eco, 
     zcol = 'NOM_DB', 
     layer.name = 'Domaines biologiques'
   )
@@ -332,19 +324,24 @@ Comme nous l'avons vu, la fonction `sf::st_transform()` nous permet de reprojete
 Voici comment simplifier les couches spatiales et rendre le CRS identique entre 2 couches :
 
 ```{r simplify_couches}
+
+# Pour la simplification des géométries 
+# (nombre qui donne un bon résultat suite à des tests)
+tolerance = 1e3
+
 # Simplifier une forme pour faire le graphique 
 cls_eco_simp = cls_eco |> 
-  st_simplify(dTolerance = 1e3)
+  st_simplify(dTolerance = tolerance)
 
 # Reprojection pour avoir le même CRS 
 regqc_simp = regqc |> 
-  st_simplify(dTolerance = 1e3) |> 
+  st_simplify(dTolerance = tolerance) |> 
   st_transform(crs = projetCRS)
 
 # Ou en utilisation le CRS d'une couche directement 
 # au lieu de l'objet 'projetCRS'
 regqc_simp = regqc |> 
-  st_simplify(dTolerance = 1e3) |> 
+  st_simplify(dTolerance = tolerance) |> 
   st_transform(crs = st_crs(x = cls_eco))
 ```
 
@@ -487,6 +484,7 @@ hq_filt_qc = hq_filt_complete |>
 Avec cette couche filtrée, nous allons créer un objet `geom_sf()` qu'on ajoutera à la carte.
 
 ```{r carte_complete, echo=TRUE, eval=TRUE}
+# Couche ggplot de l'hydrologie du Québec
 gg_hq = geom_sf(
   data = hq_filt_qc, 
   linewidth = 0,
@@ -500,9 +498,10 @@ gg_villes = geom_sf(
 )
 ```
 
-Pour ne pas que les étiquettes des villes se chevauchent, nous allons utiliser une fonction (`geom_text_repel`) qui utilise des nombres aléatoires. Pour une reproductibilité de la carte, un point de départ est choisi pour obtenir des nombres aléatoires avec `set.seed()`. Ce point de départ (*seed*) est un nombre entier comme `12345` ou `247966138`.
+Pour ne pas que les étiquettes des villes se chevauchent, nous allons utiliser une fonction (`geom_text_repel`) qui utilise des nombres aléatoires. Pour une reproductibilité de la carte, un point de départ est choisi pour obtenir des nombres aléatoires avec `set.seed()`. Ce point de départ (*seed*, germe ou graine aléatoire) est un nombre entier comme `12345` ou `247966138`.
 
 ```{r generateur_aleatoire_seed}
+# Établir le germe aléatoire
 set.seed(seed = 12345)
 ```
 
@@ -516,7 +515,7 @@ Maintenant, nous avons les informations nécessaires pour faire une carte avec :
 Notez encore une fois l'ordre des couches.
 
 ```{r ggplot_cartes_geom_simple}
-# Faire le graphique 
+# Faire le graphique de la carte 
 gg_qc_db = gg_base +
   # Ajout de la classification écologique
   gg_cls_eco + 
@@ -546,6 +545,7 @@ gg_qc_db = gg_base +
 La carte s'affiche avec l'objet `gg_qc_db`. Nous pouvons ensuite modifier les couleurs de la carte avec `scale_fill_viridis_d()` et sa thématique avec `theme_void()` pour partir d'une carte sans thème puis modifier l'espacement des items de la légende avec `theme()` et l'argument `legend.key.spacing.y`. La légende (voir `guide_legend()` dans `scale_fill_viridis_d()`) peut aussi être placée en bas (`position = 'bottom'`) pour laisser plus de place à notre carte.
 
 ```{r afficher_carte_ggplot_complet}
+# Carte avec thématique 
 gg_qc_db + 
   # Change le remplissage pour la palette viridis 
   scale_fill_viridis_d(
@@ -685,6 +685,7 @@ gg_regqc_merid = geom_sf(
 Finalement, on met tout ensemble pour obtenir notre carte du Québec méridional.
 
 ```{r gg_carte_statique_sud_qc}
+# Établir le germe aléatoire
 set.seed(12345)
 
 # Faire le graphique 
@@ -738,6 +739,7 @@ gg_qc_db = gg_base +
 Puis on admire notre résultat :
 
 ```{r gg_afficher_la_superbe_carte}
+# Afficher la carte
 gg_qc_db
 ```
 
@@ -869,6 +871,7 @@ mapview(x = sites_perdus,
 Le code plus bas montre la carte avec tous les points. Cela fait beaucoup de points! Je vous laisse explorer.
 
 ```{r exploration_donnees_carte_tous, eval=intermap_slow}
+# Préparation des données simplifier (moins de colonnes)
 ebird_hp_sf_simple = ebird_hp_sf |> 
   # Sélection de colonnes pour l'affichage de détail dans la carte 
   dplyr::select(locId, latestObsDt, numSpeciesAllTime, labs) 

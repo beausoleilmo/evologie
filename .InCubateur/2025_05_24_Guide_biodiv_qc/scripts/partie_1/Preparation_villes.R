@@ -10,6 +10,8 @@
 #   --> Préparation de la couche spatiale des villes du Québec pour exportation en GeoPackage au lieu d'un GeoJSON 
 #   --> Téléchargement du tableau des villes et des informations sur le site d'Ouranos .
 #     --> voir le site de portraits climatiques d'Ouranos https://portraits.ouranos.ca/fr/
+#     --> En particulier ce lien : 
+#         https://pavics.ouranos.ca/pc-geoserver/pc/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=pc:places&outputFormat=application%2Fjson&format_options=CHARSET:UTF-8&pc_ver=3.0.3
 
 ## ____________####
 ## Prépare l'environnement --------
