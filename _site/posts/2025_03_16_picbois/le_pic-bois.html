@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.32">
+<meta name="generator" content="quarto-1.8.26">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -54,14 +54,15 @@ div.csl-indent {
 <meta name="quarto:offset" content="../../">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-c1fac2584b48ed01fb6e278e36375074.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-5b4ad623e5705c0698d39aec6f10cf02.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -117,6 +118,16 @@ div.csl-indent {
   </li>  
   <li class="nav-item compact">
     <a class="nav-link" href="https://github.com/beausoleilmo"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/marcolivierbeausoleil/"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../index.xml"> <i class="bi bi-rss" role="img">
 </i> 
 <span class="menu-text"></span></a>
   </li>  
@@ -300,7 +311,7 @@ Bull, E. L., C. G. Parks, et T. R. Torgersen. 1997. <a href="https://doi.org/10.
 Darwin, C., D. Becquemont, E. Barbier, et J.-M. Drouin. 1859. <a href="https://cegeps.scholarvox.com/catalog/book/docid/45000157?searchterm=Darwin,%20Charles">L’origine des esp<span>è</span>ces au moyen de la s<span>é</span>lection naturelle ou La pr<span>é</span>servation des races favoris<span>é</span>es dans la lutte pour la vie</a>. <span>É</span>d. mise <span>à</span> jour en 2008. Flammarion, Paris.
 </div>
 <div id="ref-Associationquebecoisedesgroupesdornithologues:1995vx" class="csl-entry" role="listitem">
-Gauthier, J., et Y. Aubry. 1995. <a href="http://books.google.ca/books?id=emM1xgEACAAJ&amp;dq=intitle:Atlas+des+oiseaux+nicheurs+Quebec+Meridional&amp;hl=&amp;cd=1&amp;source=gbs_api"><span>Les oiseaux nicheurs du Qu<span>é</span>bec: Atlas des oiseaux nicheurs du Qu<span>é</span>bec m<span>é</span>ridional</span></a>. Association qu<span>é</span>b<span>é</span>coise des groupes d’ornithologues, Soci<span>é</span>t<span>é</span> qu<span>é</span>b<span>é</span>coise de protection des oiseaux, Service canadien de la Faune Environnement Canada, Montr<span>é</span>al, Qu<span>é</span>bec.
+Gauthier, J., et Y. Aubry. 1995. <a href="https://www.atlas-oiseaux.qc.ca"><span>Les oiseaux nicheurs du Qu<span>é</span>bec: Atlas des oiseaux nicheurs du Qu<span>é</span>bec m<span>é</span>ridional</span></a>. Association qu<span>é</span>b<span>é</span>coise des groupes d’ornithologues, Soci<span>é</span>t<span>é</span> qu<span>é</span>b<span>é</span>coise de protection des oiseaux, Service canadien de la Faune Environnement Canada, Montr<span>é</span>al, Qu<span>é</span>bec.
 </div>
 <div id="ref-savitskyContraryPopularBelief2022" class="csl-entry" role="listitem">
 Savitsky, Z. 2022. Contrary to Popular Belief, Woodpeckers Don’t Protect Their Brains When Headbanging Trees. https://www.science.org/content/article/contrary-popular-belief-woodpeckers-don-t-protect-their-brains-when-headbanging-trees.
@@ -369,13 +380,14 @@ Wygnanski-Jaffe, T., C. J. Murphy, C. Smith, M. Kubai, P. Christopherson, C. R. 
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy

@@ -95,7 +95,7 @@ mapview(
 ) +
   # Classification Écologique
   mapview(
-    x = regqc_t, 
+    x = cls_eco, 
     zcol = 'NOM_DB', 
     layer.name = 'Domaines biologiques'
   )

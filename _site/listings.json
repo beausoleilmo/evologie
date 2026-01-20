@@ -2,12 +2,17 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/guide_biodiv_qc/2025_05_24_Guide_biodiv_qc/Guide_biodiv_qc_1.html",
+      "/posts/guide_biodiv_qc/2025_05_24_Guide_biodiv_qc/Guide_biodiv_qc_0.html",
       "/posts/2025_03_16_picbois/le_pic-bois.html",
       "/posts/2025_03_11_evologie/evologie.html"
     ]
   },
   {
     "listing": "/biodiv_qc-series.html",
-    "items": []
+    "items": [
+      "/posts/guide_biodiv_qc/2025_05_24_Guide_biodiv_qc/Guide_biodiv_qc_1.html",
+      "/posts/guide_biodiv_qc/2025_05_24_Guide_biodiv_qc/Guide_biodiv_qc_0.html"
+    ]
   }
 ]

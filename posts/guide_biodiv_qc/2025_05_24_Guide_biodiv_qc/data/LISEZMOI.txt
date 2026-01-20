@@ -1,0 +1,42 @@
+# Guide d’identification de biodiversité du Québec ----------------------------------------
+
+## En-tête ------
+  - Auteur : Marc-Olivier Beausoleil 
+  - Contact : marc-olivier.beausoleil@mail.mcgill.ca
+  - Date création : 2025-10-12
+  - Mots clés : biodiversité, géomatique, science citoyenne, 
+  - Version : 1.0.0 (2025-10-12)
+  - Licence : CC-BY (pour le projet)
+
+
+
+## Objectif ------
+   -> Métadonnées et informations sur scripts pour le projet du blogue Évologie;
+   -> Les fichiers sont compressés : 
+        1. pour sauver de l'espace et 
+        2. faciliter le téléversement sur OSF.
+
+
+## Structure des dossiers ------
+
+### Dossiers de données (data) ------
+param_0
+    -> contient des données pour l'ensemble du projet (CRS principal) 
+
+partie_1
+    -> Données cartographiques (régions administratives, biodiversité, écologique, hydrologique, d'infrastructures et des villes)
+
+partie_2
+    -> Données de biodiversité
+
+partie_3
+    -> Données de traits et images iNaturalist 
+
+### Dossier des scripts ------
+    -> Les scripts sont disponible sur https://github.com/beausoleilmo/evologie 
+    -> 00_init/00_initialize.R  : Chargement et citation des progiciels et charge des fonctions
+    -> partie_1/Preparation_*.R : ensemble de scripts pour préparer les données brutes 
+
+## Licence ------
+
+    -> La licence des données est différente pour les jeux de données. Consultez les sources d'origine (explicité dans l'article principal) pour trouver la licence correspondante. 

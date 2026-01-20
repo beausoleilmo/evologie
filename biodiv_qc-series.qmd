@@ -1,0 +1,13 @@
+---
+title: "Série : Guide de biodiversité du Québec"
+listing:
+  contents: posts/guide_biodiv_qc
+  sort: "date desc"
+  type: default
+  # max-height: 100px
+  categories: true
+  sort-ui: false
+  filter-ui: false
+page-layout: full
+title-block-banner: true
+---

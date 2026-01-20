@@ -13,11 +13,13 @@ page-layout: full
 title-block-banner: true
 ---
 
-<!-- # Séries -->
+<!-- NOTE : pour mettre à jour le blogue au complet, ce fichier doit être 'Rendu' ou Cmd + K -->
 
-<!-- ##### [Projet : Guide de biodiversité](biodiv_qc-series.html) -->
+# Séries
 
-<!-- Dans cette série, on fait un projet utilisant la science citoyenne pour extraire les observations les plus fréquentes. -->
+##### [Projet : Guide de biodiversité](biodiv_qc-series.html)
+
+Dans cette série, je montre comment faire un guide d'identification de biodiversité avec de la cartographie dans R et en utilisant les données provenant de la science citoyenne.
 
 ------------------------------------------------------------------------
 
