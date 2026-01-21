@@ -6,6 +6,12 @@ csl: ../evolution.csl
 date: "2025-07-31"
 categories: ["biodiversité", 'évolution', 'histoire']
 image: "Grand_pic_2013_ban.jpg"
+citation: 
+  type: article-journal
+  container-title: "Évologie"
+  doi: "10.59350/xx3k5-kkp49"
+  url: https://evologie.netlify.app
+  language: fr
 execute: 
   message: false
   warning: false

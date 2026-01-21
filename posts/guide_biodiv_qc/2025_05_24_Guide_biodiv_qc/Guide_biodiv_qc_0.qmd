@@ -8,6 +8,8 @@ categories: ["biodiversité"]
 image: "images/Ecureuil_Roux_Americain_IMGP9724_2018_09_14_ban.jpeg"
 engine: knitr
 citation: 
+  type: article-journal
+  container-title: "Évologie"
   # doi: "10.xxxxx/test"
   url: https://evologie.netlify.app
   language: fr

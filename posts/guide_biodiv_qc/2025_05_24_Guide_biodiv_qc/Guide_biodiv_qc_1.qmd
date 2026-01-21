@@ -11,6 +11,8 @@ date: "2026-01-19T00:00:01"
 categories: ["biodiversité", "analyse", "cartes", "tutoriel"]
 image: "images/achigans_DSCN1277_2016_08_06.jpeg"
 citation: 
+  type: article-journal
+  container-title: "Évologie"
   # doi: "10.xxxxx/test"
   url: https://evologie.netlify.app
   language: fr
@@ -851,7 +853,7 @@ Le chiffre de 150 espèces pourrait aussi être choisi en fonction d'un certain 
 
 On peut voir que des sites n'ont pas été visités depuis longtemps avec la carte ci-dessous (notez que si vous téléchargez les données eBird longtemps dans le futur, les conclusions seront différentes)! Cela pourrait être intéressant d'aller visiter ces sites et d'ajouter des observations 🦅.
 
-```{r exploration_points_visites_ancien}
+```{r exploration_points_visites_ancien, eval=intermap_slow}
 # 20 sites avec vieilles dates de visites (pas de liste eBird depuis ce temps!)
 sites_perdus = ebird_hp_sf |> 
   # Étiquette avec l'année d'observation
