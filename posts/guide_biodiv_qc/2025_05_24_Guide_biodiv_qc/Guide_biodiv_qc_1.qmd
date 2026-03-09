@@ -28,7 +28,7 @@ editor_options:
 ```{r variable_montre_carte_interactive, echo=FALSE}
 # Mettre 'FALSE' pour une exportation rapide du blogue
 # TRUE produira toutes les cartes (prend environ 6 min)
-intermap_slow = TRUE
+intermap_slow = TRUE # J'ai tout retiré dans plus présent... 
 ```
 
 ## Un guide qui s'adapte
@@ -117,7 +117,7 @@ Tout d'abord, nous devons préparer l'environnement de travail R. Une procédure
 # Si le nom du projet n'est pas dans le chemin d'accès active, il sera changé
 if (!grepl(pattern = '2025_05_24_Guide_biodiv_qc', x = getwd())) {
   # Source l'incubateur d'idées 
-  source(file = '.InCubateur/2025_05_24_Guide_biodiv_qc/scripts/00_init/00_initialize.R')
+  source(file = 'posts/guide_biodiv_qc/2025_05_24_Guide_biodiv_qc/scripts/00_init/00_initialize.R')
 } else {
   source(file = 'scripts/00_init/00_initialize.R')
 }
@@ -213,9 +213,9 @@ regqc |>
   head(n = 3)
 ```
 
-Il serait intéressant de voir les données sur une carte rapidement. Le progiciel [`mapview`](https://r-spatial.github.io/mapview/) est utile pour faire une carte interactive et colorier les MRC [@R-mapview].
+Il serait intéressant de voir les données sur une carte rapidement. Le progiciel [`mapview`](https://r-spatial.github.io/mapview/) est utile pour faire une carte interactive et colorier les MRC [@R-mapview]. Pour ce tutoriel, je n'ai gardé que des cartes statiques de `mapview`, mais je vous laisse tester les bouts de code comme exercice! 
 
-```{r carte_interactive_qc_mrc, eval=TRUE}
+```{r carte_interactive_qc_mrc, eval=FALSE}
 # Faire une carte interactive.
 mapview::mapview(
   x = regqc, 
@@ -223,6 +223,28 @@ mapview::mapview(
   legend = FALSE       # Ne pas ajouter de légende 
 ) 
 ```
+
+
+```{r carte_interactive_qc_shot, echo=FALSE, eval=FALSE}
+# Faire la carte mais afficher plus d'information 
+mv_regqc = mapview::mapview(
+  x = regqc, 
+  zcol = 'MRS_NM_MRC', # Les couleurs représentent les MRCs
+  legend = FALSE       # Ne pas ajouter de légende 
+) 
+# Exportation de la carte 
+mapshot2(
+  mv_regqc,
+  file = 'output/partie_1/carte_mv_regqc.png',
+  remove_controls = c("zoomControl", "layersControl", "homeButton"), 
+  delay = 2
+)
+# browseURL('output/partie_1/carte_mv_regqc.png')
+```
+
+
+![Carte des régions du Québec ](output/partie_1/carte_mv_regqc.png)
+
 
 Maintenant, regardons les données cartographiques qui représentent le territoire selon la nature de la végétation.
 
@@ -305,7 +327,36 @@ mapview(
   )
 ```
 
-Je n'ai pas montré cette carte puisqu'elle n'est pas vraiment belle puisque les polygones sont superposés et empêche de bien voir les détails. Nous pourrions faire une carte qui superpose les *bordures* des régions administratives sur les domaines écologiques. C'est ce que nous allons faire avec une carte statique.
+```{r carte_Classification_eco_superposition_shot, echo=FALSE, eval=FALSE}
+# Faire la carte mais afficher plus d'information 
+mv_class_regqc = mapview(
+  x = regqc_t, 
+  zcol = 'MRS_NM_MRC', 
+  layer.name = 'MRC du Québec',
+  # Change la palette de couleur (voir les palettes ici `sort(hcl.pals())`)
+  col.regions = hcl.colors(n = nrow(regqc_t), 
+                           palette = "Spectral"),
+  legend = FALSE
+) +
+  # Classification Écologique
+  mapview(
+    x = cls_eco, 
+    zcol = 'NOM_DB', 
+    layer.name = 'Domaines biologiques'
+  )
+# Exportation de la carte 
+mapshot2(
+  mv_class_regqc,
+  file = 'output/partie_1/carte_mv_class_reg.png',
+  remove_controls = c("zoomControl", "layersControl", "homeButton"), 
+  delay = 2
+)
+browseURL('output/partie_1/carte_mv_class_reg.png')
+```
+
+![Carte de la classification des domaines écologiques et des régions du Québec ](output/partie_1/carte_mv_class_reg.png)
+
+Cette carte n'est pas vraiment belle puisque les polygones sont superposés et empêche de bien voir les détails. Nous pourrions faire une carte qui superpose les *bordures* des régions administratives sur les domaines écologiques. C'est ce que nous allons faire avec une carte statique.
 
 ### Cartes statiques
 
@@ -853,31 +904,83 @@ Le chiffre de 150 espèces pourrait aussi être choisi en fonction d'un certain 
 
 On peut voir que des sites n'ont pas été visités depuis longtemps avec la carte ci-dessous (notez que si vous téléchargez les données eBird longtemps dans le futur, les conclusions seront différentes)! Cela pourrait être intéressant d'aller visiter ces sites et d'ajouter des observations 🦅.
 
-```{r exploration_points_visites_ancien, eval=intermap_slow}
+```{r exploration_points_visites_ancien, eval=TRUE}
 # 20 sites avec vieilles dates de visites (pas de liste eBird depuis ce temps!)
 sites_perdus = ebird_hp_sf |> 
   # Étiquette avec l'année d'observation
   dplyr::mutate(yr_last = substr(latestObsDt, 0,4), 
-                labs = sprintf(fmt = "%s — %s", yr_last, labs)) |> 
+                labs = sprintf(fmt = "%s — %s", yr_last, labs),
+                labs_yr_sp = sprintf(fmt = "%s — %s", yr_last, numSpeciesAllTime)
+                ) |> 
   # Montre les 20 premiers avec les dates les plus petites
   slice_min(order_by = date_obs_recent, 
             n = 20)
 
+```
+
+Vous pouvez afficher la carte avec ce code :
+
+```{r exploration_points_visites_ancien_carte, eval=FALSE}
 # Faire une carte 
 mapview(x = sites_perdus, 
         zcol = "yr_last", 
         layer.name = 'Nb Esp.',
         label = "labs")
+
 ```
 
-Le code plus bas montre la carte avec tous les points. Cela fait beaucoup de points! Je vous laisse explorer.
 
-```{r exploration_donnees_carte_tous, eval=intermap_slow}
+```{r exploration_points_visites_ancien_carte_shot, echo=FALSE, eval=FALSE}
+# Faire la carte mais afficher plus d'information 
+mv_sites = mapview(x = sites_perdus, 
+        zcol = "yr_last", 
+        layer.name = 'Nb Esp.',
+        label = "labs") |> 
+  addStaticLabels(
+    sites_perdus, 
+    label = sites_perdus$labs_yr_sp, # Colonne avec étiquette
+    noHide = TRUE,               # Va être montré
+    textsize = "10px",           # Taille texte 
+    textOnly = TRUE,             # Texte sans boîte 
+    direction = 'left',          # Texte à gauche 
+    offset = c(-10, 0),          # Adjustement de la distance horizontale/vertical (x, y)
+    style = list(
+      # "background-color" = "white", 
+      # "padding" = "1px 2px",   # Rembourage (padding) vertical et horizontal
+      # "line-height" = "1",     # Espace vertical entre les lignes de texte
+      "color" = "black",         # Couleur texte
+      "font-weight" = "bold",    # Gras 
+      # Faire un style autour du texte pour mettre un Halo blanc 
+      "text-shadow" = "-1px -1px 2px white, 1px -1px 2px white, -1px 1px 2px white, 1px 1px 2px white"
+)
+  )
+
+# Exportation de la carte 
+mapshot2(
+  mv_sites,
+  file = 'output/partie_1/carte_mv_sites_perdus.png',
+  remove_controls = c("zoomControl", "layersControl", "homeButton"), 
+  delay = 2
+)
+browseURL('output/partie_1/carte_mv_sites_perdus.png')
+```
+
+![Carte des sites ayant des observations les plus vielles](output/partie_1/carte_mv_sites_perdus.png)
+
+
+
+Le code plus bas montre la carte avec tous les points. Cela fait beaucoup de points! 
+
+```{r exploration_donnees_carte_tous, eval=TRUE}
 # Préparation des données simplifier (moins de colonnes)
 ebird_hp_sf_simple = ebird_hp_sf |> 
   # Sélection de colonnes pour l'affichage de détail dans la carte 
   dplyr::select(locId, latestObsDt, numSpeciesAllTime, labs) 
+```
 
+Je vous laisse explorer avec ce code : 
+
+```{r exploration_donnees_carte_tous_carte, eval=FALSE}
 # Regarder les points chauds d'observations eBird 
 mapview(
   x = ebird_hp_sf_simple, 
@@ -887,6 +990,32 @@ mapview(
   layer.name = 'Nb Esp.')
 ```
 
+
+
+
+```{r exploration_donnees_carte_tous_carte_shot, echo=FALSE, eval=FALSE}
+# Faire la carte mais afficher plus d'information 
+mv_ebird_Sites = mapview(
+  x = ebird_hp_sf_simple, 
+  # Ajout de la couleur en fonction du nombre d'espèces vues
+  zcol = 'numSpeciesAllTime',  
+  label = "labs",
+  layer.name = 'Nb Esp.') 
+
+# Exportation de la carte 
+mapshot2(
+  mv_ebird_Sites,
+  file = 'output/partie_1/carte_mv_sites_tous.png',
+  remove_controls = c("zoomControl", "layersControl", "homeButton"), 
+  delay = 2
+)
+# browseURL('output/partie_1/carte_mv_sites_tous.png')
+```
+
+![Carte des sites eBird](output/partie_1/carte_mv_sites_tous.png)
+
+
+
 On peut aussi répondre à des questions de coin de table : où sont les sites avec plus de 250 espèces différentes? Promenez le curseur sur les points pour voir plus de détails sur les sites.
 
 ```{r ebird_carte_filtre, eval=TRUE}
@@ -895,6 +1024,9 @@ ebird_hp_chaud = ebird_hp_sf |>
   # Sélection de colonnes pour l'affichage de détail dans la carte 
   dplyr::select(locId, latestObsDt, numSpeciesAllTime, labs)
 
+```
+
+```{r ebird_carte_filtre_carte, eval=FALSE}
 # Faire la carte 
 mapview(
   x = ebird_hp_chaud, 
@@ -906,6 +1038,51 @@ mapview(
   layer.name = 'Nb Esp.<br> filtre(>=250)')
 ```
 
+
+
+```{r ebird_carte_filtre_carte_shot, echo=FALSE, eval=FALSE}
+# Faire la carte mais afficher plus d'information 
+mv_ebird_Sites_hot = mapview(
+  x = ebird_hp_chaud, 
+  zcol = "numSpeciesAllTime", 
+  labelOptions = leaflet::labelOptions(noHide = FALSE,
+                                       opacity = .85, 
+                                       textOnly = FALSE),
+  layer.name = 'Nb Esp.<br> filtre(>=250)') |> 
+  addStaticLabels(
+    ebird_hp_chaud, 
+    label = ebird_hp_chaud$numSpeciesAllTime, # Colonne avec étiquette
+    noHide = TRUE,               # Va être montré
+    textsize = "10px",           # Taille texte 
+    textOnly = TRUE,             # Texte sans boîte 
+    direction = 'left',          # Texte à gauche 
+    offset = c(-10, 0),          # Adjustement de la distance horizontale/vertical (x, y)
+    style = list(
+      # "background-color" = "white", 
+      # "padding" = "1px 2px",   # Rembourage (padding) vertical et horizontal
+      # "line-height" = "1",     # Espace vertical entre les lignes de texte
+      "color" = "black",         # Couleur texte
+      "font-weight" = "bold",    # Gras 
+      # Faire un style autour du texte pour mettre un Halo blanc 
+      "text-shadow" = "-1px -1px 2px white, 1px -1px 2px white, -1px 1px 2px white, 1px 1px 2px white"
+)
+  )
+
+# Exportation de la carte 
+mapshot2(
+  mv_ebird_Sites_hot,
+  file = 'output/partie_1/carte_mv_sites_hot.png',
+  remove_controls = c("zoomControl", "layersControl", "homeButton"), 
+  delay = 2
+)
+# browseURL('output/partie_1/carte_mv_sites_hot.png')
+```
+
+![Carte des sites eBird](output/partie_1/carte_mv_sites_hot.png)
+
+
+
+
 Avec ce dernier filtre, les points se situent près de parcs abondamment fréquentés par les citoyens, et près des habitations. Aussi, la totalité des points se retrouve près de cours d'eau, marais, réservoirs ou un milieu humide. Ce qui démontre une fois de plus l'importance des milieux humides pour la biodiversité.
 
 Regardons maintenant où sont les sites avec plus de 150 observations, peu importe la dernière date de visite.
@@ -916,13 +1093,40 @@ ebird_hp_sf_chaud_bio = ebird_hp_sf |>
   dplyr::select(locId, latestObsDt, numSpeciesAllTime, labs) |> 
   # Regarder seulement les sites qui ont plus de 150 espèces 
   filter(numSpeciesAllTime >= 150)
+```
 
+```{r exploration_donnees_carte_filtre_nb_carte, eval=FALSE}
 mapview(
   x = ebird_hp_sf_chaud_bio, 
   zcol = 'numSpeciesAllTime', 
   label = "labs",
   layer.name = 'Nb Esp.<br> filtre(>=150)')
+
 ```
+
+```{r exploration_donnees_carte_filtre_nb_carte_shot, echo=FALSE, eval=FALSE}
+# Faire la carte mais afficher plus d'information 
+mv_ebird_Sitesplus_150 = mapview(
+  x = ebird_hp_sf_chaud_bio, 
+  # Ajout de la couleur en fonction du nombre d'espèces vues
+  zcol = 'numSpeciesAllTime',  
+  label = "labs",
+  layer.name = 'Nb Esp.<br> filtre(>=150)') 
+
+# Exportation de la carte 
+mapshot2(
+  mv_ebird_Sitesplus_150,
+  file = 'output/partie_1/carte_mv_sites_plus150.png',
+  remove_controls = c("zoomControl", "layersControl", "homeButton"), 
+  delay = 2
+)
+# browseURL('output/partie_1/carte_mv_sites_plus150.png')
+```
+
+![Carte des sites eBird plus de 150 espèces](output/partie_1/carte_mv_sites_plus150.png)
+
+
+
 
 Les sites avec le plus d'espèces sont plus au sud. Deux explications rapides :
 
@@ -971,7 +1175,7 @@ eb_qc_topn = eb_qc |>
 
 Puis afficher le résultat pour tout le Québec sur notre carte interactive.
 
-```{r carte_points_ebird_admin_qc, eval=intermap_slow}
+```{r carte_points_ebird_admin_qc, eval=FALSE}
 mapview(regqc_t, 
         legend = FALSE, 
         zcol = 'MRS_NM_MRC') + 
@@ -981,6 +1185,30 @@ mapview(regqc_t,
           zcol = 'MRS_NM_MRC', 
           label = 'locName') 
 ```
+
+```{r carte_points_ebird_admin_qc_shot, echo=FALSE, eval=FALSE}
+# Faire la carte mais afficher plus d'information 
+mv_ebird_reg = mapview(regqc_t, 
+        legend = FALSE, 
+        zcol = 'MRS_NM_MRC') + 
+  mapview(eb_qc_topn,
+          legend = FALSE, 
+          cex = 'numSpeciesAllTime',
+          zcol = 'MRS_NM_MRC', 
+          label = 'locName') 
+
+# Exportation de la carte 
+mapshot2(
+  mv_ebird_reg,
+  file = 'output/partie_1/carte_mv_sites_reg.png',
+  remove_controls = c("zoomControl", "layersControl", "homeButton"), 
+  delay = 2
+)
+# browseURL('output/partie_1/carte_mv_sites_reg.png')
+```
+
+![Carte des sites eBird et des régions du Québec](output/partie_1/carte_mv_sites_reg.png)
+
 
 #### Ajout des sites eBird sur la carte de base
 
@@ -1265,15 +1493,18 @@ ggsave(
 
 Et pour finir une carte interactive!
 
-```{r carte_interactive_ZHPB_ebird}
+```{r carte_interactive_ZHPB_ebird, eval=TRUE}
 # On ajoute une étiquette avec le nombre d'espèces
 zhpb = eb_qc_topn_lvl_mtl_id |> 
   mutate(
     labs2 = sprintf('%s; sp : %s', 
                     site_corr, 
                     numSpeciesAllTime)
-    )
+  )
 
+```
+
+```{r carte_interactive_ZHPB_ebird_carte, eval=FALSE}
 # carte interactive pour le plaisir
 mapview(
   zhpb, 
@@ -1282,6 +1513,46 @@ mapview(
   label = "labs2"
 )
 ```
+
+```{r carte_interactive_ZHPB_ebird_shot, echo=FALSE, eval=FALSE}
+# Faire la carte mais afficher plus d'information 
+mv_zhpb = mapview(
+  zhpb, 
+  zcol = 'numSpeciesAllTime', 
+  layer.name = "NB espèces", 
+  label = "labs2"
+) |> 
+  addStaticLabels(
+    zhpb, 
+    label = zhpb$numSpeciesAllTime, # Colonne avec étiquette
+    noHide = TRUE,               # Va être montré
+    textsize = "10px",           # Taille texte 
+    textOnly = TRUE,             # Texte sans boîte 
+    direction = 'left',          # Texte à gauche 
+    offset = c(-10, 0),          # Adjustement de la distance horizontale/vertical (x, y)
+    style = list(
+      # "background-color" = "white", 
+      # "padding" = "1px 2px",   # Rembourage (padding) vertical et horizontal
+      # "line-height" = "1",     # Espace vertical entre les lignes de texte
+      "color" = "black",         # Couleur texte
+      "font-weight" = "bold",    # Gras 
+      # Faire un style autour du texte pour mettre un Halo blanc 
+      "text-shadow" = "-1px -1px 2px white, 1px -1px 2px white, -1px 1px 2px white, 1px 1px 2px white"
+)
+  )
+
+# Exportation de la carte 
+mapshot2(
+  mv_zhpb,
+  file = 'output/partie_1/carte_zhpb.png',
+  remove_controls = c("zoomControl", "layersControl", "homeButton"), 
+  delay = 2
+)
+# browseURL('output/partie_1/carte_zhpb.png')
+```
+
+
+![Carte zone de haut potentiel de biodiversité eBird](output/partie_1/carte_zhpb.png)
 
 Voilà!
 
