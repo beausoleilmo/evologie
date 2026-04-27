@@ -18,7 +18,7 @@
 # Prendre le chemin d'accès actuel avec getwd()
 # Mettre le chemin d'accès dans le dossier du projet
 # if (!grepl(pattern = '2025_05_24_Guide_biodiv_qc', x = getwd())) {
-#   setwd('.InCubateur/2025_05_24_Guide_biodiv_qc')
+#   setwd('Incubateur/2025_05_24_Guide_biodiv_qc')
 # }
 
 # Création de dossier de sortie
