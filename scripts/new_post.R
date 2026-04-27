@@ -126,5 +126,5 @@ blg_post(dossier = 'GBIF_bias_Qc', billet = 'spatial_gbif')
 blg_post(dossier = 'laChasseAuCanard', billet = 'Chasse_Au_Canard')
 blg_post(dossier = 'Guide_Visuel_chant', billet = 'Guide_Visuel_chant')
 blg_post(dossier = 'Guide_biodiv_qc', billet = 'Guide_biodiv_qc')
-blg_post(dossier = 'test', billet = 'test', dir.base = '.InCubateur/')
+blg_post(dossier = 'test', billet = 'test', dir.base = 'Incubateur/')
 
