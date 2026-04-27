@@ -2,11 +2,10 @@
 .Rhistory
 .RData
 .Ruserdata
-
 /.quarto/
 .Rdata
 .httr-oauth
 .DS_Store
 .quarto
-
 **/*.quarto_ipynb
+_freeze

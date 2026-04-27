@@ -1,0 +1,91 @@
+---
+title: "Billet avec code"
+description: ""
+bibliography: ../ref_blg.bib
+csl: ../evolution.csl
+date: "2025-04-11"
+categories: ["analysis"]
+image: "https://marcolivierbeausoleil.wordpress.com/wp-content/uploads/2015/07/cropped-imgp81461.jpg"
+execute: 
+  message: false
+  warning: false
+editor_options: 
+  chunk_output_type: console
+---
+
+## *Titre de section*
+
+```{r}
+# brew install mp3splt nécessaire
+
+library(monitoR)
+library(seewave)
+library(ggplot2)
+
+birds_audio = list.files(path = "/Volumes/Brainmemory/music_MBP/chants_oiseaux/Exportation_audacity/chants_no_name2", 
+           pattern = '.mp3',
+           full.names = TRUE)
+
+
+birds_sub= grep(pattern = 'paruline', x = birds_audio , ignore.case = TRUE, value = TRUE)
+
+rec_time = NULL
+rec_sound_list = NULL
+for (file_i in 1:length(birds_sub)) {
+  fichier_nom = basename(birds_sub[file_i])
+  mss = sprintf('Fichier : %s', fichier_nom)
+  message(mss)
+  bf_i = tuneR::readMP3(filename = birds_sub[file_i])
+  # load the spectrogram
+sound_data <- seewave::ggspectro(bf_i,
+                                 norm = T, 
+                                 flim=c(0.1,10), # frequency limits, kHz 
+                                 wl = 512, # fft window length (start w/ 1024 or 512 )
+                                 ovlp = 80) # % window overlap, x direction
+# get the spectrogram data to darken the background and make nice contrast
+hmm<-seewave::spectro(bf_i,plot=F) 
+# get the high and low contrast numbers to cut out 
+top =quantile(hmm$amp,probs = .99)
+bottom = quantile(hmm$amp,probs = 0.4)
+# reset all values above the top value to the top and below the bottom value
+sound_data$data$amplitude_cut <- dplyr::case_when(sound_data$data$amplitude>top ~top ,
+                                                  sound_data$data$amplitude<bottom ~bottom,
+                                                  TRUE ~ sound_data$data$amplitude)
+# max time of recording 
+max_time = max(sound_data$data$time)
+
+# GGplot 
+gg_sound= sound_data+
+  geom_raster(aes(fill = amplitude_cut)) + 
+  # scale_fill_viridis_c(option = 'plasma',
+  #                      na.value = viridis::plasma(n = 100)[1])+
+  scale_x_continuous(breaks= seq(0,max_time,1),minor_breaks = seq(0,max_time,.25))+
+  scale_y_continuous(breaks= seq(0,max_time,1),minor_breaks = seq(0,max_time,.25))+
+  coord_cartesian (xlim = c(0, 10)) +
+  theme_classic()+
+  theme(legend.position = 'none') + 
+  labs(title = fichier_nom)
+
+# print the plot
+print(gg_sound)
+
+sl = list(sound_data)
+names(sl) = fichier_nom
+rec_sound_list = c(rec_sound_list, fichier_nom)
+
+datatime = data.frame(sp = fichier_nom, 
+                        s = readline(paste("Start ", sep='')), 
+           e = readline(paste("End ", sep='')))
+rec_time =rbind(rec_time, datatime)
+
+invisible(readline(prompt="Press [enter] to continue"))
+}
+
+
+
+```
+
+### *Références*
+
+::: {#refs}
+:::

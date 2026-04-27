@@ -1,0 +1,33 @@
+---
+title: "Billet avec code"
+description: ""
+bibliography: ../ref_blg.bib
+csl: ../evolution.csl
+date: "2025-03-29"
+categories: ["analysis"]
+image: "https://marcolivierbeausoleil.wordpress.com/wp-content/uploads/2015/07/cropped-imgp81461.jpg"
+execute: 
+  message: false
+  warning: false
+editor_options: 
+  chunk_output_type: console
+---
+
+## Titre de section
+
+Le son de ‘Merrie Melodies’ commence garantissant une séance de plaisir au sous-sol de mes grands parents. Tout jeune, j'absorbais les aventures de [Bugs bunny](https://fr.wikipedia.org/wiki/Bugs_Bunny), le lapin espiègle, qui défile devant moi. Bugs bunny est né vers 1938 et tente à tout prix de rendre fou le chasseur qui le pourchasse. À réécouter ces vidéos, il est impressionnant de voir la quantité de plomb qui est lancé dans les airs ou simplement administré à la plus grande vitesse sous l'armure des animaux.
+
+## Les oiseaux aux marchés
+
+Avant de pouvoir faire son épicerie dans un Walmart, il existait des petits marchés 
+([marché public de Joliette](https://avenues.ca/comprendre/histoire-en-photos/25-photos-de-marches-dantan/))
+
+## Protéger les espèces
+
+Les espèces éteinte devraient être protégé : nous devrions enseigner cela aux plus de personnes possible. Tout le monde doit savoir que notre richesse culturelle passe aussi par la diversité. Heureusement, il y en a pas trop… pour le moment.
+
+
+### Références
+
+::: {#refs}
+:::

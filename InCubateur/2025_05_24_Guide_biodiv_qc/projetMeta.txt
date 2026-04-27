@@ -1,0 +1,25 @@
+# Guide d’identification de biodiversité du Québec
+
+## Objectifs ------
+  -> Question : Est-ce que les données de biodiversité issues de la science citoyenne permettraient l’élaboration d’un guide d’identification des espèces fréquemment observées?
+  -> Préparé ensemble de données et analyses pour répondre à la question.
+
+## Étapes du projet ------
+
+### Partie 1 : cartographie ------
+  -> Cartographie : carte avec MRC et domaines biologiques du Québec;
+  -> Points chauds : sites ornithologiques contenant beaucoup d’observations comme proxy d’endroit riche en biodiversité;
+
+### Partie 2 : manipuler des données d'observations ------
+  -> Liste d’espèces (occurrences) : faire une liste d’espèces (nom français et latin) souvent vues par la science citoyenne pour une région d’intérêt;
+  -> (Optionnel) Liste de traits : Faire une liste de tailles (longueur, envergure, poids) et ajouter cette information aux espèces.
+
+### Partie 3 : représentation des espèces choisies ------
+  -> (Optionnel) Portrait photo des organismes : Extraire des photos d’organismes à mettre dans un dépliant.
+
+
+## Données ------
+  -> data/LISEZMOI.txt
+
+## Scripts ------
+  -> scripts/LISEZMOI.txt

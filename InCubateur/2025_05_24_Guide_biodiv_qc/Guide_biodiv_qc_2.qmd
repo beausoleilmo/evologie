@@ -1,0 +1,380 @@
+---
+title: "Guide d'identification de biodiversité du Québec - Partie 2 : Les données de biodiversité"
+description: "Est-ce que iNaturalist ou les données GBIF sont pertinentes pour informer le développement d'un guide d'identification des espèces courantes?"
+bibliography: ../../ref_blg.bib
+# csl: ../evolution.csl
+date: "2025-05-24"
+categories: ["biodiversité", "analyse", "tutoriel"]
+image: "https://marcolivierbeausoleil.wordpress.com/wp-content/uploads/2015/07/cropped-imgp81461.jpg"
+citation: 
+  type: article-journal
+  container-title: "Évologie"
+  # doi: ""
+  url: https://evologie.netlify.app
+  language: fr
+execute: 
+  message: false
+  warning: false
+editor_options: 
+  chunk_output_type: console
+---
+
+<!-- [billet sur la cartographie](Guide_biodiv_qc_1.qmd) -->
+
+## plan
+
+1.  C'est quoi des données de biodiversités: Types de données de biodiv (occurences)
+
+-   qu'est-ce qu'il faut savoir sur les données de biodiversité
+-   Biais potentiel par le type de données
+
+2.  Qui participe à bonifier les données de biodiversité?
+
+-   Certains scientifiques, musées, gouvernements, entreprises ou citoyen participent à la collecte de données de biodiversité. Oui chère personne lectrice. Vous pouvez aider à [inlcude un guide pour iNaturalist](https://www.youtube.com/watch?v=VamIMCxDyOA&list=PLY-KTbpNXtBE5wJW2hvnNb1aMolnMtypE)
+-   Vous êtes plus oiseaux? eBird
+-   Vous vous intéressez à la biodiversité en général, mais vous avez besoin d'aide au début pour identifier? iNaturalist.
+-   Vous devez faire de l'échantillonnage terrain (comme des points d'écoutes ou des transects)? Observation.org ou NatureCounts (si vous participez à un protocole)
+-   Vous participez à des activités de support de Savoirs écologiques traditionnels? GeoKeeper. (voir aussi : https://www.gbif.org/news/1Ke3Gk2USgdIW5OgDlBIKY/open-data-for-people-and-purpose-gbif-establishes-task-group-on-indigenous-data-governance)
+-   Pourquoi autant d'applications différentes? Elles ont des objectifs différents, des protocoles d'échantionnallage différents, un focus sur des groupes taxonomiques ([eBird](https://ebird.org/home), [Pl\@ntNet](https://plantnet.org), [eButterfly](https://espacepourlavie.ca/ebutterfly)). Pour certaines, sont des réseaux sociaux qui ont des communautés qui se supportent différement. Par exemple, les ornithologues cherches des informations différentes que les botanistes. 3.1 Où trouver des données?
+-   Beaucoup des plateformes citées plus haut partagent la totalité ou une partie de leurs données. Par exemple, iNaturalist partage seulement les observations de « qualité recherche », c'est-à-dire dont au moins deux personnes ont validées. 3.2 Comment extraire et manipulation sans HPC! (OLAP)
+-   Presque chaque site de science citoyenne permet de télécharger des données.
+-   Par contre, **LA** référence est [GBIF](https://www.gbif.org).\
+-   Tutoriel de téléchargement
+
+4.  Portrait de biodiversité\
+
+-   Portrait comparatif : Visualisation (carte de lumière, carte H3, histogramme taxa?)
+-   Exploration des données du Québec
+
+5.  Sélection d'espèces pour le guide selon fréquence d'observation par groupe taxonomique
+
+-   Prendre les groupes taxonomiques qui sont intéressants seulement.
+
+## Collectionner la biodiversité
+
+Définition de biodiversité :
+
+### C'est quoi une donnée de biodiversité?
+
+Pourquoi c'est important?
+
+### Les occurences (présences)
+
+La présence d'organismes à un endroit et un moment déterminé. Certains protocoles d'échantillonnage ont aussi des absences : parfois les absences sont tout aussi importante que les présences puisque cela permet d'obtenir un peut plus d'information sur le potentiel de qualité d'habitat d'une espèce. Les traces d'organismes vivants comme les empreintes, un terrier, les galles de certaines plantes dûe à des insectes, un arbre grignoté par un castor, etc. comptent aussi comme la preuve d'une présence d'un organisme, donc c'est une sorte d'occurence. Les restants d'organismes (morts, excréments, coquillages, etc.) ou témoignage de la vie par des traces laisser par les fossiles sont aussi des données fondementales pour faire toutes sortes d'analyse en biogéographie. Imaginez, même les traces de vie sur Mars pourraient faire partie de GBIF [@hurowitzRedoxdrivenMineralOrganic2025]!
+
+L'ADN des organismes ou de l'information génétique se retrouvant dans l'environnement (eDNA ou ADN environnementale). Les collections de musées sont aussi riche pour faire des analyses de présence historique d'organismes ou de faire des comparaisons de changement morphologique des populations entre des populations échantillonnées récemment et des mesures similaire fait sur les organismes dans des collections muséales. Les données collectées automatiquement par des machines (caméra de chasses, enregistreur audio, images de drones, signatures spectrales, etc.)
+
+### Événement d'échantillonnage
+
+L'acquisition de données avec des protocoles standardisé, par exemple si l'effort d'échantillonnage est enregistré, est riche pour les chercheurs puisque cela permet de faire des analyses beaucoup plus intéressante. Par exemple, en ayant l'effort d'échantillonnage, il est possible de comparer des sites et rendre les estimations de biodiversité plus robuste. Cela permet de mieux modéliser l'incertitude sur les résultats et donc d'être plus robuste. 7. les mesures de traits d'organismes (mesures du poids, taille du bec, longueur du corps, etc.); 8. les données de mouvement avec la télémétrie;
+
+## 3. Données de biodiversité
+
+### Exploration de l'Atlas Biodiversité Québec
+
+Quelques progiciels utilisées pour manipuler les données
+
+Importer des fonctions nécessaire.
+
+```{r prep_path, echo=FALSE}
+# Charge selon la position du chemin d'accès 
+source(file = 'posts/guide_biodiv_qc/2025_05_24_Guide_biodiv_qc/scripts/00_init/00_initialize.R')
+```
+
+### Traitement local des données
+
+Le portail GBIF (https://www.gbif.org) permet d'extraire facilement les données en applicant différents filtres. Lors de l'extraction des données, il y a un code (JSON) qui permet de reproduire exactement le même jeu de données. J'ai filtrer les données pour le Québec en entier (CAN.11_1 : c'est le Québec) et pour seulement les données de présence (OCCURRENCE_STATUS == present, donc en excluant les absences). Le code plus bas est formaté en JSON et c'est ce qui est envoyé à GBIF pour retourner les données.
+
+```{json}
+{
+  "type": "and",
+  "predicates": [
+    {
+      "type": "equals",
+      "key": "GADM_GID",
+      "value": "CAN.11_1",
+      "matchCase": false
+    },
+    {
+      "type": "equals",
+      "key": "OCCURRENCE_STATUS",
+      "value": "present",
+      "matchCase": false
+    }
+  ]
+}
+```
+
+Il est possible d'aller filtrer les données directement sur le site de GBIF comment en sélectionnant les données pour iNaturalist seulement ou le règne (*kindgom*) `Animalia` directement. Je voulais apprendre à utiliser `duckDB` avec R. Pourquoi? Parce que les données GBIF pour l'ensemble du Québec en fichier CSV (comma separated values) font plus de 20GB ce qui est beaucoup pour beaucoup d'ordinateur portable! J'ai donc téléchargé un jeu de données pour toutes les occurences présentes au Québec et filtré les donnée pour le besoin de ce projet (donc seulement les données d'iNaturalist avec un niveau de précision taxonomique, puis les animaux; voir plus bas un exemple de code pour faire cette filtration). Je ne veux pas avoir plus de 20GB sur mon disque juste pour faire des tests. Donc le disque externe est une option rapide pour éviter d'avoir à garder le gros jeu de données sur mon ordinateur. J'exporte un jeu de données beaucoup plus petit (moins de 200 MB!) après la filtration pour ce projet.
+
+Pour citer les données GBIF avec un filtre différent de celui des données GBIF se fait avec le `datasetKey` et en utilisant l'outil de [jeux de données dérivés de GBIF](https://www.gbif.org/citation-guidelines#derivedDatasets) et voir aussi cet [article de blogue de GBIF sur les données dérivées](https://data-blog.gbif.org/post/derived-datasets/). Le progiciel R [`rgbif` permet aussi](https://docs.ropensci.org/rgbif/reference/derived_dataset.html) d'enregistrer des données dérivés (ou filtrées) avec les `datasetKey`.
+
+Si vous réutilisez le même filtre et téléchargez les données, il est fort possible que les données soient différentes: en effet, vous auriez les données plus à jour! Dans toutes les recherches, il est une bonne pratique de garder la commande exacte pour filtrer les données. Je garder aussi le numéro de téléchargement (e.g., [0047252-250827131500795](https://www.gbif.org/occurrence/download/0047252-250827131500795)) pour référence future. Une fois téléchargé, j'ai manipuler le jeu de données avec duckdb qui permet de lire et manipuler des jeux de données gigantesque (et qui n'entrerais pas en mémoire). L'exécution des opérations encore plus rapide avec `duckdb`. Dans tous les cas, il faut
+
+```{r eval=FALSE}
+[...]
+# Données GBIF pour le Québec en entier : 
+csv = "/Volumes/Disk_fun/gbif_data/0047252-250827131500795.csv" # Données de plus de 20GB! 
+# csv = "data/gbif_data/0047252-250827131500795.csv"
+
+# Se connecter à une session duckDB 
+con <- DBI::dbConnect(
+  drv = duckdb::duckdb()
+)
+
+# Création d'une vue des données dans duckDB. 
+nom_vue = "gb_data"
+DBI::dbExecute(
+  conn = con, 
+  statement = sprintf("CREATE VIEW %s AS SELECT * FROM read_csv('%s')", 
+                      nom_vue, 
+                      csv))
+
+gb_dat = dplyr::tbl(
+  con, 
+  from = nom_vue
+)
+
+# Extraction des données avec les filtres 
+tictoc::tic() 
+inatdb_animaux = gb_dat |> 
+  # iNaturalist Research-grade Observations voir 
+  # https://www.gbif.org/dataset/50c9509d-22c7-4a22-a47d-8c48425ef4a7
+  dplyr::filter(datasetKey == '50c9509d-22c7-4a22-a47d-8c48425ef4a7', 
+                # prendre seulement les observations au niveau de l'espèce et plus précis
+                taxonRank %in% c("SPECIES", "SUBSPECIES", "VARIETY"), 
+                # Extraire le règne animal seulement pour le moment
+                kingdom %in% c('Animalia') 
+  ) |>
+  # Extraction de certaines colonnes pour avoir un fichier vraiment plus petit
+  dplyr::select(# kingdom,
+    phylum, class, order, family, species, scientificName, verbatimScientificName,
+    decimalLatitude, decimalLongitude, coordinateUncertaintyInMeters, 
+    identifiedBy, recordedBy, 
+    eventDate, 
+    datasetKey,
+    license) |> 
+  # Extraction des données vers la mémoire 
+  dplyr::collect()
+tictoc::toc()
+[...]
+# Exportation de inat_dat
+write.csv(
+  x = inatdb_animaux, 
+  file = file.path('data/gbif_data', 
+                   "inat_research_grade_obs_animalia.csv")
+  )
+
+```
+
+Performance : Ne prend que quelques secondes sur un ordinateur portable avec les données sur un disque dur (ce qui n'est vraiment pas le plus rapide!). Il faudrait tester avec un 'disque' NVMe SSD qui est beaucoup plus rapide.\
+180 secondes (\~3 min), ce temps est pour des conditions sous-optimales. Il est facile d'obtenir un meilleur temps si les données étaient directement dans mon ordinateur (disque plus rapide).
+
+Nous voudrions avoir les observations avec un niveau taxonomique d'espèce.
+
+```{r lire_donnees_inat_prefiltre}
+ginat = read.csv(
+  file = file.path('data/gbif_data', 
+                   "inat_research_grade_obs_animalia.csv")
+  )
+```
+
+```{r preparation_noms_binomial, eval=FALSE}
+colnames(ginat)
+# Compte le nombre d'entrées (pas nécessairement des espèces avec nom binomiale)
+# Prend quelques secondes 
+nb_unique_nom_sp = ginat |> 
+  # Garde les noms unique seulement
+  count(species) 
+```
+
+```{r exploration_donnes_biodiv}
+# Compte le nombre d'occurence après filtration (pas mal!)
+count(ginat)
+
+# Nombre d'espèces unique pour chaque ordre. 
+ginat |> 
+  distinct(phylum, class, order, family, species) |> 
+  count(phylum, class, order) |> 
+  arrange(-n) 
+```
+
+```{r extraction_classe_plus_nombreuse}
+# Regarder le nombre d'observations dans chaque règne-classe dans la base de données
+nb_class = ginat |> 
+  count(phylum, class) |> 
+  arrange(-n)
+
+# Extraction des classes avec plus de n observations 
+class_select = nb_class |> 
+  filter(n >= 3000) |> 
+  pull(class)
+```
+
+```{r top_5_especes_en_n_observations_par_classe_et_ordre}
+top_nb_sp_per_class = ginat |> 
+  filter(!(class %in% c("Aves")))  |> 
+  dplyr::count(class, 
+               order, 
+               species) |> 
+  group_by(class, 
+           order) |> 
+  filter(class %in% class_select) |> 
+  slice_max(n = 5,
+            order_by = n)
+```
+
+Pour les oiseaux, nous allons utiliser la base de données sous format .parquet directement pour filtrer les données, faire un calcul du compte d'observation de chaque espèce.
+
+```{r AVES_top_5_especes_en_n_observations_par_classe_et_ordre}
+AVES_top_nb_sp_per_class = ginat |> 
+  filter(class %in% c("Aves")) |>  
+  count(class, 
+        order, 
+        family,
+        species)
+```
+
+Lire des fichiers .parquet est d'une rapidité incroyable.
+
+```{r}
+
+AVES_top_nb_sp_per_class |> 
+  count(order) |> 
+  arrange(-n)
+
+AVES_prop_nb_sp_per_class = AVES_top_nb_sp_per_class |> 
+  filter(!is.na(order)) |> 
+  arrange(-n) |> 
+  group_by(class, order) |> 
+  group_modify(~ slice_max(.data = .x, prop = .18, order_by = n))
+
+AVES_prop_nb_sp_per_class |> 
+  ungroup() |> 
+  count(order, family) |> 
+  arrange(order, -n)
+
+```
+
+### Compte nombre d'observations iNaturalist selon des taxons
+
+```{r fonction_pour_compte_nb_obs_group_ord}
+#' Title
+#'
+#' @param n 
+#' @param var 
+#'
+#' @returns
+#' @export
+#'
+#' @examples
+plot_data <- function(data, n, order_sel = 'Lepidoptera') {
+  data_order = data |> 
+    filter(order %in% order_sel) 
+  
+  if (nrow(data_order)==0) {
+    stop("Pas de données pour l'ordre sélectionné")
+  }
+  
+  data_order |>  
+    group_by(phylum, class, 
+             species,
+             order) |> 
+    summarize(total=sum(cnt)) |> 
+    arrange(phylum, class, order, desc(total)) |> 
+    ungroup() |> 
+    group_by(order) |> 
+    group_modify(.f = ~slice_head(.x, n = n)) |> 
+    mutate(total_obs = sum(total)) |> 
+    ungroup() |> 
+    mutate(order_total = forcats::fct_reorder(.f = order, 
+                                              .x = total_obs, 
+                                              .fun = sum, 
+                                              .desc = TRUE), 
+           sci_lab = gsub(pattern = ' ', replacement = '\n', x = species),
+           sci_nom = forcats::fct_reorder(sci_lab, 
+                                          total, .desc = TRUE)) |> 
+    # Prendre seuelemnt les n premiers
+    ggplot(aes(x=forcats::fct_reorder(species, 
+                                      total, .desc = TRUE),
+               y = total)) + 
+    scale_y_log10()+ 
+    scale_x_discrete(guide = guide_axis(angle = 45)) +
+    geom_bar(aes(fill=total), stat='identity')+
+    facet_wrap(order_total~.,   scales = "free_x")+
+    geom_text(aes(label = total), vjust = .5, 
+              hjust = 1.2,
+              angle = 90, colour = "white") 
+  # labs(title = order_sel)
+}
+```
+
+```{r}
+sp_count <- ginat |> 
+  count(phylum, class, order, species, name = 'cnt') 
+
+# Compte le nombre d'observation par grand groupe d'organimse
+# On peut voir qu'il y a des biais dans les informations rapporté (il y a nettement plus de coléoptère : 'Indeed, to a good approximation, all species are insects!' R. May 1986, https://www.annualreviews.org/docserver/fulltext/ento/63/1/annurev-ento-020117-043348.pdf?expires=1755916267&id=id&accname=guest&checksum=1939D9B95199827819F220903CE2448B)
+order_count = ginat |> 
+  count(phylum, class,  order, name = 'total_par_groupe') |> 
+  arrange(-total_par_groupe) |> 
+  collect()
+
+order_check = order_count |> 
+  slice_head(n = 10) |> 
+  pull(order)
+
+plot_data(data = sp_count, n = 20, order_sel = order_check)
+plot_data(data = sp_count, n = 10,  order_sel = 'Coleoptera')
+plot_data(data = sp_count, n = 60,  order_sel = 'Passeriformes')
+```
+
+```{r}
+
+ginat |> 
+  filter(phylum %in% c('Chordata','Arthropoda'), 
+         !(class %in% 'Teleostei')) |> 
+  group_by(phylum, class, order, species) |> 
+  count(name = 'cnt') |> 
+  ungroup() |> 
+  # Filtre seulement les ordres avec un nombre d'observation précis 
+  group_by(order) |> 
+  mutate(total_order = sum(cnt)) |> 
+  filter(total_order>50) |> 
+  # Sommaire taxonomique d'observation
+  group_by(phylum, class, 
+           species,
+           order) |> 
+  summarize(total=sum(cnt)) |> 
+  arrange(phylum, class, order, desc(total)) |> 
+  ungroup() |> 
+  # Prendre que les n premiers 
+  group_by(order) |> 
+  group_modify(.f = ~ slice_head(.x, n = 20)) |> 
+  mutate(total_obs = sum(total)) |> 
+  ungroup() |> 
+  mutate(order_total = forcats::fct_reorder(.f = order, 
+                                            .x = total_obs, 
+                                            .fun = sum, 
+                                            .desc = TRUE), 
+         class_total = forcats::fct_reorder(.f = class, 
+                                            .x = total_obs, 
+                                            .fun = sum, 
+                                            .desc = TRUE), 
+         sci_lab = gsub(pattern = ' ', replacement = '\n', x = species),
+         sci_nom = forcats::fct_reorder(sci_lab, 
+                                        total, .desc = TRUE)) |> 
+  # Prendre seuelemnt les n premiers
+  ggplot(aes(x = sci_nom,
+             y = total)) + 
+  facet_wrap(class_total + order_total~.,   scales = "free_x")+
+  scale_y_log10()+ 
+  scale_x_discrete(guide = guide_axis(angle = 45)) +
+  geom_bar(aes(fill =total), stat = 'identity')+
+  theme(axis.text.x = element_text(size = 2))+
+  geom_text(aes(label = total), 
+            vjust = .5, 
+            size = 3,
+            hjust = 1.2,
+            angle = 90, colour = "white") 
+```
